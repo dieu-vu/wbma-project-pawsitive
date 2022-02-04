@@ -1,20 +1,17 @@
+import React from 'react';
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, Text, View} from 'react-native';
+import Navigator from './navigators/Navigator';
+import {MainProvider} from './contexts/MainContext';
 
-export default function App() {
+const App = () => {
   return (
-    <View style={styles.container}>
-      <Text>Init Pawsitive App 🐾 </Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <MainProvider>
+        <Navigator />
+      </MainProvider>
+      <StatusBar style={'light'} />
+    </>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
