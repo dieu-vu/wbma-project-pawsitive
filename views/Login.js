@@ -47,10 +47,13 @@ const Login = () => {
           style={styles.LinearGradient}
         >
           <MainButton title="Sign in" onPress={() => setSelectedLogin(true)} />
-          <MainButton title="Register" onPress={() => setSelectedRegister(true)} />
+          <MainButton
+            title="Register"
+            onPress={() => setSelectedRegister(true)}
+          />
 
-          //TODO find a way to render correct form (login / register) based on
-          //which button was pressed
+          {/* // TODO find a way to render correct form (login / register) based on
+          // which button was pressed */}
           {/* {selectedRegister ? <RegisterForm /> : <></>}*/}
           <Logo style={styles.logo} />
         </LinearGradient>

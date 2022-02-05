@@ -30,8 +30,12 @@
     "react-native": "0.64.3",
     "react-native-elements": "^3.4.2",
     "react-native-linear-gradient": "^2.5.6",
+    "react-native-safe-area-context": "^3.3.2",
+    "react-native-screens": "^3.10.2",
+    "react-native-svg": "^12.1.1",
     "react-native-svg-transformer": "^1.0.0",
-    "react-native-web": "0.17.1"
+    "react-native-web": "0.17.1",
+    "warn-once": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",
