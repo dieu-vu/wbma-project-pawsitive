@@ -1,4 +1,5 @@
 import React from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -16,9 +17,9 @@ const TabScreen = () => {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
+        tabBarStyle: {position: 'absolute', backgroundColor: '#8DD35E'},
         tabBarIcon: ({focused, color, size, type}) => {
           let iconName;
-          color = 'black';
           switch (route.name) {
             case 'Home':
               iconName = 'home';
@@ -35,6 +36,8 @@ const TabScreen = () => {
           }
           return <Icon name={iconName} size={size} color={color} type={type} />;
         },
+        tabBarActiveTintColor: 'black',
+        tabBarInactiveTintColor: '#425E20',
       })}
     >
       <Tab.Screen name="Home" component={Home}></Tab.Screen>
@@ -45,7 +48,7 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = true;
   return (
     <Stack.Navigator>
       {isLoggedIn ? (
