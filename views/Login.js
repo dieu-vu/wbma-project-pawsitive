@@ -15,6 +15,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import MainButton from '../components/MainButton';
 import Logo from '../assets/pawsitiveLogo.svg';
 
+
 const Login = () => {
   const [selectedRegister, setSelectedRegister] = useState(false);
   const [selectedLogin, setSelectedLogin] = useState(false);
