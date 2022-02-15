@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
 
+// TODO: add mapview 40% height above list
 const SingleListItem = ({navigation, singleMedia}) => {
   return (
     <ListItem
@@ -41,7 +42,8 @@ const SingleListItem = ({navigation, singleMedia}) => {
 const styles = StyleSheet.create({
   listItem: {
     backgroundColor: '#8DD35E',
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 5,
   },
 });
 

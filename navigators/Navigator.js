@@ -6,7 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon} from 'react-native-elements';
 
 import Login from '../views/Login';
-import Home from '../views/Home';
+import Listing from '../views/Listing';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
@@ -23,7 +23,7 @@ const TabScreen = () => {
         tabBarIcon: ({focused, color, size, type}) => {
           let iconName;
           switch (route.name) {
-            case 'Home':
+            case 'Listing':
               iconName = 'home';
               type = 'feather';
               break;
@@ -41,10 +41,40 @@ const TabScreen = () => {
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: '#425E20',
       })}
+      component={StackScreen}
     >
-      <Tab.Screen name="Home" component={Home}></Tab.Screen>
-      <Tab.Screen name="Upload" component={Upload}></Tab.Screen>
-      <Tab.Screen name="Profile" component={Profile}></Tab.Screen>
+      <Tab.Screen
+        name="Listing"
+        component={Listing}
+        options={{
+          tabBarLabel: 'Home',
+          title: 'Listing',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name="Upload"
+        component={Upload}
+        options={{
+          tabBarLabel: 'Upload',
+          title: 'Create Post',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      ></Tab.Screen>
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          title: 'Profile',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      ></Tab.Screen>
     </Tab.Navigator>
   );
 };
@@ -60,7 +90,21 @@ const StackScreen = () => {
             component={TabScreen}
             options={{headerShown: false}}
           />
-          <Stack.Screen name="Single" component={Single}></Stack.Screen>
+          <Stack.Screen
+            name="Single"
+            component={Single}
+            options={({route}) => ({
+              title: route.params.file.title,
+              headerStyle: {
+                backgroundColor: '#8DD35E',
+              },
+            })}
+          ></Stack.Screen>
+          <Stack.Screen
+            name="Upload"
+            component={Upload}
+            options={{title: 'Create Post'}}
+          ></Stack.Screen>
         </>
       ) : (
         <>

@@ -81,9 +81,9 @@ const Profile = ({navigation}) => {
             <View style={styles.logoContainer}>
               <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
             </View>
-            {/* <View style={styles.logOutButton}>
+            <View style={styles.logOutButton}>
               <MainButton title="Logout" onPress={logUserOut} />
-            </View>*/}
+            </View>
           </ImageBackground>
         </View>
         <LinearGradient

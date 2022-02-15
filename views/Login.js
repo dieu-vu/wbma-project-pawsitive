@@ -18,23 +18,13 @@ import Logo from '../assets/pawsitiveLogo.svg';
 import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {pickRandomImage} from '../components/CommonElements';
 
 const Login = () => {
   const {setUser, setIsLoggedIn} = useContext(MainContext);
   const [selectedRegister, setSelectedRegister] = useState(false);
   const [selectedLogin, setSelectedLogin] = useState(false);
   const {getUserByToken} = useUser();
-
-  const loginScreenImages = [
-    require('../assets/dogSmiling1.jpg'),
-    require('../assets/dogSmiling2.jpg'),
-    require('../assets/sheepGroup.jpg'),
-  ];
-
-  const pickRandomImage = () => {
-    const selection = Math.floor(Math.random() * loginScreenImages.length);
-    return loginScreenImages[selection];
-  };
 
   const signIn = () => {
     setSelectedLogin(true);

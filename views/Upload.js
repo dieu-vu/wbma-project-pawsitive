@@ -129,7 +129,7 @@ const Upload = ({navigation}) => {
           <Card.Image
             source={{uri: image}}
             style={styles.image}
-            // onPress={pickImage}
+            onPress={pickImage}
           ></Card.Image>
         ) : (
           <Video
@@ -154,7 +154,7 @@ const Upload = ({navigation}) => {
             <ImageBackground
               source={pickRandomImage()}
               onPress={pickImage}
-              style={styles.image}
+              style={[styles.image, {opacity: 0.7}]}
             >
               <Pressable onPress={pickImage} style={styles.animation}>
                 <LottieView
