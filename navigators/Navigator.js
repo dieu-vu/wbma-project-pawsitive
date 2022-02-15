@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
@@ -10,6 +10,7 @@ import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
+import {MainContext} from '../contexts/MainContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -49,7 +50,7 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const isLoggedIn = true;
+  const {isLoggedIn} = useContext(MainContext);
   return (
     <Stack.Navigator>
       {isLoggedIn ? (
@@ -63,7 +64,7 @@ const StackScreen = () => {
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={Profile}></Stack.Screen>
+          <Stack.Screen name="Login" component={Login}></Stack.Screen>
         </>
       )}
     </Stack.Navigator>

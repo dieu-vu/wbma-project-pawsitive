@@ -1,21 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, StyleSheet, Alert, Dimensions} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
-import {Input} from 'react-native-elements';
+import {Icon, Input} from 'react-native-elements';
 import MainButton from './MainButton';
-import {useUser} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {useFonts} from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
+import MailLogo from '../assets/mail.svg';
+import PasswordLogo from '../assets/password.svg';
+import UserLogo from '../assets/user.svg';
+import PropTypes from 'prop-types';
+import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UpdateUserForm = () => {
+const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
   const {putUser} = useUser();
-
-  const user = {
-    user_id: 38,
-    username: 'Mikko',
-    email: 'mikko.suhonen@metropolia.fi',
-    full_name: 'Mikko Suhonen',
-  };
+  const {postMedia} = useMedia();
+  const {postTag} = useTag();
+  const {user, setUser} = useContext(MainContext);
 
   const {
     control,
@@ -41,18 +43,41 @@ const UpdateUserForm = () => {
     return <AppLoading />;
   }
 
-  // const {setIsLoggedIn, user} = useContext(MainContext);
-
   const onSubmit = async (data) => {
     console.log(data);
+    console.log('avatar', avatar);
     try {
-      const userToken =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozOCwidXNlcm5hbWUiOiJIb3JzdCIsImVtYWlsIjoibWlra28uc3Vob25lbkBtZXRyb3BvbGlhLmZpIiwiZnVsbF9uYW1lIjpudWxsLCJpc19hZG1pbiI6bnVsbCwidGltZV9jcmVhdGVkIjoiMjAyMi0wMS0xMlQxMjoyNjowOC4wMDBaIiwiaWF0IjoxNjQ0MjU2ODA0LCJleHAiOjE2NDQzNDMyMDR9.XmTxsEMQxj28A69ej2-ONBGUKRNKXJy5Ce7eaHRZhCQ';
+      const userToken = await AsyncStorage.getItem('userToken');
       const userData = await putUser(data, userToken);
       if (userData) {
         Alert.alert('Success', userData.message);
-        // setUser(data);
-        // navigation.navigate('Profile');
+        setUser(data);
+        navigation.navigate('Home');
+      }
+      if (avatarUpdated) {
+        const formData = new FormData();
+        formData.append('title', 'avatar');
+        formData.append('description', '');
+        const filename = avatar.split('/').pop();
+        let fileExtension = filename.split('.').pop();
+        fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
+        formData.append('file', {
+          uri: avatar,
+          name: filename,
+          type: 'image' + '/' + fileExtension,
+        });
+        try {
+          const response = await postMedia(formData, userToken);
+          console.log('Upload response', response);
+          if (response) {
+            await postTag(
+              {file_id: response.file_id, tag: 'avatar_' + user.user_id},
+              userToken
+            );
+          }
+        } catch (error) {
+          console.log('image upload error', error);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -70,16 +95,21 @@ const UpdateUserForm = () => {
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder={user.email}
-            errorMessage={errors.email && errors.email.message}
-          />
+          <View style={styles.inputContainer}>
+            <Icon type={'evilicon'} name="envelope" style={styles.logo} />
+            <Input
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder={user.email}
+              errorMessage={errors.email && errors.email.message}
+            />
+          </View>
         )}
         name="email"
+
       />
       <Controller
         control={control}
@@ -90,14 +120,18 @@ const UpdateUserForm = () => {
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            placeholder={user.username}
-            errorMessage={errors.username && errors.username.message}
-          />
+          <View style={styles.inputContainer}>
+            <Icon type={'evilicon'} name="user" style={styles.logo} />
+            <Input
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              placeholder={user.username}
+              errorMessage={errors.username && errors.username.message}
+            />
+          </View>
         )}
         name="username"
       />
@@ -116,33 +150,90 @@ const UpdateUserForm = () => {
           */
         }}
         render={({field: {onChange, onBlur, value}}) => (
-          <Input
-            style={styles.input}
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            autoCapitalize="none"
-            secureTextEntry={true}
-            placeholder="**********"
-            errorMessage={errors.password && errors.password.message}
-          />
+          <View style={styles.inputContainer}>
+            <Icon type={'evilicon'} name="lock" style={styles.logo} />
+            <Input
+              style={styles.input}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              secureTextEntry={true}
+              placeholder="Password"
+              errorMessage={errors.password && errors.password.message}
+            />
+          </View>
         )}
         name="password"
       />
-      <MainButton title="Save" onPress={handleSubmit(onSubmit)} />
+      <Controller
+        control={control}
+        rules={{
+          validate: (value) => {
+            const {password} = getValues();
+            if (value === password) {
+              return true;
+            } else {
+              return 'Passwords do not match';
+            }
+          },
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <View style={styles.inputContainer}>
+            <Icon type={'evilicon'} name="lock" style={styles.logo} />
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              secureTextEntry={true}
+              placeholder="Confirm Password"
+              errorMessage={
+                errors.confirmPassword && errors.confirmPassword.message
+              }
+            />
+          </View>
+        )}
+        name="confirmPassword"
+      />
+      <MainButton
+        title="Save"
+        style={styles.button}
+        onPress={handleSubmit(onSubmit)}
+      />
     </View>
   );
+};
+
+UpdateUserForm.propTypes = {
+  avatarUpdated: PropTypes.bool,
+  avatar: PropTypes.string,
+  navigation: PropTypes.object,
 };
 
 const styles = StyleSheet.create({
   form: {
     width: Dimensions.get('window').width - 100,
+    height: Dimensions.get('window').width - 600,
     paddingTop: 20,
     display: 'flex',
     alignItems: 'center',
   },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
   input: {
     fontFamily: 'Montserrat-Regular',
+    borderBottomWidth: 2,
+    paddingBottom: 5,
+  },
+  logo: {
+    paddingTop: 8,
+    transform: [{scaleX: 1.5}, {scaleY: 1.5}],
+  },
+  button: {
+    marginBottom: 20,
   },
 });
 

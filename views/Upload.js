@@ -133,20 +133,20 @@ const Upload = ({navigation}) => {
             ></Video>
           )}
           <Controller
-            control={control}
-            rules={{require: true}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Title"
-                errorMessage={errors.title && 'This is required'}
-              ></Input>
-            )}
-            name="title"
-          ></Controller>
+  control={control}
+  rules={{require: true}}
+  render={({field: {onChange, onBlur, value}}) => (
+    <Input
+      onBlur={onBlur}
+      onChangeText={onChange}
+      value={value}
+      autoCapitalize='none'
+      placeholder='Title'
+      errorMessage={errors.title && 'This is required'}
+    ></Input>
+  )}
+  name='title'
+  />
 
           <Controller
             control={control}

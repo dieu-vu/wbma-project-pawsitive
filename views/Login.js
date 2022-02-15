@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   View,
+  ScrollView,
 } from 'react-native';
-import {Image} from 'react-native-elements';
+import {ButtonGroup, Image} from 'react-native-elements';
 import RegisterForm from '../components/RegisterForm';
 import LoginForm from '../components/LoginForm';
 import {LinearGradient} from 'expo-linear-gradient';
 import MainButton from '../components/MainButton';
 import Logo from '../assets/pawsitiveLogo.svg';
-
 
 const Login = () => {
   const [selectedRegister, setSelectedRegister] = useState(false);
@@ -30,6 +30,16 @@ const Login = () => {
     return loginScreenImages[selection];
   };
 
+  const signIn = () => {
+    setSelectedLogin(true);
+    setSelectedRegister(false);
+  };
+
+  const registerUser = () => {
+    setSelectedLogin(false);
+    setSelectedRegister(true);
+  };
+
   return (
     <TouchableOpacity
       style={{flex: 1}}
@@ -43,15 +53,21 @@ const Login = () => {
         <View>
           <Image source={pickRandomImage()} style={styles.backgroundImage} />
         </View>
+
         <LinearGradient
           colors={['#8DD35E', '#425E20']}
           style={styles.LinearGradient}
         >
-          <MainButton title="Sign in" onPress={() => setSelectedLogin(true)} />
-          <MainButton
-            title="Register"
-            onPress={() => setSelectedRegister(true)}
-          />
+          {!selectedLogin && !selectedRegister ? (
+            <View>
+              <MainButton title="Sign in" onPress={signIn} />
+              <MainButton title="Register" onPress={registerUser} />
+            </View>
+          ) : (
+            <></>
+          )}
+          {selectedRegister ? <RegisterForm /> : <></>}
+          {selectedLogin ? <LoginForm /> : <></>}
 
           {/* // TODO find a way to render correct form (login / register) based on
           // which button was pressed */}
