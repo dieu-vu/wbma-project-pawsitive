@@ -10,6 +10,8 @@ import {
   ScrollView,
 } from 'react-native';
 import {ButtonGroup, Image} from 'react-native-elements';
+import LottieView from 'lottie-react-native';
+
 import RegisterForm from '../components/RegisterForm';
 import LoginForm from '../components/LoginForm';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -25,6 +27,7 @@ const Login = () => {
   const [selectedRegister, setSelectedRegister] = useState(false);
   const [selectedLogin, setSelectedLogin] = useState(false);
   const {getUserByToken} = useUser();
+  const animation = React.createRef();
 
   const signIn = () => {
     setSelectedLogin(true);
@@ -54,6 +57,7 @@ const Login = () => {
 
   useEffect(() => {
     checkToken();
+    animation.current?.play();
   }, []);
 
   return (
@@ -75,7 +79,18 @@ const Login = () => {
           style={styles.LinearGradient}
         >
           {!selectedLogin && !selectedRegister ? (
-            <View>
+            <View style={styles.buttonContainer}>
+              <LottieView
+                ref={animation}
+                source={require('../assets/paws-animation.json')}
+                style={{
+                  width: undefined,
+                  height: 150,
+                  alignSelf: 'center',
+                  transform: [{rotate: '30deg'}],
+                }}
+                loop={true}
+              />
               <MainButton title="Sign in" onPress={signIn} />
               <MainButton title="Register" onPress={registerUser} />
             </View>
@@ -116,6 +131,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: -90,
   },
+  buttonContainer: {flex: 1, flexDirection: 'column'},
 });
 
 export default Login;
