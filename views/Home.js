@@ -7,9 +7,9 @@ import List from '../components/List';
 const Home = ({navigation}) => {
   return (
     <>
-      <ScrollView style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <List navigation={navigation} style={{zIndex: 1}} />
-      </ScrollView>
+      </SafeAreaView>
     </>
   );
 };

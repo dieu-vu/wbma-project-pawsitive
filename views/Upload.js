@@ -1,9 +1,11 @@
-import React, {useContext, useState, useCallback} from 'react';
+import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {StyleSheet, ScrollView, View, Image, Alert} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Video} from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
+import LottieView from 'lottie-react-native';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {Text, Card, Button, Input} from 'react-native-elements';
@@ -14,13 +16,14 @@ import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/Variables';
 
 const Upload = ({navigation}) => {
-  const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
+  // const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
   const [image, setImage] = useState();
   const [type, setType] = useState('image');
   const [imageSelected, setImageSelected] = useState(false);
   const {postMedia, loading} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const {postTag} = useTag();
+  const animation = React.createRef();
 
   const {
     control,
@@ -53,7 +56,6 @@ const Upload = ({navigation}) => {
 
   // TODO: if possible, get camera permission to film a video constantly
   const resetForm = () => {
-    setImage(DEFAULT_IMAGE);
     setImageSelected(false);
     setValue('title', '');
     setValue('description', '');
@@ -67,6 +69,10 @@ const Upload = ({navigation}) => {
       };
     }, [])
   );
+
+  useEffect(() => {
+    animation.current?.play();
+  }, []);
 
   const onSubmit = async (data) => {
     if (!imageSelected) {
@@ -87,7 +93,7 @@ const Upload = ({navigation}) => {
     try {
       // const token = await AsyncStorage.getItem('userToken');
       const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNiwidXNlcm5hbWUiOiJkaWV1diIsImVtYWlsIjoiZGlldXZAbWV0cm9wb2xpYS5maSIsImZ1bGxfbmFtZSI6IkRpZXUgVnUiLCJpc19hZG1pbiI6bnVsbCwidGltZV9jcmVhdGVkIjoiMjAyMi0wMS0xMFQxMzozOToyMC4wMDBaIiwiaWF0IjoxNjQ0MTYyMjc0LCJleHAiOjE2NDQyNDg2NzR9.n1TzKmnrWOpiNyqWRwncUo-90WlSLLQHRnXNRHNRpaU';
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNiwidXNlcm5hbWUiOiJkaWV1diIsImVtYWlsIjoiZGlldXZAbWV0cm9wb2xpYS5maSIsImZ1bGxfbmFtZSI6IkRpZXUgVnUiLCJpc19hZG1pbiI6bnVsbCwidGltZV9jcmVhdGVkIjoiMjAyMi0wMS0xMFQxMzozOToyMC4wMDBaIiwiaWF0IjoxNjQ0ODY4ODk5LCJleHAiOjE2NDQ5NTUyOTl9.y7SwF0LJxChNRzThYh1xSgvNXchnBAtc4FGw8zt7GnE';
       const response = await postMedia(formData, token);
       console.log('Upload response', response);
 
@@ -110,27 +116,43 @@ const Upload = ({navigation}) => {
     }
   };
 
-  console.log('image', image);
+  const displayMedia = (type) => {
+    return (
+      <>
+        {type === 'image' ? (
+          <Card.Image
+            source={{uri: image}}
+            style={styles.image}
+            // onPress={pickImage}
+          ></Card.Image>
+        ) : (
+          <Video
+            source={{uri: image}}
+            style={styles.image}
+            useNativeControls={true}
+            resizeMode="cover"
+            onError={(err) => {
+              console.log('Video error', err);
+            }}
+          ></Video>
+        )}
+      </>
+    );
+  };
+
   return (
     <>
       <ScrollView>
-        <Card>
-          {type === 'image' ? (
-            <Card.Image
-              source={!image ? {uri: DEFAULT_IMAGE} : {uri: image}}
-              style={styles.image}
-              // onPress={pickImage}
-            ></Card.Image>
+        <Card style={styles.container}>
+          {!image ? (
+            <LottieView
+              source={require('../assets/add-button-lottie.json')}
+              ref={animation}
+              style={styles.animation}
+              loop={true}
+            />
           ) : (
-            <Video
-              source={{uri: image}}
-              style={styles.image}
-              useNativeControls={true}
-              resizeMode="cover"
-              onError={(err) => {
-                console.log('Video error', err);
-              }}
-            ></Video>
+            displayMedia(type)
           )}
           <Controller
   control={control}
@@ -190,6 +212,10 @@ const Upload = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+  },
   image: {
     width: '100%',
     borderRadius: 50,
@@ -208,6 +234,13 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     color: 'black',
+  },
+  animation: {
+    width: '50%',
+    height: undefined,
+    justifyContent: 'center',
+    flex: 1,
+    alignSelf: 'center',
   },
 });
 
