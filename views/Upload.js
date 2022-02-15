@@ -7,6 +7,7 @@ import {
   Image,
   ImageBackground,
   Alert,
+  Pressable,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Video} from 'expo-av';
@@ -23,7 +24,6 @@ import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/Variables';
 
 const Upload = ({navigation}) => {
-  // const DEFAULT_IMAGE = Image.resolveAssetSource(DefaultImage).uri;
   const [image, setImage] = useState();
   const [type, setType] = useState('image');
   const [imageSelected, setImageSelected] = useState(false);
@@ -67,6 +67,7 @@ const Upload = ({navigation}) => {
     setValue('title', '');
     setValue('description', '');
     setType('image');
+    setImage();
   };
 
   useFocusEffect(
@@ -149,17 +150,21 @@ const Upload = ({navigation}) => {
     <>
       <ScrollView>
         <Card style={styles.container}>
-          <ImageBackground
-            source={pickRandomImage()}
-            onPress={pickImage}
-          ></ImageBackground>
           {!image ? (
-            <LottieView
-              source={require('../assets/add-button-lottie.json')}
-              ref={animation}
-              style={styles.animation}
-              loop={true}
-            />
+            <ImageBackground
+              source={pickRandomImage()}
+              onPress={pickImage}
+              style={styles.image}
+            >
+              <Pressable onPress={pickImage} style={styles.animation}>
+                <LottieView
+                  source={require('../assets/add-button-lottie.json')}
+                  ref={animation}
+                  style={{width: 150, height: 150, alignSelf: 'center'}}
+                  loop={true}
+                />
+              </Pressable>
+            </ImageBackground>
           ) : (
             displayMedia(type)
           )}
@@ -196,8 +201,8 @@ const Upload = ({navigation}) => {
           ></Controller>
 
           <CustomButton
-            // disabled={!imageSelected}
-            // loading={loading}
+            disabled={!imageSelected}
+            loading={loading}
             buttonStyle={styles.button}
             title="Upload"
             titleStyle={styles.buttonTitle}
@@ -223,12 +228,12 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     justifyContent: 'center',
-    width: 100,
-    height: 100,
-    // aspectRatio: 1,
+    width: '100%',
+    height: undefined,
+    aspectRatio: 1,
     marginBottom: 15,
     resizeMode: 'cover',
-    // alignSelf: 'center',
+    alignSelf: 'center',
   },
   button: {
     marginTop: 10,
@@ -240,9 +245,9 @@ const styles = StyleSheet.create({
   buttonTitle: {
     color: 'black',
   },
-  animation: {
-    width: '50%',
-    height: undefined,
+  pressArea: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     flex: 1,
     alignSelf: 'center',
