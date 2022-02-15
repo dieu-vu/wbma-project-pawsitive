@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {
   Dimensions,
   Keyboard,
@@ -15,10 +15,16 @@ import LoginForm from '../components/LoginForm';
 import {LinearGradient} from 'expo-linear-gradient';
 import MainButton from '../components/MainButton';
 import Logo from '../assets/pawsitiveLogo.svg';
+import {useUser} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
+  const {setUser, setIsLoggedIn} = useContext(MainContext);
   const [selectedRegister, setSelectedRegister] = useState(false);
   const [selectedLogin, setSelectedLogin] = useState(false);
+  const {getUserByToken} = useUser();
+
   const loginScreenImages = [
     require('../assets/dogSmiling1.jpg'),
     require('../assets/dogSmiling2.jpg'),
@@ -39,6 +45,26 @@ const Login = () => {
     setSelectedLogin(false);
     setSelectedRegister(true);
   };
+
+  const checkToken = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    if (!userToken) {
+      return;
+    }
+    try {
+      const userData = await getUserByToken(userToken);
+      console.log('check token', userData);
+      console.log('token in asyncStorage', userToken);
+      setUser(userData);
+      setIsLoggedIn(true);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   return (
     <TouchableOpacity

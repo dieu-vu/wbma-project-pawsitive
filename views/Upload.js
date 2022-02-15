@@ -1,6 +1,13 @@
 import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
-import {StyleSheet, ScrollView, View, Image, Alert} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Image,
+  ImageBackground,
+  Alert,
+} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Video} from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
@@ -9,7 +16,7 @@ import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {Text, Card, Button, Input} from 'react-native-elements';
-import DefaultImage from '../assets/upload-green.png';
+import {pickRandomImage} from '../components/CommonElements';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -91,9 +98,7 @@ const Upload = ({navigation}) => {
       type: type + '/' + fileExtension,
     });
     try {
-      // const token = await AsyncStorage.getItem('userToken');
-      const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNiwidXNlcm5hbWUiOiJkaWV1diIsImVtYWlsIjoiZGlldXZAbWV0cm9wb2xpYS5maSIsImZ1bGxfbmFtZSI6IkRpZXUgVnUiLCJpc19hZG1pbiI6bnVsbCwidGltZV9jcmVhdGVkIjoiMjAyMi0wMS0xMFQxMzozOToyMC4wMDBaIiwiaWF0IjoxNjQ0ODY4ODk5LCJleHAiOjE2NDQ5NTUyOTl9.y7SwF0LJxChNRzThYh1xSgvNXchnBAtc4FGw8zt7GnE';
+      const token = await AsyncStorage.getItem('userToken');
       const response = await postMedia(formData, token);
       console.log('Upload response', response);
 
@@ -144,6 +149,10 @@ const Upload = ({navigation}) => {
     <>
       <ScrollView>
         <Card style={styles.container}>
+          <ImageBackground
+            source={pickRandomImage()}
+            onPress={pickImage}
+          ></ImageBackground>
           {!image ? (
             <LottieView
               source={require('../assets/add-button-lottie.json')}
@@ -187,11 +196,6 @@ const Upload = ({navigation}) => {
           ></Controller>
 
           <CustomButton
-            title={'Choose image'}
-            onPress={pickImage}
-            fontSize={14}
-          />
-          <CustomButton
             // disabled={!imageSelected}
             // loading={loading}
             buttonStyle={styles.button}
@@ -217,13 +221,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   image: {
-    width: '100%',
-    borderRadius: 50,
-    height: undefined,
-    aspectRatio: 1,
+    flex: 1,
+    justifyContent: 'center',
+    width: 100,
+    height: 100,
+    // aspectRatio: 1,
     marginBottom: 15,
-    resizeMode: 'contain',
-    alignSelf: 'center',
+    resizeMode: 'cover',
+    // alignSelf: 'center',
   },
   button: {
     marginTop: 10,
@@ -241,6 +246,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     alignSelf: 'center',
+    zIndex: 1,
   },
 });
 
