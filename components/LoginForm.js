@@ -25,14 +25,13 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       const userData = await postLogin(data);
       console.log(userData);
       await AsyncStorage.setItem('userToken', userData.token);
       setUser(userData.user);
       setIsLoggedIn(true);
-
     } catch (error) {
       console.error(error);
     }

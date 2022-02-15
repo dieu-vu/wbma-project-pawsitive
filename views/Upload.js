@@ -68,6 +68,7 @@ const Upload = ({navigation}) => {
     setValue('description', '');
     setType('image');
     setImage();
+    animation.current?.play();
   };
 
   useFocusEffect(
@@ -162,6 +163,7 @@ const Upload = ({navigation}) => {
                   ref={animation}
                   style={{width: 150, height: 150, alignSelf: 'center'}}
                   loop={true}
+                  autoPlay={true}
                 />
               </Pressable>
             </ImageBackground>

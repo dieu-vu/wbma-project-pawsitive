@@ -32,7 +32,7 @@ const Single = ({navigation, route}) => {
         )}
       </View>
       <LinearGradient
-        colors={['#8DD35E', '#425E20']}
+        colors={['#8DD35E', '#FFFFFF']}
         style={styles.LinearGradient}
       >
         <Card containerStyle={styles.infoCard}>
@@ -45,10 +45,6 @@ const Single = ({navigation, route}) => {
           </View>
         </Card>
       </LinearGradient>
-      {/* <ListItem onPress={() => navigation.navigate('Map')}>
-        <Avatar icon={{name: 'map-pin', type: 'feather', color: 'darkblue'}} />
-        <Text>See on map</Text>
-      </ListItem> */}
     </ScrollView>
   );
 };

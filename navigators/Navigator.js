@@ -112,7 +112,11 @@ const StackScreen = () => {
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={Login}></Stack.Screen>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{headerShown: false}}
+          ></Stack.Screen>
         </>
       )}
     </Stack.Navigator>
