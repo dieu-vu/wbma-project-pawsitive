@@ -80,7 +80,6 @@ const Profile = ({navigation}) => {
         style={{flex: 1, backgroundColor: '#425E20'}}
         contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}
       >
-
           <ImageBackground source={{uri: avatar}} style={styles.image}>
             <View style={styles.logoContainer}>
               <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
