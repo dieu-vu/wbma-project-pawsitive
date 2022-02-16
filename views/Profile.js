@@ -80,15 +80,14 @@ const Profile = ({navigation}) => {
         style={{flex: 1, backgroundColor: '#425E20'}}
         contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}
       >
-          <ImageBackground source={{uri: avatar}} style={styles.image}>
+        <ImageBackground source={{uri: avatar}} style={styles.image}>
             <View style={styles.logoContainer}>
               <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
             </View>
             <View style={styles.logOutButton}>
               <MainButton title="Logout" onPress={logUserOut} />
             </View>
-          </ImageBackground>
-
+        </ImageBackground>
 
         <LinearGradient
           style={styles.linearGradient}
