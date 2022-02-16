@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert, View, StyleSheet} from 'react-native';
-import {Input} from 'react-native-elements';
+import {Alert, View, StyleSheet, ScrollView} from 'react-native';
+import {Card, Input} from 'react-native-elements';
 import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import MainButton from './MainButton';
@@ -39,7 +39,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <View style={{width: '100%', alignItems: 'center'}}>
+    <View style={{width: '80%', height: '100%', paddingTop: 10, paddingBottom: 100, alignItems: 'center'}}>
       <Controller
         control={control}
         rules={{
@@ -51,15 +51,15 @@ const RegisterForm = () => {
           validate: async (value) => {
             try {
               const available = await checkUsername(value);
-              if(available) {
-                return true
+              if (available) {
+                return true;
               } else {
                 return 'Username is already taken!';
               }
             } catch (e) {
               throw new Error(e.message);
             }
-          }
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -68,12 +68,12 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            autoCapitalize='none'
-            placeholder='Username...'
+            autoCapitalize="none"
+            placeholder="Username..."
             errorMessage={errors.username && errors.username.message}
           />
         )}
-        name='username'
+        name="username"
       />
 
       <Controller
@@ -98,13 +98,13 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            autoCapitalize='none'
+            autoCapitalize="none"
             secureTextEntry={true}
-            placeholder='Password...'
+            placeholder="Password..."
             errorMessage={errors.password && errors.password.message}
           />
         )}
-        name='password'
+        name="password"
       />
 
       <Controller
@@ -127,15 +127,15 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            autoCapitalize='none'
+            autoCapitalize="none"
             secureTextEntry={true}
-            placeholder='Confirm password...'
+            placeholder="Confirm password..."
             errorMessage={
               errors.confirmPassword && errors.confirmPassword.message
             }
           />
         )}
-        name='confirmPassword'
+        name="confirmPassword"
       />
 
       <Controller
@@ -144,8 +144,8 @@ const RegisterForm = () => {
           required: {value: true, message: 'This is required.'},
           pattern: {
             value: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-            message: 'Use correct format: example@example.com'
-          }
+            message: 'Use correct format: example@example.com',
+          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
@@ -154,26 +154,21 @@ const RegisterForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            autoCapitalize='none'
-            placeholder='Email...'
+            autoCapitalize="none"
+            placeholder="Email..."
             errorMessage={errors.email && errors.email.message}
           />
         )}
-        name='email'
+        name="email"
       />
 
       <MainButton
         onPress={handleSubmit(onSubmit)}
         title={'Register'}
-      >
-      </MainButton>
+      ></MainButton>
     </View>
   );
 };
-
-
-
-
 
 const styles = StyleSheet.create({
   inputField: {
@@ -185,6 +180,5 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
 });
-
 
 export default RegisterForm;

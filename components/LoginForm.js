@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {Input} from 'react-native-elements';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import MainButton from './MainButton';
 import {useLogin} from '../hooks/ApiHooks';
@@ -86,7 +86,7 @@ const LoginForm = () => {
         )}
         name="password"
       />
-      <MainButton onPress={handleSubmit(onSubmit)} title={'Sign in'} />
+      <MainButton onPress={handleSubmit(onSubmit)} title={'Sign in'} style={{elevation: 10}} />
     </View>
   );
 };
@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
   formContainer: {
     width: '70%',
     alignItems: 'center',
-    paddingBottom: 20,
   },
 });
 

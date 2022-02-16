@@ -22,6 +22,7 @@ import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {pickRandomImage} from '../components/CommonElements';
 
+
 const Login = () => {
   const {setUser, setIsLoggedIn} = useContext(MainContext);
   const [selectedRegister, setSelectedRegister] = useState(false);
@@ -78,6 +79,7 @@ const Login = () => {
           colors={['#8DD35E', '#425E20']}
           style={styles.LinearGradient}
         >
+
           {!selectedLogin && !selectedRegister ? (
             <View style={styles.buttonContainer}>
               <LottieView
@@ -99,12 +101,10 @@ const Login = () => {
           )}
           {selectedRegister ? <RegisterForm /> : <></>}
           {selectedLogin ? <LoginForm /> : <></>}
-
-          {/* // TODO find a way to render correct form (login / register) based on
-          // which button was pressed */}
-          {/* {selectedRegister ? <RegisterForm /> : <></>}*/}
           <Logo style={styles.logo} />
+
         </LinearGradient>
+
       </KeyboardAvoidingView>
     </TouchableOpacity>
   );
