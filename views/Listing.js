@@ -7,6 +7,8 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const Listing = ({navigation}) => {
+  // TODO: Move map permission to a common file.
+  // TODO: Add google API to Hooks for searching
   const checkPermission = async () => {
     const hasPermission = await Location.requestForegroundPermissionsAsync();
     if (hasPermission.status === 'granted') {
@@ -19,8 +21,16 @@ const Listing = ({navigation}) => {
     const permission = await Location.requestForegroundPermissionsAsync();
     return permission.status === 'granted';
   };
-  useEffect(() => {
-    checkPermission();
+
+  const getUserLocation = async () => {
+    const userLocation = await Location.getCurrentPositionAsync();
+    return userLocation.coords;
+  };
+
+  useEffect(async () => {
+    if (checkPermission()) {
+      console.log(await getUserLocation());
+    }
   });
   return (
     <>
