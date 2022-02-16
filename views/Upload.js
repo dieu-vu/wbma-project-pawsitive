@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
 import {Card, Input, Icon, Text} from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {pickRandomImage, formatDate, getFonts} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
@@ -38,6 +39,7 @@ const Upload = ({navigation}) => {
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const [fromTime, setFromTime] = useState();
   const [toTime, setToTime] = useState();
+  const insets = useSafeAreaInsets();
 
   const {
     control,
@@ -164,178 +166,185 @@ const Upload = ({navigation}) => {
   return (
     <SafeAreaView>
       <ScrollView>
-        <Card style={styles.container}>
-          {!image ? (
-            <ImageBackground
-              source={pickRandomImage()}
-              onPress={pickImage}
-              style={[styles.image, {opacity: 0.7}]}
+        <View
+          style={{
+            paddingBottom: insets.bottom,
+            flex: 1,
+          }}
+        >
+          <Card style={styles.container}>
+            {!image ? (
+              <ImageBackground
+                source={pickRandomImage()}
+                onPress={pickImage}
+                style={[styles.image, {opacity: 0.7}]}
+              >
+                <Pressable onPress={pickImage} style={styles.animation}>
+                  <LottieView
+                    source={require('../assets/add-button-lottie.json')}
+                    ref={animation}
+                    style={{width: 150, height: 150, alignSelf: 'center'}}
+                    loop={true}
+                    autoPlay={true}
+                  />
+                </Pressable>
+              </ImageBackground>
+            ) : (
+              displayMedia(type)
+            )}
+            <Controller
+              control={control}
+              rules={{require: true}}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Title"
+                  errorMessage={errors.title && 'This is required'}
+                  style={styles.input}
+                ></Input>
+              )}
+              name="title"
+            />
+
+            <Controller
+              control={control}
+              rules={{require: true}}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Description"
+                  errorMessage={errors.description && 'This is required'}
+                  style={styles.input}
+                ></Input>
+              )}
+              name="description"
+            ></Controller>
+
+            <View
+              style={{
+                width: '100%',
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              <Pressable onPress={pickImage} style={styles.animation}>
-                <LottieView
-                  source={require('../assets/add-button-lottie.json')}
-                  ref={animation}
-                  style={{width: 150, height: 150, alignSelf: 'center'}}
-                  loop={true}
-                  autoPlay={true}
-                />
-              </Pressable>
-            </ImageBackground>
-          ) : (
-            displayMedia(type)
-          )}
-          <Controller
-            control={control}
-            rules={{require: true}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Title"
-                errorMessage={errors.title && 'This is required'}
-                style={styles.input}
-              ></Input>
-            )}
-            name="title"
-          />
-
-          <Controller
-            control={control}
-            rules={{require: true}}
-            render={({field: {onChange, onBlur, value}}) => (
-              <Input
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                placeholder="Description"
-                errorMessage={errors.description && 'This is required'}
-                style={styles.input}
-              ></Input>
-            )}
-            name="description"
-          ></Controller>
-
-          <View
-            style={{
-              width: '100%',
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            {/* Input start date */}
-            <Controller
-              control={control}
-              rules={{require: true}}
-              name="fromTime"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TouchableHighlight
-                  onPress={() => setFromDatePickerVisibility(true)}
-                  activeOpacity={0.3}
-                  underlayColor="#A9FC73"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  style={styles.calendarBox}
-                >
-                  <View
-                    style={{
-                      flexGrow: 1,
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                    }}
+              {/* Input start date */}
+              <Controller
+                control={control}
+                rules={{require: true}}
+                name="fromTime"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TouchableHighlight
+                    onPress={() => setFromDatePickerVisibility(true)}
+                    activeOpacity={0.3}
+                    underlayColor="#A9FC73"
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    style={styles.calendarBox}
                   >
-                    <Text style={[styles.text, {marginRight: 2, width: 50}]}>
-                      {' '}
-                      From{' '}
-                    </Text>
-                    <Icon name="calendar" type="feather"></Icon>
-                    <DateTimePickerModal
-                      isVisible={isFromDatePickerVisible}
-                      mode="datetime"
-                      onConfirm={(date) => {
-                        console.log('type', typeof date);
-                        const formattedDate = formatDate(date);
-                        value = date;
-                        setFromDatePickerVisibility(false);
-                        setFromTime(formattedDate);
-                        console.log('from date picked', value);
+                    <View
+                      style={{
+                        flexGrow: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
                       }}
-                      onCancel={() => setFromDatePickerVisibility(false)}
-                    />
-                    <Text style={[styles.text, {marginLeft: 10}]}>
-                      {!fromTime ? 'Pick date' : fromTime}
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              )}
-            ></Controller>
+                    >
+                      <Text style={[styles.text, {marginRight: 2, width: 50}]}>
+                        {' '}
+                        From{' '}
+                      </Text>
+                      <Icon name="calendar" type="feather"></Icon>
+                      <DateTimePickerModal
+                        isVisible={isFromDatePickerVisible}
+                        mode="datetime"
+                        onConfirm={(date) => {
+                          console.log('type', typeof date);
+                          const formattedDate = formatDate(date);
+                          value = date;
+                          setFromDatePickerVisibility(false);
+                          setFromTime(formattedDate);
+                          console.log('from date picked', value);
+                        }}
+                        onCancel={() => setFromDatePickerVisibility(false)}
+                      />
+                      <Text style={[styles.text, {marginLeft: 10}]}>
+                        {!fromTime ? 'Pick date' : fromTime}
+                      </Text>
+                    </View>
+                  </TouchableHighlight>
+                )}
+              ></Controller>
 
-            {/* Input end time */}
-            <Controller
-              control={control}
-              rules={{require: true}}
-              name="toTime"
-              render={({field: {onChange, onBlur, value}}) => (
-                <TouchableHighlight
-                  onPress={() => setToDatePickerVisibility(true)}
-                  activeOpacity={0.3}
-                  underlayColor="#A9FC73"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  style={styles.calendarBox}
-                >
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                    }}
+              {/* Input end time */}
+              <Controller
+                control={control}
+                rules={{require: true}}
+                name="toTime"
+                render={({field: {onChange, onBlur, value}}) => (
+                  <TouchableHighlight
+                    onPress={() => setToDatePickerVisibility(true)}
+                    activeOpacity={0.3}
+                    underlayColor="#A9FC73"
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    style={styles.calendarBox}
                   >
-                    <Text style={[styles.text, {marginRight: 2, width: 50}]}>
-                      {' '}
-                      To{' '}
-                    </Text>
-                    <Icon name="calendar" type="feather"></Icon>
-                    <DateTimePickerModal
-                      isVisible={isToDatePickerVisible}
-                      mode="datetime"
-                      onConfirm={(date) => {
-                        value = date;
-                        const formattedDate = formatDate(date);
-                        setToDatePickerVisibility(false);
-                        setToTime(formattedDate);
-                        console.log('to date picked', value);
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        justifyContent: 'flex-start',
                       }}
-                      onCancel={() => setToDatePickerVisibility(false)}
-                    />
-                    <Text style={[styles.text, {marginLeft: 10}]}>
-                      {!toTime ? 'Pick date' : toTime}
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-              )}
-            ></Controller>
-          </View>
+                    >
+                      <Text style={[styles.text, {marginRight: 2, width: 50}]}>
+                        {' '}
+                        To{' '}
+                      </Text>
+                      <Icon name="calendar" type="feather"></Icon>
+                      <DateTimePickerModal
+                        isVisible={isToDatePickerVisible}
+                        mode="datetime"
+                        onConfirm={(date) => {
+                          value = date;
+                          const formattedDate = formatDate(date);
+                          setToDatePickerVisibility(false);
+                          setToTime(formattedDate);
+                          console.log('to date picked', value);
+                        }}
+                        onCancel={() => setToDatePickerVisibility(false)}
+                      />
+                      <Text style={[styles.text, {marginLeft: 10}]}>
+                        {!toTime ? 'Pick date' : toTime}
+                      </Text>
+                    </View>
+                  </TouchableHighlight>
+                )}
+              ></Controller>
+            </View>
 
-          <CustomButton
-            disabled={!imageSelected}
-            loading={loading}
-            buttonStyle={styles.button}
-            title="Upload"
-            titleStyle={styles.buttonTitle}
-            onPress={handleSubmit(onSubmit)}
-          />
-          <CustomButton
-            title="Reset form"
-            onPress={resetForm}
-            buttonStyle={styles.button}
-            titleStyle={styles.buttonTitle}
-          />
-        </Card>
+            <CustomButton
+              disabled={!imageSelected}
+              loading={loading}
+              buttonStyle={styles.button}
+              title="Upload"
+              titleStyle={styles.buttonTitle}
+              onPress={handleSubmit(onSubmit)}
+            />
+            <CustomButton
+              title="Reset form"
+              onPress={resetForm}
+              buttonStyle={styles.button}
+              titleStyle={styles.buttonTitle}
+            />
+          </Card>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
