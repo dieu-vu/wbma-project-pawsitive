@@ -20,8 +20,7 @@ import Logo from '../assets/pawsitiveLogo.svg';
 import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {pickRandomImage} from '../components/CommonElements';
-
+import {pickRandomImage} from '../utils/Utils';
 
 const Login = () => {
   const {setUser, setIsLoggedIn} = useContext(MainContext);
@@ -79,7 +78,6 @@ const Login = () => {
           colors={['#8DD35E', '#425E20']}
           style={styles.LinearGradient}
         >
-
           {!selectedLogin && !selectedRegister ? (
             <View style={styles.buttonContainer}>
               <LottieView
@@ -102,9 +100,7 @@ const Login = () => {
           {selectedRegister ? <RegisterForm /> : <></>}
           {selectedLogin ? <LoginForm /> : <></>}
           <Logo style={styles.logo} />
-
         </LinearGradient>
-
       </KeyboardAvoidingView>
     </TouchableOpacity>
   );

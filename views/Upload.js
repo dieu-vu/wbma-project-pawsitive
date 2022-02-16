@@ -4,20 +4,22 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Image,
   ImageBackground,
   Alert,
   Pressable,
+  TouchableHighlight,
+  SafeAreaView,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Video} from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import LottieView from 'lottie-react-native';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {Card, Input} from 'react-native-elements';
-import {pickRandomImage} from '../components/CommonElements';
+import {Card, Input, Icon, Text} from 'react-native-elements';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+
+import {pickRandomImage, formatDate, getFonts} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -31,6 +33,11 @@ const Upload = ({navigation}) => {
   const {update, setUpdate} = useContext(MainContext);
   const {postTag} = useTag();
   const animation = React.createRef();
+  const [isFromDatePickerVisible, setFromDatePickerVisibility] =
+    useState(false);
+  const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
+  const [fromTime, setFromTime] = useState();
+  const [toTime, setToTime] = useState();
 
   const {
     control,
@@ -41,6 +48,8 @@ const Upload = ({navigation}) => {
     defaultValues: {
       title: '',
       description: '',
+      fromTime: '',
+      toTime: '',
     },
     mode: 'onBlur',
   });
@@ -66,8 +75,12 @@ const Upload = ({navigation}) => {
     setImageSelected(false);
     setValue('title', '');
     setValue('description', '');
+    setValue('fromTime', '');
+    setValue('toTime', '');
     setType('image');
     setImage();
+    setFromTime();
+    setToTime();
     animation.current?.play();
   };
 
@@ -78,10 +91,11 @@ const Upload = ({navigation}) => {
       };
     }, [])
   );
+  getFonts();
 
   useEffect(() => {
     animation.current?.play();
-  }, []);
+  }, [animation]);
 
   const onSubmit = async (data) => {
     if (!imageSelected) {
@@ -148,7 +162,7 @@ const Upload = ({navigation}) => {
   };
 
   return (
-    <>
+    <SafeAreaView>
       <ScrollView>
         <Card style={styles.container}>
           {!image ? (
@@ -181,6 +195,7 @@ const Upload = ({navigation}) => {
                 autoCapitalize="none"
                 placeholder="Title"
                 errorMessage={errors.title && 'This is required'}
+                style={styles.input}
               ></Input>
             )}
             name="title"
@@ -197,10 +212,114 @@ const Upload = ({navigation}) => {
                 autoCapitalize="none"
                 placeholder="Description"
                 errorMessage={errors.description && 'This is required'}
+                style={styles.input}
               ></Input>
             )}
             name="description"
           ></Controller>
+
+          <View
+            style={{
+              width: '100%',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            {/* Input start date */}
+            <Controller
+              control={control}
+              rules={{require: true}}
+              name="fromTime"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TouchableHighlight
+                  onPress={() => setFromDatePickerVisibility(true)}
+                  activeOpacity={0.3}
+                  underlayColor="#A9FC73"
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  style={styles.calendarBox}
+                >
+                  <View
+                    style={{
+                      flexGrow: 1,
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                    }}
+                  >
+                    <Text style={[styles.text, {marginRight: 2, width: 50}]}>
+                      {' '}
+                      From{' '}
+                    </Text>
+                    <Icon name="calendar" type="feather"></Icon>
+                    <DateTimePickerModal
+                      isVisible={isFromDatePickerVisible}
+                      mode="datetime"
+                      onConfirm={(date) => {
+                        console.log('type', typeof date);
+                        const formattedDate = formatDate(date);
+                        value = date;
+                        setFromDatePickerVisibility(false);
+                        setFromTime(formattedDate);
+                        console.log('from date picked', value);
+                      }}
+                      onCancel={() => setFromDatePickerVisibility(false)}
+                    />
+                    <Text style={[styles.text, {marginLeft: 10}]}>
+                      {!fromTime ? 'Pick date' : fromTime}
+                    </Text>
+                  </View>
+                </TouchableHighlight>
+              )}
+            ></Controller>
+
+            {/* Input end time */}
+            <Controller
+              control={control}
+              rules={{require: true}}
+              name="toTime"
+              render={({field: {onChange, onBlur, value}}) => (
+                <TouchableHighlight
+                  onPress={() => setToDatePickerVisibility(true)}
+                  activeOpacity={0.3}
+                  underlayColor="#A9FC73"
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  style={styles.calendarBox}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      justifyContent: 'flex-start',
+                    }}
+                  >
+                    <Text style={[styles.text, {marginRight: 2, width: 50}]}>
+                      {' '}
+                      To{' '}
+                    </Text>
+                    <Icon name="calendar" type="feather"></Icon>
+                    <DateTimePickerModal
+                      isVisible={isToDatePickerVisible}
+                      mode="datetime"
+                      onConfirm={(date) => {
+                        value = date;
+                        const formattedDate = formatDate(date);
+                        setToDatePickerVisibility(false);
+                        setToTime(formattedDate);
+                        console.log('to date picked', value);
+                      }}
+                      onCancel={() => setToDatePickerVisibility(false)}
+                    />
+                    <Text style={[styles.text, {marginLeft: 10}]}>
+                      {!toTime ? 'Pick date' : toTime}
+                    </Text>
+                  </View>
+                </TouchableHighlight>
+              )}
+            ></Controller>
+          </View>
 
           <CustomButton
             disabled={!imageSelected}
@@ -218,7 +337,7 @@ const Upload = ({navigation}) => {
           />
         </Card>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -226,6 +345,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
+  },
+  text: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 15,
   },
   image: {
     flex: 1,
@@ -243,9 +366,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#9DCD5A',
     alignSelf: 'center',
     width: '60%',
+    height: undefined,
   },
   buttonTitle: {
     color: 'black',
+    fontSize: 20,
   },
   pressArea: {
     width: '100%',
@@ -254,6 +379,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignSelf: 'center',
     zIndex: 1,
+  },
+  calendarBox: {width: '50%', alignSelf: 'flex-start', margin: 10},
+  input: {
+    fontFamily: 'Montserrat-Regular',
+    paddingBottom: 5,
   },
 });
 

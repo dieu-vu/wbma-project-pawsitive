@@ -40,6 +40,7 @@ const TabScreen = () => {
         },
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: '#425E20',
+        drawBehind: true,
       })}
       component={StackScreen}
     >

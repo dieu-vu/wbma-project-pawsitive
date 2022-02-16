@@ -72,7 +72,7 @@ const Profile = ({navigation}) => {
   return (
     <TouchableOpacity
       style={{flex: 1}}
-      activeopacity={1}
+      activeOpacity={1}
       onPress={() => Keyboard.dismiss()}
     >
       <KeyboardAwareScrollView
