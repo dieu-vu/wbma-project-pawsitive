@@ -16,7 +16,7 @@ import LottieView from 'lottie-react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {Text, Card, Button, Input} from 'react-native-elements';
+import {Card, Input} from 'react-native-elements';
 import {pickRandomImage} from '../components/CommonElements';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';

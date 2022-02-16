@@ -17,12 +17,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyBiAfVQPbsDoRsc9PV3mUuLmcrFv-XDl4Q"
+      },
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Allow Expo experiences to use your location"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
+      },
+      "config":{
+        "googleMaps": {
+          "apiKey": "AIzaSyCGBZwLYfYtbzlny0r3qSRCFZCnxhP6-Qg"
+        }
       }
     },
     "web": {
