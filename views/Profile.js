@@ -81,12 +81,12 @@ const Profile = ({navigation}) => {
         contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}
       >
         <ImageBackground source={{uri: avatar}} style={styles.image}>
-            <View style={styles.logoContainer}>
-              <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
-            </View>
-            <View style={styles.logOutButton}>
-              <MainButton title="Logout" onPress={logUserOut} />
-            </View>
+          <View style={styles.logoContainer}>
+            <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
+          </View>
+          <View style={styles.logOutButton}>
+            <MainButton title="Logout" onPress={logUserOut} />
+          </View>
         </ImageBackground>
 
         <LinearGradient
