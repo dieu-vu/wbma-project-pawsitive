@@ -21,7 +21,7 @@ const MainButton = (props) => {
       title={props.title}
       onPress={props.onPress}
       titleStyle={styles.titleStyle}
-      buttonStyle={styles.buttonStyle}
+      buttonStyle={props.buttonStyle || styles.buttonStyle}
     />
   );
 };
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#A9FC73',
     borderRadius: 35,
-    marginBottom: '5%',
+    marginBottom: '30%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

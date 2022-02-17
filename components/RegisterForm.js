@@ -1,6 +1,6 @@
 import React from 'react';
-import {Alert, View, StyleSheet, ScrollView} from 'react-native';
-import {Card, Input} from 'react-native-elements';
+import {Alert, View, StyleSheet} from 'react-native';
+import {Input} from 'react-native-elements';
 import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import MainButton from './MainButton';
@@ -39,7 +39,15 @@ const RegisterForm = () => {
   };
 
   return (
-    <View style={{width: '80%', height: '100%', paddingTop: 10, paddingBottom: 100, alignItems: 'center'}}>
+    <View
+      style={{
+        width: '90%',
+        height: '100%',
+        paddingTop: 30,
+        paddingBottom: 100,
+        alignItems: 'center',
+      }}
+    >
       <Controller
         control={control}
         rules={{
@@ -71,6 +79,7 @@ const RegisterForm = () => {
             autoCapitalize="none"
             placeholder="Username..."
             errorMessage={errors.username && errors.username.message}
+            errorStyle={{paddingLeft: 15}}
           />
         )}
         name="username"
@@ -102,6 +111,7 @@ const RegisterForm = () => {
             secureTextEntry={true}
             placeholder="Password..."
             errorMessage={errors.password && errors.password.message}
+            errorStyle={{paddingLeft: 15}}
           />
         )}
         name="password"
@@ -133,6 +143,7 @@ const RegisterForm = () => {
             errorMessage={
               errors.confirmPassword && errors.confirmPassword.message
             }
+            errorStyle={{paddingLeft: 15}}
           />
         )}
         name="confirmPassword"
@@ -157,6 +168,7 @@ const RegisterForm = () => {
             autoCapitalize="none"
             placeholder="Email..."
             errorMessage={errors.email && errors.email.message}
+            errorStyle={{paddingLeft: 15}}
           />
         )}
         name="email"
@@ -172,6 +184,8 @@ const RegisterForm = () => {
 
 const styles = StyleSheet.create({
   inputField: {
+    alignSelf: 'center',
+    width: '90%',
     borderWidth: 2,
     borderBottomWidth: 2,
     borderColor: 'black',

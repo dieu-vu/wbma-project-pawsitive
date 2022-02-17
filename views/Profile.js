@@ -2,17 +2,16 @@ import React, {useContext, useEffect, useState} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
-  KeyboardAvoidingView,
   View,
   Dimensions,
   Platform,
   Keyboard,
   ImageBackground,
   ScrollView,
-  FlatList,
+  SafeAreaView,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {Text, Image} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
@@ -56,7 +55,6 @@ const Profile = ({navigation}) => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
       const avatar = avatarArray.pop();
-      console.log(avatar);
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
       console.error(error.message);
@@ -70,42 +68,44 @@ const Profile = ({navigation}) => {
   getFonts();
 
   return (
-    <TouchableOpacity
-      style={{flex: 1}}
-      activeOpacity={1}
-      onPress={() => Keyboard.dismiss()}
-    >
-      <KeyboardAwareScrollView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1, backgroundColor: '#425E20'}}
-        contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}
-      >
-        <ImageBackground source={{uri: avatar}} style={styles.image}>
-          <View style={styles.logoContainer}>
-            <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
-          </View>
-          <View style={styles.logOutButton}>
-            <MainButton title="Logout" onPress={logUserOut} />
-          </View>
-        </ImageBackground>
-
-        <LinearGradient
-          style={styles.linearGradient}
-          colors={['#8DD35E', '#425E20']}
+    <SafeAreaView>
+      <ScrollView>
+        <TouchableOpacity
+          style={{flex: 1}}
+          activeOpacity={1}
+          onPress={() => Keyboard.dismiss()}
         >
-          <View style={{borderBottomWidth: 1}}>
-            <Text h2 style={styles.headLine}>
-              {user.full_name}
-            </Text>
-          </View>
-          <UpdateUserForm
-            avatarUpdated={avatarUpdated}
-            avatar={avatar}
-            navigation={navigation}
-          />
-        </LinearGradient>
-      </KeyboardAwareScrollView>
-    </TouchableOpacity>
+          <KeyboardAwareScrollView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flexGrow: 1}}
+          >
+            <View>
+              <ImageBackground source={{uri: avatar}} style={styles.image}>
+                <View style={styles.logoContainer}>
+                  <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
+                </View>
+                <View style={styles.logOutButton}>
+                  <MainButton title="Logout" onPress={logUserOut} />
+                </View>
+              </ImageBackground>
+            </View>
+            <LinearGradient
+              style={styles.linearGradient}
+              colors={['#fdfdfd', '#ffffff']}
+            >
+              <Text h2 style={styles.headLine}>
+                {user.full_name}
+              </Text>
+              <UpdateUserForm
+                avatarUpdated={avatarUpdated}
+                avatar={avatar}
+                navigation={navigation}
+              />
+            </LinearGradient>
+          </KeyboardAwareScrollView>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -116,29 +116,23 @@ Profile.propTypes = {
 const styles = StyleSheet.create({
   linearGradient: {
     zIndex: 1,
-    bottom: 0,
-    left: 0,
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width,
-    borderRadius: 48,
-    transform: [{translateY: -43}],
-    paddingBottom: 0,
-    marginBottom: 0,
+    height: Dimensions.get('window').height * 0.6,
+    flexGrow: 1,
   },
   headLine: {
-    fontFamily: 'Montserrat-Bold',
-    paddingBottom: 0,
-    marginTop: 40,
-    borderBottomWidth: 5,
+    fontFamily: 'Montserrat-Regular',
+    paddingBottom: 5,
+    marginTop: 60,
+    borderBottomWidth: 1,
     fontSize: 35,
     paddingHorizontal: 10,
-    fontWeight: '900',
   },
   image: {
     width: '100%',
     height: Dimensions.get('window').height - 400,
-    top: 0,
   },
   text: {
     fontFamily: 'Montserrat-Regular',

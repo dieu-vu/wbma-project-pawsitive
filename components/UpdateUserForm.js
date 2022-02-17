@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {View, StyleSheet, Alert, Dimensions, ScrollView} from 'react-native';
+import {View, StyleSheet, Alert, Dimensions} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {Icon, Input} from 'react-native-elements';
 import MainButton from './MainButton';
@@ -14,7 +14,7 @@ import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
-  const {putUser, checkUsername} = useUser();
+  const {putUser} = useUser();
   const {postMedia} = useMedia();
   const {postTag} = useTag();
   const {user, setUser} = useContext(MainContext);
@@ -26,11 +26,9 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
     getValues,
   } = useForm({
     defaultValues: {
-      username: user.username,
-      confirmPassword: '',
-      password: '',
       email: user.email,
-      full_name: user.full_name,
+      username: user.username,
+      password: '',
     },
     mode: 'onBlur',
   });
@@ -46,21 +44,15 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
   }
 
   const onSubmit = async (data) => {
+    console.log(data);
     console.log('avatar', avatar);
     try {
-      delete data.confirmPassword;
-      if (data.password === '') {
-        delete data.password;
-      }
-      if (data.full_name === null) {
-        data.full_name = '';
-      }
-      console.log(data);
       const userToken = await AsyncStorage.getItem('userToken');
       const userData = await putUser(data, userToken);
       if (userData) {
         Alert.alert('Success', userData.message);
         setUser(data);
+        navigation.navigate('Home');
       }
       if (avatarUpdated) {
         const formData = new FormData();
@@ -107,6 +99,7 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
             <Icon type={'evilicon'} name="envelope" style={styles.logo} />
             <Input
               style={styles.input}
+              inputContainerStyle={{borderBottomWidth: 0}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -117,6 +110,7 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
           </View>
         )}
         name="email"
+
       />
       <Controller
         control={control}
@@ -125,24 +119,13 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
             value: 3,
             message: 'Username has to be at least 3 characters long.',
           },
-          validate: async (value) => {
-            try {
-              const available = await checkUsername(value);
-              if (available || user.username === value) {
-                return true;
-              } else {
-                return 'Username is already taken.';
-              }
-            } catch (error) {
-              throw new Error(error.message);
-            }
-          },
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
             <Icon type={'evilicon'} name="user" style={styles.logo} />
             <Input
               style={styles.input}
+              inputContainerStyle={{borderBottomWidth: 0}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -172,14 +155,14 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
           <View style={styles.inputContainer}>
             <Icon type={'evilicon'} name="lock" style={styles.logo} />
             <Input
-              placeholderTextColor={'black'}
               style={styles.input}
+              inputContainerStyle={{borderBottomWidth: 0}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
               secureTextEntry={true}
-              placeholder="Password"
+              placeholder="Password..."
               errorMessage={errors.password && errors.password.message}
             />
           </View>
@@ -202,14 +185,14 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
           <View style={styles.inputContainer}>
             <Icon type={'evilicon'} name="lock" style={styles.logo} />
             <Input
-              placeholderTextColor={'black'}
               style={styles.input}
+              inputContainerStyle={{borderBottomWidth: 0}}
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
               autoCapitalize="none"
               secureTextEntry={true}
-              placeholder="Confirm Password"
+              placeholder="Confirm Password..."
               errorMessage={
                 errors.confirmPassword && errors.confirmPassword.message
               }
@@ -235,12 +218,11 @@ UpdateUserForm.propTypes = {
 
 const styles = StyleSheet.create({
   form: {
-    width: Dimensions.get('window').width - 75,
+    width: Dimensions.get('window').width - 100,
     height: Dimensions.get('window').width - 600,
-    paddingTop: 25,
+    paddingTop: 20,
+    display: 'flex',
     alignItems: 'center',
-    paddingBottom: 0,
-    marginBottom: 0,
   },
   inputContainer: {
     display: 'flex',
@@ -254,6 +236,9 @@ const styles = StyleSheet.create({
   logo: {
     paddingTop: 8,
     transform: [{scaleX: 1.5}, {scaleY: 1.5}],
+  },
+  button: {
+    marginBottom: 20,
   },
 });
 

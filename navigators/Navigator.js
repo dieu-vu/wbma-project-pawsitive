@@ -11,6 +11,7 @@ import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
 import {MainContext} from '../contexts/MainContext';
+import Home from "../views/Home";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -23,17 +24,20 @@ const TabScreen = () => {
         tabBarIcon: ({focused, color, size, type}) => {
           let iconName;
           switch (route.name) {
-            case 'Listing':
+            case 'Home':
               iconName = 'home';
               type = 'feather';
+              size = 24;
               break;
             case 'Upload':
               iconName = 'plus-circle';
               type = 'feather';
+              size = 24;
               break;
             case 'Profile':
               iconName = 'user';
-              type = 'evilicon';
+              type = 'feather';
+              size = 24;
               break;
           }
           return <Icon name={iconName} size={size} color={color} type={type} />;
@@ -45,16 +49,16 @@ const TabScreen = () => {
       component={StackScreen}
     >
       <Tab.Screen
-        name="Listing"
-        component={Listing}
+        name="Home"
+        component={Home}
         options={{
           tabBarLabel: 'Home',
-          title: 'Listing',
+          title: 'Home',
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
         }}
-      ></Tab.Screen>
+      />
       <Tab.Screen
         name="Upload"
         component={Upload}
@@ -65,7 +69,7 @@ const TabScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
-      ></Tab.Screen>
+      />
       <Tab.Screen
         name="Profile"
         component={Profile}
@@ -75,7 +79,7 @@ const TabScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
-      ></Tab.Screen>
+      />
     </Tab.Navigator>
   );
 };
@@ -98,18 +102,19 @@ const StackScreen = () => {
             component={TabScreen}
             options={{headerShown: false}}
           />
+          <Stack.Screen name="Listing" component={Listing} />
           <Stack.Screen
             name="Single"
             component={Single}
             options={({route}) => ({
               title: route.params.file.title,
             })}
-          ></Stack.Screen>
+          />
           <Stack.Screen
             name="Upload"
             component={Upload}
             options={{title: 'Create Post'}}
-          ></Stack.Screen>
+          />
         </>
       ) : (
         <>
@@ -117,7 +122,7 @@ const StackScreen = () => {
             name="Login"
             component={Login}
             options={{headerShown: false}}
-          ></Stack.Screen>
+          />
         </>
       )}
     </Stack.Navigator>
