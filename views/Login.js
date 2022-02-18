@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, {useState, useContext, useEffect} from 'react';
 import {
   Dimensions,
   Keyboard,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Image, Icon } from "react-native-elements";
+import {Image, Icon} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
 
 import RegisterForm from '../components/RegisterForm';
@@ -57,7 +57,7 @@ const Login = () => {
   useEffect(() => {
     checkToken();
     animation.current?.play();
-  }, []);
+  }, [animation]);
 
   return (
     <TouchableOpacity
@@ -93,7 +93,6 @@ const Login = () => {
           colors={['#8DD35E', '#425E20']}
           style={styles.LinearGradient}
         >
-
           {!selectedLogin && !selectedRegister ? (
             <View style={styles.buttonContainer}>
               <LottieView
@@ -120,9 +119,7 @@ const Login = () => {
           {selectedRegister ? <RegisterForm /> : <></>}
           {selectedLogin ? <LoginForm /> : <></>}
           <Logo style={styles.logo} />
-
         </LinearGradient>
-
       </KeyboardAwareScrollView>
     </TouchableOpacity>
   );
