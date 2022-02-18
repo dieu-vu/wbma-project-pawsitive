@@ -6,7 +6,7 @@ import { Video } from "expo-av";
 import { uploadsUrl } from "../utils/Variables";
 import { LinearGradient } from "expo-linear-gradient";
 import MainButton from '../components/MainButton';
-import {useFavourite} from '../hooks/ApiHooks';
+import {useFavourite, useTag} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 

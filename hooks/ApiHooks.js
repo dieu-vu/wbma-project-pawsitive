@@ -159,7 +159,17 @@ const useTag = () => {
     return await doFetch(baseUrl + 'tags/' + tag);
   };
 
-  return {postTag, getFilesByTag};
+  const getTagsForFile = async (fileId, token) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    return await doFetch(`${baseUrl}tags/file/${fileId}`, options);
+  };
+
+  return {postTag, getFilesByTag, getTagsForFile};
 };
 
 const useFavourite = () => {

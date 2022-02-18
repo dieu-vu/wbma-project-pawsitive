@@ -11,6 +11,8 @@ import Single from '../views/Single';
 import {MainContext} from '../contexts/MainContext';
 import Home from '../views/Home';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import SavedPosts from '../views/SavedPosts';
+import CustomDrawer from '../components/CustomDrawer';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -129,7 +131,7 @@ const DrawerNavigator = () => {
         name="Main"
         component={TabScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Drawer.Screen
