@@ -8,35 +8,32 @@ import {
   Keyboard,
   ImageBackground,
   ScrollView,
-  SafeAreaView,
+  SafeAreaView, Alert
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useTag} from '../hooks/ApiHooks';
+import {useMedia, useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
 import {useFonts} from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
 import UpdateUserForm from '../components/UpdateUserForm';
 import ImageLogo from '../assets/pictures.svg';
 import * as ImagePicker from 'expo-image-picker';
-import MainButton from '../components/MainButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({navigation}) => {
   const [avatar, setAvatar] = useState(
     'https://place-hold.it/200x200/8DD35E.jpeg&text=Image&bold&fontsize=14'
   );
-  const [avatarUpdated, setAvatarUpdated] = useState(false);
-  const {getFilesByTag} = useTag();
-  const {setIsLoggedIn, user} = useContext(MainContext);
 
-  const logUserOut = async () => {
-    await AsyncStorage.clear();
-    setIsLoggedIn(false);
-  };
+  const [type, setType] = useState('image');
+  const {getFilesByTag} = useTag();
+  const {user} = useContext(MainContext);
+  const {postMedia} = useMedia();
+  const {postTag} = useTag();
 
   const uploadImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -47,7 +44,37 @@ const Profile = ({navigation}) => {
 
     if (!result.cancelled) {
       setAvatar(result.uri);
-      setAvatarUpdated(true);
+      setType(result.type);
+      const formData = new FormData();
+      const userToken = await AsyncStorage.getItem('userToken');
+      formData.append('title', 'avatar');
+      formData.append('description', '');
+
+      const filename = result.uri.split('/').pop();
+      let fileExtension = filename.split('.').pop();
+      fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
+      formData.append('file', {
+        uri: result.uri,
+        name: filename,
+        type: result.type + '/' + fileExtension,
+      });
+      try {
+        const response = await postMedia(formData, userToken);
+        console.log('Upload response', response);
+        if (response) {
+          const tagResponse = await postTag(
+            {
+              file_id: response.file_id,
+              tag: 'avatar_' + user.user_id,
+            },
+            userToken
+          );
+          console.log('tag response', tagResponse);
+          tagResponse && Alert.alert('Profile image', 'updated');
+        }
+      } catch (error) {
+        console.log('image upload error', error);
+      }
     }
   };
 
@@ -55,6 +82,7 @@ const Profile = ({navigation}) => {
     try {
       const avatarArray = await getFilesByTag('avatar_' + user.user_id);
       const avatar = avatarArray.pop();
+      console.log(avatar);
       setAvatar(uploadsUrl + avatar.filename);
     } catch (error) {
       console.error(error.message);
@@ -84,9 +112,6 @@ const Profile = ({navigation}) => {
                 <View style={styles.logoContainer}>
                   <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
                 </View>
-                <View style={styles.logOutButton}>
-                  <MainButton title="Logout" onPress={logUserOut} />
-                </View>
               </ImageBackground>
             </View>
             <LinearGradient
@@ -97,8 +122,6 @@ const Profile = ({navigation}) => {
                 {user.full_name}
               </Text>
               <UpdateUserForm
-                avatarUpdated={avatarUpdated}
-                avatar={avatar}
                 navigation={navigation}
               />
             </LinearGradient>
@@ -148,12 +171,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     top: 10,
-  },
-  logOutButton: {
-    position: 'absolute',
-    left: -20,
-    top: 0,
-    transform: [{scaleX: 0.7}, {scaleY: 0.8}],
   },
 });
 

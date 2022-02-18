@@ -3,7 +3,6 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {Icon} from 'react-native-elements';
-
 import Login from '../views/Login';
 import Listing from '../views/Listing';
 import Profile from '../views/Profile';
@@ -11,9 +10,11 @@ import Upload from '../views/Upload';
 import Single from '../views/Single';
 import {MainContext} from '../contexts/MainContext';
 import Home from '../views/Home';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 const TabScreen = () => {
   return (
@@ -78,6 +79,7 @@ const TabScreen = () => {
 };
 
 const HomeStack = createNativeStackNavigator();
+
 const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator
@@ -98,7 +100,7 @@ const HomeStackScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
-      ></HomeStack.Screen>
+      />
       <HomeStack.Screen
         name="Listing"
         component={Listing}
@@ -108,7 +110,7 @@ const HomeStackScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
-      ></HomeStack.Screen>
+      />
       <HomeStack.Screen
         name="Single"
         component={Single}
@@ -117,6 +119,29 @@ const HomeStackScreen = () => {
         })}
       />
     </HomeStack.Navigator>
+  );
+};
+
+const DrawerNavigator = () => {
+  return (
+    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
+      <Stack.Screen
+        name="Main"
+        component={TabScreen}
+        options={{
+          headerShown: true,
+        }}
+      />
+      <Drawer.Screen
+        name="Favourites"
+        component={SavedPosts}
+        options={{
+          drawerIcon: () => (
+            <Icon name="person-outline" size={20} color={'black'} />
+          ),
+        }}
+      />
+    </Drawer.Navigator>
   );
 };
 
@@ -134,8 +159,8 @@ const StackScreen = () => {
       {isLoggedIn ? (
         <>
           <Stack.Screen
-            name="Tabs"
-            component={TabScreen}
+            name="Drawer"
+            component={DrawerNavigator}
             options={{headerShown: false}}
           />
         </>

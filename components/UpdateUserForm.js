@@ -6,17 +6,13 @@ import MainButton from './MainButton';
 import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {useFonts} from '@expo-google-fonts/inter';
 import AppLoading from 'expo-app-loading';
-import MailLogo from '../assets/mail.svg';
-import PasswordLogo from '../assets/password.svg';
-import UserLogo from '../assets/user.svg';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
+const UpdateUserForm = ({navigation}) => {
   const {putUser} = useUser();
-  const {postMedia} = useMedia();
-  const {postTag} = useTag();
+
   const {user, setUser} = useContext(MainContext);
 
   const {
@@ -29,6 +25,7 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
       email: user.email,
       username: user.username,
       password: '',
+      confirmPassword: '',
     },
     mode: 'onBlur',
   });
@@ -45,39 +42,18 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    console.log('avatar', avatar);
     try {
+      delete data.confirmPassword;
+      if (data.password === '') {
+        delete data.password;
+      }
       const userToken = await AsyncStorage.getItem('userToken');
       const userData = await putUser(data, userToken);
       if (userData) {
         Alert.alert('Success', userData.message);
+        delete data.password;
         setUser(data);
         navigation.navigate('Home');
-      }
-      if (avatarUpdated) {
-        const formData = new FormData();
-        formData.append('title', 'avatar');
-        formData.append('description', '');
-        const filename = avatar.split('/').pop();
-        let fileExtension = filename.split('.').pop();
-        fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
-        formData.append('file', {
-          uri: avatar,
-          name: filename,
-          type: 'image' + '/' + fileExtension,
-        });
-        try {
-          const response = await postMedia(formData, userToken);
-          console.log('Upload response', response);
-          if (response) {
-            await postTag(
-              {file_id: response.file_id, tag: 'avatar_' + user.user_id},
-              userToken
-            );
-          }
-        } catch (error) {
-          console.log('image upload error', error);
-        }
       }
     } catch (error) {
       console.error(error);
@@ -169,6 +145,7 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
         )}
         name="password"
       />
+
       <Controller
         control={control}
         rules={{
@@ -181,6 +158,7 @@ const UpdateUserForm = ({avatarUpdated, avatar, navigation}) => {
             }
           },
         }}
+
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
             <Icon type={'evilicon'} name="lock" style={styles.logo} />

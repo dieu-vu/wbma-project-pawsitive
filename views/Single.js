@@ -1,14 +1,29 @@
-import PropTypes from 'prop-types';
-import React, {useState} from 'react';
-import {StyleSheet, Image, View, ScrollView, Dimensions} from 'react-native';
-import {Card, ListItem, Text, Avatar} from 'react-native-elements';
-import {Video} from 'expo-av';
-import {uploadsUrl} from '../utils/Variables';
-import {LinearGradient} from 'expo-linear-gradient';
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { StyleSheet, Image, View, ScrollView, Dimensions } from "react-native";
+import { Card, ListItem, Text, Avatar } from "react-native-elements";
+import { Video } from "expo-av";
+import { uploadsUrl } from "../utils/Variables";
+import { LinearGradient } from "expo-linear-gradient";
+import MainButton from '../components/MainButton';
+import {useFavourite} from '../hooks/ApiHooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const Single = ({navigation, route}) => {
   const {file} = route.params;
   const [status, setStatus] = useState({});
+  const {postFavourite} = useFavourite();
+
+  const savePost = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await postFavourite(file.file_id, token);
+      console.log('create favourite response', response);
+    } catch (error) {
+      console.error('create like error', error);
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -43,6 +58,7 @@ const Single = ({navigation, route}) => {
             <Avatar source={{uri: 'http://placekitten.com/180'}} rounded={1} />
             <Text style={styles.text}>Ownername</Text>
           </View>
+          <MainButton onPress={savePost} title={'Save post'}/>
         </Card>
       </LinearGradient>
     </ScrollView>
