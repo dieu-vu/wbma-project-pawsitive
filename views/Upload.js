@@ -9,6 +9,8 @@ import {
   Pressable,
   TouchableHighlight,
   SafeAreaView,
+  Appearance,
+  useColorScheme,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import {Video} from 'expo-av';
@@ -37,6 +39,7 @@ const Upload = ({navigation}) => {
   const [isFromDatePickerVisible, setFromDatePickerVisibility] =
     useState(false);
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
+  const [isDark, setIsDark] = useState(useColorScheme == 'dark');
   const [fromTime, setFromTime] = useState();
   const [toTime, setToTime] = useState();
   const insets = useSafeAreaInsets();
@@ -97,7 +100,8 @@ const Upload = ({navigation}) => {
 
   useEffect(() => {
     animation.current?.play();
-  }, [animation]);
+    setIsDark(useColorScheme === 'dark');
+  }, [animation, useColorScheme]);
 
   const onSubmit = async (data) => {
     if (!imageSelected) {
@@ -264,6 +268,8 @@ const Upload = ({navigation}) => {
                       <DateTimePickerModal
                         isVisible={isFromDatePickerVisible}
                         mode="datetime"
+                        isDarkModeEnabled={isDark}
+                        themeVariant={isDark ? 'dark' : 'light'}
                         onConfirm={(date) => {
                           console.log('type', typeof date);
                           const formattedDate = formatDate(date);
