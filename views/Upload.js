@@ -59,7 +59,9 @@ const Upload = ({navigation}) => {
     mode: 'onBlur',
   });
 
-  // TODO: add calendar for time and add location from map
+  // TODO: add location
+  // TODO: KeyboardAwareScrollView for form
+  // TODO: Checkbox for posting as pet sitter, pet owner
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({

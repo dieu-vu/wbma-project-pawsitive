@@ -13,6 +13,9 @@ const List = ({navigation}) => {
       renderItem={({item}) => (
         <SingleListItem singleMedia={item} navigation={navigation} />
       )}
+      ListFooterComponent={() => {
+        return null;
+      }}
     />
   );
 };

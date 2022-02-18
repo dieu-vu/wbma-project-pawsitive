@@ -11,7 +11,7 @@ import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
 import {MainContext} from '../contexts/MainContext';
-import Home from "../views/Home";
+import Home from '../views/Home';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -46,18 +46,12 @@ const TabScreen = () => {
         tabBarInactiveTintColor: '#425E20',
         drawBehind: true,
       })}
-      component={StackScreen}
+      // component={StackScreen}
     >
       <Tab.Screen
         name="Home"
-        component={Home}
-        options={{
-          tabBarLabel: 'Home',
-          title: 'Home',
-          headerStyle: {
-            backgroundColor: '#8DD35E',
-          },
-        }}
+        component={HomeStackScreen}
+        options={{headerShown: false}}
       />
       <Tab.Screen
         name="Upload"
@@ -84,6 +78,49 @@ const TabScreen = () => {
   );
 };
 
+const HomeStack = createNativeStackNavigator();
+const HomeStackScreen = () => {
+  return (
+    <HomeStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#8DD35E',
+        },
+        headerTintColor: 'black',
+      }}
+    >
+      <HomeStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: 'Home',
+          title: 'Home',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      ></HomeStack.Screen>
+      <HomeStack.Screen
+        name="Listing"
+        component={Listing}
+        options={{
+          title: 'Listing',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      ></HomeStack.Screen>
+      <HomeStack.Screen
+        name="Single"
+        component={Single}
+        options={({route}) => ({
+          title: route.params.file.title,
+        })}
+      />
+    </HomeStack.Navigator>
+  );
+};
+
 const StackScreen = () => {
   const {isLoggedIn} = useContext(MainContext);
   return (
@@ -101,19 +138,6 @@ const StackScreen = () => {
             name="Tabs"
             component={TabScreen}
             options={{headerShown: false}}
-          />
-          <Stack.Screen name="Listing" component={Listing} />
-          <Stack.Screen
-            name="Single"
-            component={Single}
-            options={({route}) => ({
-              title: route.params.file.title,
-            })}
-          />
-          <Stack.Screen
-            name="Upload"
-            component={Upload}
-            options={{title: 'Create Post'}}
           />
         </>
       ) : (

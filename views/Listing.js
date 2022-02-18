@@ -1,16 +1,22 @@
 import React, {useEffect} from 'react';
-import {StyleSheet, ScrollView, Dimensions, View} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+  View,
+  SafeAreaView,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native-elements';
 import List from '../components/List';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import * as Location from 'expo-location';
-// import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Listing = ({navigation}) => {
   // TODO: Move map permission to a common file.
   // TODO: Add google API to Hooks for searching
-  // const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
 
   const checkPermission = async () => {
     const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -36,17 +42,22 @@ const Listing = ({navigation}) => {
     }
   });
   return (
-    <>
-      <ScrollView style={styles.container}>
-        <MapView
-          style={styles.map}
-          provider={PROVIDER_GOOGLE}
-          showsMyLocationButton={true}
-          showsUserLocation={true}
-        ></MapView>
+    <SafeAreaView style={styles.container}>
+      <MapView
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        showsMyLocationButton={true}
+        showsUserLocation={true}
+      ></MapView>
+      <View
+        style={{
+          paddingBottom: insets.bottom,
+          flex: 1,
+        }}
+      >
         <List navigation={navigation} style={{zIndex: 1, flex: 1}} />
-      </ScrollView>
-    </>
+      </View>
+    </SafeAreaView>
   );
 };
 
