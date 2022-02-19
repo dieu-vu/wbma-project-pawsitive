@@ -93,6 +93,7 @@ const LoginForm = () => {
 
 const styles = StyleSheet.create({
   inputField: {
+    alignSelf: 'center',
     borderWidth: 2,
     borderBottomWidth: 2,
     borderColor: 'black',
@@ -101,6 +102,8 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   formContainer: {
+    flex: 1,
+    flexDirection: 'column',
     width: '70%',
     alignItems: 'center',
   },

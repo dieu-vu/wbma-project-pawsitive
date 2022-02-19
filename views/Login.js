@@ -81,10 +81,26 @@ const Login = () => {
           }}
         >
           <View>
-            <Image source={pickRandomImage()} style={styles.backgroundImage} />
+            <Image
+              source={pickRandomImage()}
+              style={
+                selectedRegister
+                  ? styles.backgroundImageRegister
+                  : styles.backgroundImage
+              }
+            />
           </View>
           {selectedLogin || selectedRegister ? (
-            <View style={styles.backCrossContainer}>
+            <View
+              style={
+                selectedRegister
+                  ? [
+                      styles.backCrossContainer,
+                      styles.backCrossContainerRegister,
+                    ]
+                  : [styles.backCrossContainer, styles.backCrossContainerLogin]
+              }
+            >
               <Icon
                 name="cross"
                 type="entypo"
@@ -103,7 +119,11 @@ const Login = () => {
           <View style={styles.gradientContainer}>
             <LinearGradient
               colors={['#8DD35E', '#425E20']}
-              style={styles.LinearGradient}
+              style={
+                selectedRegister
+                  ? [styles.linearGradientCommon, styles.linearGradientRegister]
+                  : [styles.linearGradientCommon, styles.linearGradientLogin]
+              }
             >
               {!selectedLogin && !selectedRegister ? (
                 <View style={styles.buttonContainer}>
@@ -128,9 +148,19 @@ const Login = () => {
               ) : (
                 <></>
               )}
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingTop: Dimensions.get('window').height * 0.1,
+                  overflow: 'hidden',
+                }}
+              >
+                {selectedRegister ? <RegisterForm /> : <></>}
+                {selectedLogin ? <LoginForm /> : <></>}
+              </View>
 
-              {selectedRegister ? <RegisterForm /> : <></>}
-              {selectedLogin ? <LoginForm /> : <></>}
               <Logo style={styles.logo} />
             </LinearGradient>
           </View>
@@ -154,12 +184,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 1,
-    // transform: [{translateY: -10}],
     transform: [{translateY: -70}, {translateX: -25}],
     backgroundColor: 'white',
     width: 45,
     height: 45,
     borderRadius: 50,
+  },
+  backCrossContainerLogin: {
+    top: Dimensions.get('window').height * 0.45,
+  },
+  backCrossContainerRegister: {
+    top: Dimensions.get('window').height * 0.15,
+  },
+  backgroundImageRegister: {
+    width: Dimensions.get('window').width * 1.4,
+    height: Dimensions.get('window').height * 0.2,
   },
   backgroundImage: {
     width: Dimensions.get('window').width * 1.4,
@@ -173,16 +212,23 @@ const styles = StyleSheet.create({
     transform: [{translateY: Dimensions.get('window').height * -0.1}],
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     overflow: 'hidden',
     marginBottom: -100,
   },
-  LinearGradient: {
+  linearGradientCommon: {
     zIndex: 1,
+    flex: 1,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     width: Dimensions.get('window').width,
+  },
+  linearGradientLogin: {
     height: Dimensions.get('window').height * 0.6,
+  },
+  linearGradientRegister: {
+    height: Dimensions.get('window').height * 0.9,
   },
   logo: {
     position: 'absolute',

@@ -41,6 +41,8 @@ const RegisterForm = () => {
   return (
     <View
       style={{
+        flex: 1,
+        flexDirection: 'column',
         width: '90%',
         height: '100%',
         paddingTop: 30,
