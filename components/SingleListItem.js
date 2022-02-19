@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
 
-// TODO: add mapview 40% height above list
+// TODO: change description for all file in listing
 const SingleListItem = ({navigation, singleMedia}) => {
+  const fileInfo = JSON.parse(singleMedia.description);
+
   return (
     <ListItem
       bottomDivider
@@ -33,7 +35,7 @@ const SingleListItem = ({navigation, singleMedia}) => {
         <ListItem.Title numberOfLines={1} h4>
           {singleMedia.title}
         </ListItem.Title>
-        <ListItem.Subtitle>{singleMedia.description}</ListItem.Subtitle>
+        <ListItem.Subtitle>{fileInfo.description}</ListItem.Subtitle>
       </ListItem.Content>
     </ListItem>
   );

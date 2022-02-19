@@ -32,8 +32,12 @@ const useMedia = () => {
         throw Error(response.statusText);
       } else {
         const json = await response.json();
+
+        // TODO: JsonFilter below is for json data test, correct to json when done
+        const jsonFilter = json.filter((item) => item.user_id === 26);
+
         const media = await Promise.all(
-          json.map(async (item) => {
+          jsonFilter.map(async (item) => {
             const responseMedia = await fetch(
               baseUrl + 'media/' + item.file_id
             );

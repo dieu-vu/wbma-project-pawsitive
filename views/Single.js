@@ -1,17 +1,18 @@
-import PropTypes from "prop-types";
-import React, { useState } from "react";
-import { StyleSheet, Image, View, ScrollView, Dimensions } from "react-native";
-import { Card, ListItem, Text, Avatar } from "react-native-elements";
-import { Video } from "expo-av";
-import { uploadsUrl } from "../utils/Variables";
-import { LinearGradient } from "expo-linear-gradient";
+import PropTypes from 'prop-types';
+import React, {useState} from 'react';
+import {StyleSheet, Image, View, ScrollView, Dimensions} from 'react-native';
+import {Card, ListItem, Text, Avatar} from 'react-native-elements';
+import {Video} from 'expo-av';
+import {uploadsUrl} from '../utils/Variables';
+import {LinearGradient} from 'expo-linear-gradient';
 import MainButton from '../components/MainButton';
 import {useFavourite, useTag} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {formatDate, getFonts} from '../utils/Utils';
 
 const Single = ({navigation, route}) => {
   const {file} = route.params;
+  const fileInfo = JSON.parse(file.description);
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
 
@@ -23,6 +24,13 @@ const Single = ({navigation, route}) => {
     } catch (error) {
       console.error('create like error', error);
     }
+  };
+
+  console.log(fileInfo);
+  const getTime = (timeField) => {
+    const date = new Date(timeField);
+    console.log(date);
+    return formatDate(date);
   };
 
   return (
@@ -53,12 +61,14 @@ const Single = ({navigation, route}) => {
         <Card containerStyle={styles.infoCard}>
           <Card.Title h3>{file.title}</Card.Title>
           <Card.Title>{file.time_added}</Card.Title>
-          <Card.Title>{file.description}</Card.Title>
+          <Card.Title>{fileInfo.description}</Card.Title>
+          <Card.Title>From: {getTime(fileInfo.start_time.date)}</Card.Title>
+          <Card.Title>To: {getTime(fileInfo.end_time.date)}</Card.Title>
           <View containerStyle={styles.userInfo}>
             <Avatar source={{uri: 'http://placekitten.com/180'}} rounded={1} />
             <Text style={styles.text}>Ownername</Text>
           </View>
-          <MainButton onPress={savePost} title={'Save post'}/>
+          <MainButton onPress={savePost} title={'Save post'} />
         </Card>
       </LinearGradient>
     </ScrollView>

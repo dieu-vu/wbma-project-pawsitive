@@ -2,7 +2,7 @@ import React, {useContext, useState, useCallback, useEffect} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   StyleSheet,
-  ScrollView,
+  Platform,
   View,
   ImageBackground,
   Alert,
@@ -26,6 +26,7 @@ import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/Variables';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const Upload = ({navigation}) => {
   const [image, setImage] = useState();
@@ -40,8 +41,8 @@ const Upload = ({navigation}) => {
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
   const colorScheme = Appearance.getColorScheme();
   const [isDark, setIsDark] = useState(colorScheme == 'dark');
-  const [fromTime, setFromTime] = useState();
-  const [toTime, setToTime] = useState();
+  const [startTime, setStartTime] = useState();
+  const [endTime, setEndTime] = useState();
   const insets = useSafeAreaInsets();
 
   const {
@@ -53,14 +54,13 @@ const Upload = ({navigation}) => {
     defaultValues: {
       title: '',
       description: '',
-      fromTime: '',
-      toTime: '',
+      startTime: '',
+      endTime: '',
     },
     mode: 'onBlur',
   });
 
   // TODO: add location
-  // TODO: KeyboardAwareScrollView for form
   // TODO: Checkbox for posting as pet sitter, pet owner
 
   const pickImage = async () => {
@@ -82,12 +82,12 @@ const Upload = ({navigation}) => {
     setImageSelected(false);
     setValue('title', '');
     setValue('description', '');
-    setValue('fromTime', '');
-    setValue('toTime', '');
+    setValue('startTime', '');
+    setValue('endTime', '');
     setType('image');
     setImage();
-    setFromTime();
-    setToTime();
+    setStartTime();
+    setEndTime();
     animation.current?.play();
   };
 
@@ -105,6 +105,18 @@ const Upload = ({navigation}) => {
     setIsDark(colorScheme === 'dark');
   }, [animation, colorScheme]);
 
+  const createJsonString = (data) => {
+    const json = {};
+    json['description'] = data.description;
+    json['start_time'] = data.startTime;
+    console.log('start time from form', data.startTime);
+    console.log('end time from form', data.endTime);
+
+    json['end_time'] = data.endTime;
+    // TODO: to add more field here for location, subsribers, etc
+    return JSON.stringify(json);
+  };
+
   const onSubmit = async (data) => {
     if (!imageSelected) {
       Alert.alert('Please select a file');
@@ -112,7 +124,11 @@ const Upload = ({navigation}) => {
     }
     const formData = new FormData();
     formData.append('title', data.title);
-    formData.append('description', data.description);
+    // TODO: format data here
+    const fileInfoJson = createJsonString(data);
+    console.log('file Info json ', fileInfoJson);
+    formData.append('description', fileInfoJson);
+
     const filename = image.split('/').pop();
     let fileExtension = filename.split('.').pop();
     fileExtension = fileExtension === 'jpg' ? 'jpeg' : fileExtension;
@@ -171,7 +187,10 @@ const Upload = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <KeyboardAwareScrollView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flexGrow: 1}}
+      >
         <View
           style={{
             paddingBottom: insets.bottom,
@@ -226,7 +245,11 @@ const Upload = ({navigation}) => {
                   autoCapitalize="none"
                   placeholder="Description"
                   errorMessage={errors.description && 'This is required'}
-                  style={styles.input}
+                  style={[
+                    styles.input,
+                    {height: 100, textAlignVertical: 'top'},
+                  ]}
+                  multiline={true}
                 ></Input>
               )}
               name="description"
@@ -245,14 +268,13 @@ const Upload = ({navigation}) => {
               <Controller
                 control={control}
                 rules={{require: true}}
-                name="fromTime"
+                name="startTime"
                 render={({field: {onChange, onBlur, value}}) => (
                   <TouchableHighlight
                     onPress={() => setFromDatePickerVisibility(true)}
                     activeOpacity={0.3}
                     underlayColor="#A9FC73"
                     onBlur={onBlur}
-                    onChange={onChange}
                     style={styles.calendarBox}
                   >
                     <View
@@ -263,27 +285,24 @@ const Upload = ({navigation}) => {
                       }}
                     >
                       <Text style={[styles.text, {marginRight: 2, width: 50}]}>
-                        {' '}
-                        From{' '}
+                        From
                       </Text>
                       <Icon name="calendar" type="feather"></Icon>
                       <DateTimePickerModal
                         isVisible={isFromDatePickerVisible}
-                        mode="datetime"
                         isDarkModeEnabled={isDark}
                         themeVariant={isDark ? 'dark' : 'light'}
+                        mode="datetime"
+                        onChange={onChange}
                         onConfirm={(date) => {
-                          console.log('type', typeof date);
-                          const formattedDate = formatDate(date);
-                          value = date;
                           setFromDatePickerVisibility(false);
-                          setFromTime(formattedDate);
-                          console.log('from date picked', value);
+                          setStartTime(date);
+                          date = {value};
                         }}
                         onCancel={() => setFromDatePickerVisibility(false)}
                       />
                       <Text style={[styles.text, {marginLeft: 10}]}>
-                        {!fromTime ? 'Pick date' : fromTime}
+                        {!startTime ? 'Pick date' : formatDate(startTime)}
                       </Text>
                     </View>
                   </TouchableHighlight>
@@ -294,14 +313,13 @@ const Upload = ({navigation}) => {
               <Controller
                 control={control}
                 rules={{require: true}}
-                name="toTime"
+                name="endTime"
                 render={({field: {onChange, onBlur, value}}) => (
                   <TouchableHighlight
                     onPress={() => setToDatePickerVisibility(true)}
                     activeOpacity={0.3}
                     underlayColor="#A9FC73"
                     onBlur={onBlur}
-                    onChange={onChange}
                     style={styles.calendarBox}
                   >
                     <View
@@ -312,8 +330,7 @@ const Upload = ({navigation}) => {
                       }}
                     >
                       <Text style={[styles.text, {marginRight: 2, width: 50}]}>
-                        {' '}
-                        To{' '}
+                        To
                       </Text>
                       <Icon name="calendar" type="feather"></Icon>
                       <DateTimePickerModal
@@ -321,17 +338,16 @@ const Upload = ({navigation}) => {
                         isDarkModeEnabled={isDark}
                         themeVariant={isDark ? 'dark' : 'light'}
                         mode="datetime"
+                        onChange={onChange}
                         onConfirm={(date) => {
-                          value = date;
-                          const formattedDate = formatDate(date);
                           setToDatePickerVisibility(false);
-                          setToTime(formattedDate);
-                          console.log('to date picked', value);
+                          setEndTime(date);
+                          date = {value};
                         }}
                         onCancel={() => setToDatePickerVisibility(false)}
                       />
                       <Text style={[styles.text, {marginLeft: 10}]}>
-                        {!toTime ? 'Pick date' : toTime}
+                        {!endTime ? 'Pick date' : formatDate(endTime)}
                       </Text>
                     </View>
                   </TouchableHighlight>
@@ -344,18 +360,20 @@ const Upload = ({navigation}) => {
               loading={loading}
               buttonStyle={styles.button}
               title="Upload"
+              fontSize={18}
               titleStyle={styles.buttonTitle}
               onPress={handleSubmit(onSubmit)}
             />
             <CustomButton
               title="Reset form"
+              fontSize={18}
               onPress={resetForm}
               buttonStyle={styles.button}
               titleStyle={styles.buttonTitle}
             />
           </Card>
         </View>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };
@@ -389,7 +407,7 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     color: 'black',
-    fontSize: 20,
+    padding: 5,
   },
   pressArea: {
     width: '100%',
