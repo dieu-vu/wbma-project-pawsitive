@@ -17,7 +17,7 @@ import * as ImagePicker from 'expo-image-picker';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {Card, Input, Icon, Text} from 'react-native-elements';
+import {Card, Input, Icon, Text, CheckBox} from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
