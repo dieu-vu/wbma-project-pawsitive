@@ -67,59 +67,74 @@ const Login = () => {
     >
       <KeyboardAwareScrollView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flexGrow: 1}}
+        contentContainerStyle={{
+          flex: 1,
+          minHeight: Dimensions.get('window').height,
+        }}
+        enableOnAndroid={true}
+        style={{flex: 1}}
       >
-        <View>
-          <Image source={pickRandomImage()} style={styles.backgroundImage} />
-        </View>
-        {selectedLogin || selectedRegister ? (
-          <View style={styles.backCrossContainer}>
-            <Icon
-              name="cross"
-              type="entypo"
-              size={30}
-              color="black"
-              onPress={() => {
-                setSelectedLogin(false);
-                setSelectedRegister(false);
-              }}
-            />
-          </View>
-        ) : (
-          <></>
-        )}
-
-        <LinearGradient
-          colors={['#8DD35E', '#425E20']}
-          style={styles.LinearGradient}
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'column',
+          }}
         >
-          {!selectedLogin && !selectedRegister ? (
-            <View style={styles.buttonContainer}>
-              <LottieView
-                ref={animation}
-                source={require('../assets/paws-animation.json')}
-                style={{
-                  width: undefined,
-                  height: 150,
-                  alignSelf: 'center',
-                  transform: [{rotate: '30deg'}],
+          <View>
+            <Image source={pickRandomImage()} style={styles.backgroundImage} />
+          </View>
+          {selectedLogin || selectedRegister ? (
+            <View style={styles.backCrossContainer}>
+              <Icon
+                name="cross"
+                type="entypo"
+                size={30}
+                color="black"
+                onPress={() => {
+                  setSelectedLogin(false);
+                  setSelectedRegister(false);
                 }}
-                loop={true}
               />
-              <MainButton
-                title="Sign in"
-                onPress={signIn}
-                buttonStyle={styles.buttonStyle}
-              />
-              <MainButton title="Register" onPress={registerUser} />
             </View>
           ) : (
             <></>
           )}
-          {selectedRegister ? <RegisterForm /> : <></>}
-          {selectedLogin ? <LoginForm /> : <></>}
-          <Logo style={styles.logo} />
-        </LinearGradient>
+
+          <View style={styles.gradientContainer}>
+            <LinearGradient
+              colors={['#8DD35E', '#425E20']}
+              style={styles.LinearGradient}
+            >
+              {!selectedLogin && !selectedRegister ? (
+                <View style={styles.buttonContainer}>
+                  <LottieView
+                    ref={animation}
+                    source={require('../assets/paws-animation.json')}
+                    style={{
+                      width: undefined,
+                      height: 150,
+                      alignSelf: 'center',
+                      transform: [{rotate: '30deg'}],
+                    }}
+                    loop={true}
+                  />
+                  <MainButton
+                    title="Sign in"
+                    onPress={signIn}
+                    buttonStyle={styles.buttonStyle}
+                  />
+                  <MainButton title="Register" onPress={registerUser} />
+                </View>
+              ) : (
+                <></>
+              )}
+
+              {selectedRegister ? <RegisterForm /> : <></>}
+              {selectedLogin ? <LoginForm /> : <></>}
+              <Logo style={styles.logo} />
+            </LinearGradient>
+          </View>
+        </View>
       </KeyboardAwareScrollView>
     </TouchableOpacity>
   );
@@ -134,11 +149,12 @@ const styles = StyleSheet.create({
   },
   backCrossContainer: {
     position: 'absolute',
-    top: Dimensions.get('window').height / 2,
+    top: Dimensions.get('window').height * 0.45,
     left: Dimensions.get('window').width / 2,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 50,
+    zIndex: 1,
+    // transform: [{translateY: -10}],
     transform: [{translateY: -70}, {translateX: -25}],
     backgroundColor: 'white',
     width: 45,
@@ -147,7 +163,19 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     width: Dimensions.get('window').width * 1.4,
-    height: Dimensions.get('window').height - 400,
+    height: Dimensions.get('window').height * 0.5,
+  },
+  gradientContainer: {
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+    borderTopLeftRadius: 70,
+    borderTopRightRadius: 70,
+    transform: [{translateY: Dimensions.get('window').height * -0.1}],
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    overflow: 'hidden',
+    marginBottom: -100,
   },
   LinearGradient: {
     zIndex: 1,
@@ -155,12 +183,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height * 0.6,
-    borderRadius: 70,
-    transform: [{translateY: -90}],
   },
   logo: {
     position: 'absolute',
-    bottom: -90,
+    bottom: Dimensions.get('window').height * -0.15,
   },
   buttonContainer: {flex: 1, flexDirection: 'column'},
   buttonStyle: {
