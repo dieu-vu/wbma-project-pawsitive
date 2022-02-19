@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    bottom: Dimensions.get('window').height * -0.15,
+    bottom: Dimensions.get('window').height * -0.125,
   },
   buttonContainer: {flex: 1, flexDirection: 'column'},
   buttonStyle: {
