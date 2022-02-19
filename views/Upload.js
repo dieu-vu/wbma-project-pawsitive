@@ -124,7 +124,7 @@ const Upload = ({navigation}) => {
     }
     const formData = new FormData();
     formData.append('title', data.title);
-    // TODO: format data here
+    // TODO: datepicker doesn't add date if not scrolling and picking date. To check
     const fileInfoJson = createJsonString(data);
     console.log('file Info json ', fileInfoJson);
     formData.append('description', fileInfoJson);
@@ -295,6 +295,7 @@ const Upload = ({navigation}) => {
                         mode="datetime"
                         onChange={onChange}
                         onConfirm={(date) => {
+                          !date ? Date.now() : date;
                           setFromDatePickerVisibility(false);
                           setStartTime(date);
                           date = {value};
@@ -340,6 +341,7 @@ const Upload = ({navigation}) => {
                         mode="datetime"
                         onChange={onChange}
                         onConfirm={(date) => {
+                          !date ? Date.now() : date;
                           setToDatePickerVisibility(false);
                           setEndTime(date);
                           date = {value};

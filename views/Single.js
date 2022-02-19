@@ -29,7 +29,6 @@ const Single = ({navigation, route}) => {
   console.log(fileInfo);
   const getTime = (timeField) => {
     const date = new Date(timeField);
-    console.log(date);
     return formatDate(date);
   };
 
@@ -62,8 +61,8 @@ const Single = ({navigation, route}) => {
           <Card.Title h3>{file.title}</Card.Title>
           <Card.Title>{file.time_added}</Card.Title>
           <Card.Title>{fileInfo.description}</Card.Title>
-          <Card.Title>From: {getTime(fileInfo.start_time.date)}</Card.Title>
-          <Card.Title>To: {getTime(fileInfo.end_time.date)}</Card.Title>
+          <Card.Title>From: {getTime(fileInfo.start_time)}</Card.Title>
+          <Card.Title>To: {getTime(fileInfo.end_time)}</Card.Title>
           <View containerStyle={styles.userInfo}>
             <Avatar source={{uri: 'http://placekitten.com/180'}} rounded={1} />
             <Text style={styles.text}>Ownername</Text>
