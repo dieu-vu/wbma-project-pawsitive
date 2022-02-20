@@ -25,6 +25,7 @@ import {MainContext} from '../contexts/MainContext';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlaceholderImage from '../components/PlaceholderImage';
+import {getFonts, fetchAvatar} from '../utils/Utils';
 
 const Profile = ({navigation}) => {
   const [avatar, setAvatar] = useState();
@@ -78,19 +79,8 @@ const Profile = ({navigation}) => {
     }
   };
 
-  const fetchAvatar = async () => {
-    try {
-      const avatarArray = await getFilesByTag('avatar_' + user.user_id);
-      const avatar = avatarArray.pop();
-      console.log(avatar);
-      setAvatar(uploadsUrl + avatar.filename);
-    } catch (error) {
-      console.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchAvatar();
+  useEffect(async () => {
+    setAvatar(uploadsUrl + (await fetchAvatar(user)));
   }, []);
 
   getFonts();
@@ -175,17 +165,5 @@ const styles = StyleSheet.create({
     top: 10,
   },
 });
-
-const getFonts = () => {
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
-};
 
 export default Profile;

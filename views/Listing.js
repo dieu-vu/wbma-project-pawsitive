@@ -38,7 +38,7 @@ const Listing = ({navigation}) => {
 
   useEffect(async () => {
     if (checkPermission()) {
-      console.log(await getUserLocation());
+      console.log('USER LOCATION', await getUserLocation());
     }
   });
   return (

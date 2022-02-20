@@ -1,6 +1,7 @@
 import React from 'react';
 import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
+import {useUser, useTag} from '../hooks/ApiHooks';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),
@@ -32,4 +33,19 @@ const getFonts = () => {
   }
 };
 
-export {pickRandomImage, formatDate, getFonts};
+const fetchAvatar = async (data) => {
+  const {getFilesByTag} = useTag();
+  try {
+    const avatarArray = await getFilesByTag('avatar_' + data.user_id);
+    if (avatarArray.length === 0) {
+      return;
+    }
+    const avatar = avatarArray.pop();
+    console.log('AVATAR FETCHED', avatar);
+    return avatar.filename;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
+export {pickRandomImage, formatDate, getFonts, fetchAvatar};
