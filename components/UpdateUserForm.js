@@ -9,6 +9,7 @@ import AppLoading from 'expo-app-loading';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getFonts} from '../utils/Utils';
 
 const UpdateUserForm = ({navigation}) => {
   const {putUser} = useUser();
@@ -30,15 +31,7 @@ const UpdateUserForm = ({navigation}) => {
     mode: 'onBlur',
   });
 
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
+  getFonts();
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -86,7 +79,6 @@ const UpdateUserForm = ({navigation}) => {
           </View>
         )}
         name="email"
-
       />
       <Controller
         control={control}
@@ -158,7 +150,6 @@ const UpdateUserForm = ({navigation}) => {
             }
           },
         }}
-
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
             <Icon type={'evilicon'} name="lock" style={styles.logo} />

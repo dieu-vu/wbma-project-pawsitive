@@ -17,25 +17,28 @@ import * as ImagePicker from 'expo-image-picker';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PropTypes from 'prop-types';
-import {Card, Input, Icon, Text, CheckBox} from 'react-native-elements';
+import {Card, Input, Icon, Text} from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import {pickRandomImage, formatDate, getFonts} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/Variables';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import CheckBoxComponent from '../components/CheckBoxComponent';
 
 const Upload = ({navigation}) => {
+  const insets = useSafeAreaInsets();
+  const animation = React.createRef();
+
   const [image, setImage] = useState();
   const [type, setType] = useState('image');
   const [imageSelected, setImageSelected] = useState(false);
   const {postMedia, loading} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const {postTag} = useTag();
-  const animation = React.createRef();
   const [isFromDatePickerVisible, setFromDatePickerVisibility] =
     useState(false);
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
@@ -43,7 +46,7 @@ const Upload = ({navigation}) => {
   const [isDark, setIsDark] = useState(colorScheme == 'dark');
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  const insets = useSafeAreaInsets();
+  const {userType, setUserType} = useContext(MainContext);
 
   const {
     control,
@@ -109,10 +112,10 @@ const Upload = ({navigation}) => {
     const json = {};
     json['description'] = data.description;
     json['start_time'] = data.startTime;
-    console.log('start time from form', data.startTime);
-    console.log('end time from form', data.endTime);
-
+    // console.log('start time from form', data.startTime);
+    // console.log('end time from form', data.endTime);
     json['end_time'] = data.endTime;
+
     // TODO: to add more field here for location, subsribers, etc
     return JSON.stringify(json);
   };
@@ -146,8 +149,14 @@ const Upload = ({navigation}) => {
         {file_id: response.file_id, tag: appId},
         token
       );
+      const userTypeTag = await postTag(
+        {file_id: response.file_id, tag: `${appId}_${userType}`},
+        token
+      );
+
       tagResponse &&
-        Alert.alert('File', 'uploaded', [
+        userTypeTag &&
+        Alert.alert('File', 'Succesfully uploaded', [
           {
             text: 'OK',
             onPress: () => {
@@ -356,6 +365,8 @@ const Upload = ({navigation}) => {
                 )}
               ></Controller>
             </View>
+
+            <CheckBoxComponent customText="Post as: "></CheckBoxComponent>
 
             <CustomButton
               disabled={!imageSelected}
