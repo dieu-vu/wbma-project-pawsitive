@@ -8,7 +8,8 @@ import {
   Keyboard,
   ImageBackground,
   ScrollView,
-  SafeAreaView, Alert
+  SafeAreaView,
+  Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {Text} from 'react-native-elements';
@@ -23,11 +24,10 @@ import * as ImagePicker from 'expo-image-picker';
 import {MainContext} from '../contexts/MainContext';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PlaceholderImage from '../components/PlaceholderImage';
 
 const Profile = ({navigation}) => {
-  const [avatar, setAvatar] = useState(
-    'https://place-hold.it/200x200/8DD35E.jpeg&text=Image&bold&fontsize=14'
-  );
+  const [avatar, setAvatar] = useState();
 
   const [type, setType] = useState('image');
   const {getFilesByTag} = useTag();
@@ -108,11 +108,15 @@ const Profile = ({navigation}) => {
             style={{flexGrow: 1}}
           >
             <View>
-              <ImageBackground source={{uri: avatar}} style={styles.image}>
-                <View style={styles.logoContainer}>
-                  <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
-                </View>
-              </ImageBackground>
+              {!avatar ? (
+                <PlaceholderImage />
+              ) : (
+                <ImageBackground source={{uri: avatar}} style={styles.image}>
+                  <View style={styles.logoContainer}>
+                    <ImageLogo style={styles.imageLogo} onPress={uploadImage} />
+                  </View>
+                </ImageBackground>
+              )}
             </View>
             <LinearGradient
               style={styles.linearGradient}
@@ -121,9 +125,7 @@ const Profile = ({navigation}) => {
               <Text h2 style={styles.headLine}>
                 {user.full_name}
               </Text>
-              <UpdateUserForm
-                navigation={navigation}
-              />
+              <UpdateUserForm navigation={navigation} />
             </LinearGradient>
           </KeyboardAwareScrollView>
         </TouchableOpacity>

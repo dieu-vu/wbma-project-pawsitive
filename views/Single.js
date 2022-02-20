@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
-import {StyleSheet, Image, View, ScrollView, Dimensions} from 'react-native';
-import {Card, ListItem, Text, Avatar} from 'react-native-elements';
+import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
+import {Card, ListItem, Text, Avatar, Image} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -9,6 +9,7 @@ import MainButton from '../components/MainButton';
 import {useFavourite, useTag} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate, getFonts} from '../utils/Utils';
+import PlaceholderImage from '../components/PlaceholderImage';
 
 const Single = ({navigation, route}) => {
   const {file} = route.params;
@@ -32,13 +33,17 @@ const Single = ({navigation, route}) => {
     return formatDate(date);
   };
 
+  getFonts();
+
   return (
     <ScrollView style={styles.container}>
       <View>
         {file.media_type === 'image' ? (
           <Image
+            PlaceholderContent={<PlaceholderImage />}
+            transition
             source={{uri: uploadsUrl + file.filename}}
-            style={styles.image}
+            containerStyle={styles.image}
           />
         ) : (
           <Video
@@ -55,14 +60,20 @@ const Single = ({navigation, route}) => {
       </View>
       <LinearGradient
         colors={['#8DD35E', '#FFFFFF']}
-        style={styles.LinearGradient}
+        style={styles.linearGradient}
       >
-        <Card containerStyle={styles.infoCard}>
-          <Card.Title h3>{file.title}</Card.Title>
-          <Card.Title>{file.time_added}</Card.Title>
-          <Card.Title>{fileInfo.description}</Card.Title>
-          <Card.Title>From: {getTime(fileInfo.start_time)}</Card.Title>
-          <Card.Title>To: {getTime(fileInfo.end_time)}</Card.Title>
+        <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
+          <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
+            {file.title}
+          </Card.Title>
+          <Card.Title style={styles.text}>{file.time_added} </Card.Title>
+          <Card.Title style={styles.text}>{fileInfo.description}</Card.Title>
+          <Card.Title style={styles.text}>
+            From: {getTime(fileInfo.start_time)}
+          </Card.Title>
+          <Card.Title style={styles.text}>
+            To: {getTime(fileInfo.end_time)}
+          </Card.Title>
           <View containerStyle={styles.userInfo}>
             <Avatar source={{uri: 'http://placekitten.com/180'}} rounded={1} />
             <Text style={styles.text}>Ownername</Text>
@@ -84,9 +95,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: Dimensions.get('window').width * 1.4,
-    height: Dimensions.get('window').height - 400,
+    height: Dimensions.get('window').height * 0.5,
     aspectRatio: 1,
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   infoCard: {
     width: '90%',
@@ -98,20 +109,18 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     color: 'black',
   },
-  LinearGradient: {
+  linearGradient: {
     zIndex: 1,
-    position: 'absolute',
     bottom: 0,
     left: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height * 0.6,
-    borderRadius: 70,
     borderBottomStartRadius: 0,
-    transform: [{translateY: Dimensions.get('window').height * 0.5}],
+    // transform: [{translateY: Dimensions.get('window').height * 0.5}],
   },
   text: {
+    textAlign: 'left',
+    fontFamily: 'Montserrat-Regular',
     color: 'black',
     zIndex: 1,
   },
