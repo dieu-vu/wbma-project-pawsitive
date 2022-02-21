@@ -22,7 +22,9 @@ const doFetch = async (url, options = {}) => {
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update} = useContext(MainContext);
+  const {update, selectedPetType} = useContext(MainContext);
+  const {getFilesByTag} = useTag();
+  let jsonFilter;
 
   const loadMedia = async (start = 0, limit = 10) => {
     setLoading(true);
@@ -34,7 +36,12 @@ const useMedia = () => {
         const json = await response.json();
 
         // TODO: JsonFilter below is for json data test, correct to json when done
-        const jsonFilter = json.filter((item) => item.user_id === 26);
+        // const jsonFilter = json.filter((item) => item.user_id === 13);
+        if (selectedPetType === 'all') {
+          jsonFilter = json;
+        } else {
+          jsonFilter = await getFilesByTag(`${appId}_pet_${selectedPetType}`);
+        }
 
         const media = await Promise.all(
           jsonFilter.map(async (item) => {

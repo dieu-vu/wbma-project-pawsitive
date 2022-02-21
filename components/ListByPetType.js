@@ -1,27 +1,33 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, { useCallback, useContext, useRef, useState } from "react";
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Dimensions, StyleSheet} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
+import { MainContext } from "../contexts/MainContext";
 
 const PetTypesArray = [
   {
-    title: 'Dogs',
+    title: 'Dog',
     uri: require('../assets/dogSmiling1.jpg'),
   },
   {
-    title: 'Cats',
+    title: 'Cat',
     uri: require('../assets/kitten.jpg'),
   },
   {
-    title: 'Horses',
+    title: 'Bird',
+    uri: require('../assets/birds.png'),
+  },
+  {
+    title: 'Other',
     uri: require('../assets/horseFace.png'),
   },
 ];
 
-const ListByPetType = () => {
+const ListByPetType = (props) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
+  const {setSelectedPetType} = useContext(MainContext);
 
   getFonts();
 
@@ -36,6 +42,11 @@ const ListByPetType = () => {
         activeOpacity={1}
         width={175}
         height={200}
+        onPress={() => {
+          console.log('pressed: ', item, ' index of: ', index);
+          setSelectedPetType(item.title.toLowerCase());
+          props.navigation.navigate('Listing');
+        }}
       />
     ),
     []
