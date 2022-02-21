@@ -22,12 +22,22 @@ const CustomDropDownPicker = () => {
         open={open}
         value={petType}
         items={items}
-        style={{width: '100%'}}
+        style={{
+          width: '100%',
+          backgroundColor: 'white',
+          zIndex: 1,
+        }}
         containerStyle={styles.dropdownContainer}
+        dropDownDirection="TOP"
         textStyle={styles.dropdownText}
         setOpen={setOpen}
         setValue={setPetType}
         setItems={setItems}
+        listMode="SCROLLVIEW"
+        scrollViewProps={{
+          nestedScrollEnabled: true,
+          contentContainerStyle: {backgroundColor: 'white', zIndex: 6},
+        }}
       />
     </View>
   );
@@ -44,6 +54,7 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     alignSelf: 'center',
     width: '60%',
+    backgroundColor: 'white',
   },
   dropdownText: {
     fontFamily: 'Montserrat-Regular',

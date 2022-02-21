@@ -66,7 +66,6 @@ const Upload = ({navigation}) => {
   });
 
   // TODO: add location
-  // TODO: Checkbox for posting as pet sitter, pet owner
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -374,8 +373,9 @@ const Upload = ({navigation}) => {
                 )}
               ></Controller>
             </View>
-
-            <CustomDropDownPicker></CustomDropDownPicker>
+            <View>
+              <CustomDropDownPicker></CustomDropDownPicker>
+            </View>
             <CheckBoxComponent customText="Post as: "></CheckBoxComponent>
 
             <CustomButton
