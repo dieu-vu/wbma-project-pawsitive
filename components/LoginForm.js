@@ -86,7 +86,7 @@ const LoginForm = () => {
         )}
         name="password"
       />
-      <MainButton onPress={handleSubmit(onSubmit)} title={'Sign in'} style={{elevation: 10, transform: [{scaleX: 0.3}, {scaleY: 0.3}],}} />
+      <MainButton onPress={handleSubmit(onSubmit)} title={'Sign in'} style={{elevation: 50, transform: [{scaleX: 0.3}, {scaleY: 0.3}],}} />
     </View>
   );
 };
