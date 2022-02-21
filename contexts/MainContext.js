@@ -8,6 +8,7 @@ const MainProvider = (props) => {
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
   const [userType, setUserType] = useState('owner');
+  const [petType, setPetType] = useState(null);
 
   return (
     <MainContext.Provider
@@ -20,6 +21,8 @@ const MainProvider = (props) => {
         setUpdate,
         userType,
         setUserType,
+        petType,
+        setPetType,
       }}
     >
       {props.children}

@@ -28,6 +28,7 @@ import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {appId} from '../utils/Variables';
 import CheckBoxComponent from '../components/CheckBoxComponent';
+import CustomDropDownPicker from '../components/DropDownPicker';
 
 const Upload = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -46,7 +47,8 @@ const Upload = ({navigation}) => {
   const [isDark, setIsDark] = useState(colorScheme == 'dark');
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
-  const {userType, setUserType} = useContext(MainContext);
+  const {userType} = useContext(MainContext);
+  const {petType} = useContext(MainContext);
 
   const {
     control,
@@ -150,12 +152,19 @@ const Upload = ({navigation}) => {
         token
       );
       const userTypeTag = await postTag(
-        {file_id: response.file_id, tag: `${appId}_${userType}`},
+        {file_id: response.file_id, tag: `${appId}_user_${userType}`},
+        token
+      );
+
+      console.log('PET TYPE', petType);
+      const petTypeTag = await postTag(
+        {file_id: response.file_id, tag: `${appId}_pet_${petType}`},
         token
       );
 
       tagResponse &&
         userTypeTag &&
+        petTypeTag &&
         Alert.alert('File', 'Succesfully uploaded', [
           {
             text: 'OK',
@@ -366,6 +375,7 @@ const Upload = ({navigation}) => {
               ></Controller>
             </View>
 
+            <CustomDropDownPicker></CustomDropDownPicker>
             <CheckBoxComponent customText="Post as: "></CheckBoxComponent>
 
             <CustomButton
