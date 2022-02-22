@@ -72,6 +72,7 @@ const Login = () => {
           minHeight: Dimensions.get('window').height,
         }}
         enableOnAndroid={true}
+        enableAutomaticScroll={Platform.OS === 'ios'}
         style={{flex: 1}}
       >
         <View
