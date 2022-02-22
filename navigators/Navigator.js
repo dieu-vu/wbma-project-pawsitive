@@ -8,11 +8,13 @@ import Listing from '../views/Listing';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
+import MyFiles from '../views/MyFiles';
 import {MainContext} from '../contexts/MainContext';
 import Home from '../views/Home';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import SavedPosts from '../views/SavedPosts';
 import CustomDrawer from '../components/CustomDrawer';
+import {TouchableOpacity} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -21,7 +23,7 @@ const Drawer = createDrawerNavigator();
 const TabScreen = () => {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
+      screenOptions={({route, navigation}) => ({
         tabBarStyle: {position: 'absolute', backgroundColor: '#8DD35E'},
         tabBarIcon: ({focused, color, size, type}) => {
           let iconName;
@@ -47,8 +49,15 @@ const TabScreen = () => {
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: '#425E20',
         drawBehind: true,
+        headerLeft: () => (
+          <TouchableOpacity
+            onPress={() => navigation.toggleDrawer()}
+            style={{marginLeft: 16}}
+          >
+            <Icon name="menu" type="feather" size={22} color="black" />
+          </TouchableOpacity>
+        ),
       })}
-      // component={StackScreen}
     >
       <Tab.Screen
         name="Home"
@@ -85,12 +94,17 @@ const HomeStack = createNativeStackNavigator();
 const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator
-      screenOptions={{
+      screenOptions={({navigation}) => ({
         headerStyle: {
           backgroundColor: '#8DD35E',
         },
         headerTintColor: 'black',
-      }}
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+            <Icon name="menu" type="feather" size={22} color="black" />
+          </TouchableOpacity>
+        ),
+      })}
     >
       <HomeStack.Screen
         name="HomeStack"
@@ -102,6 +116,7 @@ const HomeStackScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
+
       />
       <HomeStack.Screen
         name="Listing"
@@ -141,6 +156,21 @@ const DrawerNavigator = () => {
           drawerIcon: () => (
             <Icon name="person-outline" size={20} color={'black'} />
           ),
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="My files"
+        component={MyFiles}
+        options={{
+          drawerIcon: () => (
+            <Icon name="person-outline" size={20} color={'black'} />
+          ),
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
         }}
       />
     </Drawer.Navigator>

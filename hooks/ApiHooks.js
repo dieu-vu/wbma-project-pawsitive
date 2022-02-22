@@ -19,7 +19,7 @@ const doFetch = async (url, options = {}) => {
   }
 };
 
-const useMedia = () => {
+const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const {update, selectedPetType, isSearching, searchValue} = useContext(MainContext);
