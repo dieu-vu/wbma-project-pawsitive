@@ -10,6 +10,8 @@ const MainProvider = (props) => {
   const [userType, setUserType] = useState('owner');
   const [petType, setPetType] = useState(null);
   const [selectedPetType, setSelectedPetType] = useState("all")
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   return (
     <MainContext.Provider
@@ -26,6 +28,10 @@ const MainProvider = (props) => {
         setPetType,
         selectedPetType,
         setSelectedPetType,
+        isSearching,
+        setIsSearching,
+        searchValue,
+        setSearchValue,
       }}
     >
       {props.children}

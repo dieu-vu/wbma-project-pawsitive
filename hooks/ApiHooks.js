@@ -1,6 +1,6 @@
-import {appId, baseUrl} from '../utils/Variables';
-import {useContext, useEffect, useState} from 'react';
-import {MainContext} from '../contexts/MainContext';
+import { appId, baseUrl } from "../utils/Variables";
+import { useContext, useEffect, useState } from "react";
+import { MainContext } from "../contexts/MainContext";
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -22,7 +22,7 @@ const doFetch = async (url, options = {}) => {
 const useMedia = () => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update, selectedPetType} = useContext(MainContext);
+  const {update, selectedPetType, isSearching, searchValue} = useContext(MainContext);
   const {getFilesByTag} = useTag();
   let jsonFilter;
 
@@ -41,6 +41,10 @@ const useMedia = () => {
           jsonFilter = json;
         } else {
           jsonFilter = await getFilesByTag(`${appId}_pet_${selectedPetType}`);
+        }
+
+        if (isSearching) {
+          jsonFilter = json.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
         }
 
         const media = await Promise.all(
@@ -64,7 +68,7 @@ const useMedia = () => {
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
-  }, [update]);
+  }, [update, searchValue]);
 
   const postMedia = async (formData, token) => {
     setLoading(true);
