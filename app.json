@@ -36,7 +36,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyCGBZwLYfYtbzlny0r3qSRCFZCnxhP6-Qg"
         }
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan"
     },
     "androidStatusBar": {
       "backgroundColor": "#000000"
