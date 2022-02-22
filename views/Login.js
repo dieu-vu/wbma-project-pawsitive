@@ -72,7 +72,9 @@ const Login = () => {
           minHeight: Dimensions.get('window').height,
         }}
         enableOnAndroid={true}
-        style={{flex: 1}}
+        enableAutomaticScroll={Platform.OS === 'ios'}
+        style={{flexGrow: 1}}
+        extraScrollHeight={Platform.OS === 'ios' ? 0 : 90}
       >
         <View
           style={{
@@ -161,7 +163,11 @@ const Login = () => {
                 {selectedLogin ? <LoginForm /> : <></>}
               </View>
 
-              <Logo style={styles.logo} />
+              <Logo
+                style={
+                  Platform.OS === 'ios' ? styles.logoIos : styles.logoAndroid
+                }
+              />
             </LinearGradient>
           </View>
         </View>
@@ -230,7 +236,7 @@ const styles = StyleSheet.create({
   linearGradientRegister: {
     height: Dimensions.get('window').height * 0.9,
   },
-  logo: {
+  logoIos: {
     position: 'absolute',
     bottom: Dimensions.get('window').height * -0.125,
   },
