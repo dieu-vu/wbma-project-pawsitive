@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, ScrollView, Dimensions} from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {StyleSheet, View, ScrollView, Dimensions, Alert} from 'react-native';
 import {Card, Text, Avatar, Image} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {uploadsUrl} from '../utils/Variables';
@@ -10,6 +10,7 @@ import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
+import {MainContext} from '../contexts/MainContext';
 
 const Single = ({navigation, route}) => {
   const {file} = route.params;
@@ -21,7 +22,7 @@ const Single = ({navigation, route}) => {
   const {getUserById} = useUser();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
-
+  const {update, setUpdate} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
 
@@ -30,7 +31,7 @@ const Single = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postFavourite(file.file_id, token);
-      console.log('create favourite response', response);
+      response && Alert.alert('Saved to favourites') && setUpdate(update + 1);
     } catch (error) {
       console.error('create like error', error);
     }

@@ -8,7 +8,7 @@ import Listing from '../views/Listing';
 import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
-import MyFiles from '../views/MyFiles';
+import MyPosts from '../views/MyPosts';
 import {MainContext} from '../contexts/MainContext';
 import Home from '../views/Home';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -116,7 +116,6 @@ const HomeStackScreen = () => {
             backgroundColor: '#8DD35E',
           },
         }}
-
       />
       <HomeStack.Screen
         name="Listing"
@@ -162,8 +161,8 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="My files"
-        component={MyFiles}
+        name="My posts"
+        component={MyPosts}
         options={{
           drawerIcon: () => (
             <Icon name="person-outline" size={20} color={'black'} />

@@ -5,13 +5,13 @@ import {useMedia} from '../hooks/ApiHooks';
 import SingleListItem from './SingleListItem';
 
 const List = ({navigation, myFilesOnly}) => {
-  const {mediaArray} = useMedia();
+  const {mediaArray} = useMedia(myFilesOnly);
   return (
     <FlatList
       data={mediaArray}
       keyExtractor={(item) => item.file_id.toString()}
       renderItem={({item}) => (
-        <SingleListItem singleMedia={item} navigation={navigation} myFilesOnly={myFilesOnly} />
+        <SingleListItem singleMedia={item} navigation={navigation} myFilesOnly={myFilesOnly}/>
       )}
       ListFooterComponent={() => {
         return null;

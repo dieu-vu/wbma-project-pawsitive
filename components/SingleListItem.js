@@ -1,13 +1,57 @@
-import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {Avatar, ListItem} from 'react-native-elements';
+import React, {useContext} from 'react';
+import {Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import {Avatar, ListItem, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFavourite, useMedia} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
 
 // TODO: change description for all file in listing
-const SingleListItem = ({navigation, singleMedia}) => {
+const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
   const fileInfo = JSON.parse(singleMedia.description);
+  const {deleteMedia} = useMedia();
+  const {deleteFavourite} = useFavourite();
+  const {update, setUpdate} = useContext(MainContext);
+
+  const deletePost = () => {
+    Alert.alert('Delete', 'your post permanently', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('userToken');
+            const response = await deleteMedia(singleMedia.file_id, token);
+            response && Alert.alert('Post deleted') && setUpdate(update + 1);
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      },
+    ]);
+  };
+
+  const removeSavedPost = () => {
+    Alert.alert('Favourite', 'will be removed from list', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('userToken');
+            const response = await deleteFavourite(singleMedia.file_id, token);
+            response &&
+              Alert.alert('Favourite removed') &&
+              setUpdate(update + 1);
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      },
+    ]);
+  };
 
   return (
     <ListItem
@@ -36,6 +80,32 @@ const SingleListItem = ({navigation, singleMedia}) => {
           {singleMedia.title}
         </ListItem.Title>
         <ListItem.Subtitle>{fileInfo.description}</ListItem.Subtitle>
+        {myFilesOnly && (
+          <Button
+            title="Delete"
+            onPress={deletePost}
+            style={styles.button}
+            buttonStyle={{backgroundColor: '#A9FC73'}}
+            containerStyle={{
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            titleStyle={{color: 'black', fontSize: 17, padding: 2}}
+          />
+        )}
+        {savedPosts && (
+          <Button
+            title="Remove"
+            onPress={removeSavedPost}
+            buttonStyle={{backgroundColor: '#A9FC73'}}
+            style={styles.button}
+            containerStyle={{
+              borderRadius: 10,
+              marginTop: 10,
+            }}
+            titleStyle={{color: 'black', fontSize: 17, padding: 2}}
+          />
+        )}
       </ListItem.Content>
     </ListItem>
   );
@@ -47,11 +117,16 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 5,
   },
+  button: {
+    backgroundColor: 'white',
+  },
 });
 
 SingleListItem.propTypes = {
   singleMedia: PropTypes.object.isRequired,
   navigation: PropTypes.object.isRequired,
+  myFilesOnly: PropTypes.bool,
+  savedPosts: PropTypes.bool,
 };
 
 export default SingleListItem;

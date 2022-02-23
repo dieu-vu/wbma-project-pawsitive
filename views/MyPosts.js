@@ -4,8 +4,7 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import List from '../components/List';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-const MyFiles = ({navigation}) => {
-
+const MyPosts = ({navigation}) => {
   const insets = useSafeAreaInsets();
 
   return (
@@ -16,13 +15,17 @@ const MyFiles = ({navigation}) => {
           flex: 1,
         }}
       >
-        <List navigation={navigation} myFilesOnly={true} style={{zIndex: 1, flex: 1}} />
+        <List
+          navigation={navigation}
+          myFilesOnly={true}
+          style={{zIndex: 1, flex: 1}}
+        />
       </View>
     </SafeAreaView>
   );
 };
 
-MyFiles.propTypes = {
+MyPosts.propTypes = {
   navigation: PropTypes.object,
 };
 const styles = StyleSheet.create({
@@ -32,4 +35,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyFiles;
+export default MyPosts;

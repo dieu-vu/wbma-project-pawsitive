@@ -22,7 +22,9 @@ const doFetch = async (url, options = {}) => {
 const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update, selectedPetType, isSearching, searchValue} = useContext(MainContext);
+
+  const {update, selectedPetType, isSearching, searchValue, user} = useContext(MainContext);
+
   const {getFilesByTag} = useTag();
   let jsonFilter;
 
@@ -33,7 +35,11 @@ const useMedia = (myFilesOnly) => {
       if (!response.ok) {
         throw Error(response.statusText);
       } else {
-        const json = await response.json();
+        let json = await response.json();
+
+        if (myFilesOnly) {
+          json = json.filter((file) => file.user_id === user.user_id);
+        }
 
         // TODO: JsonFilter below is for json data test, correct to json when done
         // const jsonFilter = json.filter((item) => item.user_id === 13);
@@ -64,11 +70,15 @@ const useMedia = (myFilesOnly) => {
       setLoading(false);
     }
   };
+
+
   // Call loadMedia() only once when the component is loaded
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
   }, [update, searchValue]);
+
+
 
   const postMedia = async (formData, token) => {
     setLoading(true);
@@ -94,7 +104,17 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {mediaArray, postMedia, loading, getSingleMedia};
+
+
+  const deleteMedia = async (fileId, token) => {
+    const options = {
+      method: 'DELETE',
+      headers: {'x-access-token': token},
+    };
+    return await doFetch(`${baseUrl}media/${fileId}`, options);
+  };
+
+  return {mediaArray, postMedia, loading, getSingleMedia, deleteMedia};
 };
 
 const useLogin = () => {
@@ -196,6 +216,7 @@ const useTag = () => {
 };
 
 const useFavourite = () => {
+  const {update} = useContext(MainContext);
   const postFavourite = async (fileId, token) => {
     const options = {
       method: 'POST',
@@ -228,6 +249,8 @@ const useFavourite = () => {
     };
     return await doFetch(baseUrl + 'favourites', options);
   };
+
+
 
   return {postFavourite, getFavouritesByFileId, deleteFavourite, getFavourites};
 };
