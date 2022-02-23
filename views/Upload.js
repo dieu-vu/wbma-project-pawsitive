@@ -29,7 +29,7 @@ import {MainContext} from '../contexts/MainContext';
 import {appId, colors} from '../utils/Variables';
 import CheckBoxComponent from '../components/CheckBoxComponent';
 import CustomDropDownPicker from '../components/DropDownPicker';
-import OverlayComponent from '../components/OverlayComponent';
+import MapOverlayComponent from '../components/MapOverlayComponent';
 
 const Upload = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -288,7 +288,7 @@ const Upload = ({navigation}) => {
                 style={{padding: 15}}
                 titleStyle={[styles.text, {color: 'black'}]}
               />
-              {mapOverlayVisible ? <OverlayComponent /> : <></>}
+              {mapOverlayVisible ? <MapOverlayComponent /> : <></>}
             </View>
 
             <View
