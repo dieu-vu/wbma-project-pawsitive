@@ -25,6 +25,7 @@ const useMedia = (myFilesOnly) => {
   const {update, selectedPetType, isSearching, searchValue} =
     useContext(MainContext);
   const {getFilesByTag} = useTag();
+  const {user} = useContext(MainContext);
   let jsonFilter;
 
   const loadMedia = async (start = 0, limit = 10) => {

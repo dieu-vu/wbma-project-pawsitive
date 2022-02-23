@@ -17,7 +17,9 @@ const SavedPosts = ({navigation}) => {
   const fetchFavourites = async () => {
     const token = await AsyncStorage.getItem('userToken');
     const favouritesList = await getFavourites(token);
-    const favouritesWithTag = favouritesList.filter(filterFavouritesByTag);
+    const favouritesWithTag = await favouritesList.filter(
+      filterFavouritesByTag
+    );
     console.log('tags', favouritesWithTag);
 
     try {
@@ -26,7 +28,7 @@ const SavedPosts = ({navigation}) => {
           try {
             return await getSingleMedia(tag.file_id, token);
           } catch (error) {
-            console.error('get single media file error', error);
+            console.error('get single media file error');
           }
         })
       );
@@ -60,7 +62,11 @@ const SavedPosts = ({navigation}) => {
         data={itemsList}
         keyExtractor={(item) => item.file_id.toString()}
         renderItem={({item}) => (
-          <SingleListItem navigation={navigation} singleMedia={item} savedPosts={true}/>
+          <SingleListItem
+            navigation={navigation}
+            singleMedia={item}
+            savedPosts={true}
+          />
         )}
         ListFooterComponent={() => {
           return null;

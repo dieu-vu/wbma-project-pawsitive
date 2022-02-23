@@ -11,7 +11,11 @@ const List = ({navigation, myFilesOnly}) => {
       data={mediaArray}
       keyExtractor={(item) => item.file_id.toString()}
       renderItem={({item}) => (
-        <SingleListItem singleMedia={item} navigation={navigation} myFilesOnly={myFilesOnly}/>
+        <SingleListItem
+          singleMedia={item}
+          navigation={navigation}
+          myFilesOnly={myFilesOnly}
+        />
       )}
       ListFooterComponent={() => {
         return null;

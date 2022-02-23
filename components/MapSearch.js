@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {Platform, View} from 'react-native';
+import {StyleSheet, Platform, View, Dimensions} from 'react-native';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
 const MapSearch = () => {
@@ -31,16 +31,13 @@ const MapSearch = () => {
   return (
     <View style={{flex: 1}}>
       <MapView
-        style={{
-          width: 400,
-          height: undefined,
-        }}
+        style={styles.container}
         provider={PROVIDER_GOOGLE}
         showsMyLocationButton={true}
         showsUserLocation={true}
         initialRegion={state.region}
       />
-      {/* <GooglePlacesAutocomplete
+      <GooglePlacesAutocomplete
         placeholder="search"
         onPress={(data, details = null) => {
           console.log('GG MAP SEARCH', data, details);
@@ -50,9 +47,19 @@ const MapSearch = () => {
           key: apiKey,
           language: 'en',
         }}
-      ></GooglePlacesAutocomplete> */}
+        style={{zIndex: 1}}
+      ></GooglePlacesAutocomplete>
     </View>
   );
 };
+const styles = StyleSheet.create({
+  button: {
+    margin: 10,
+  },
+  container: {
+    width: '100%',
+    height: '100%',
+  },
+});
 
 export default MapSearch;
