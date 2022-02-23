@@ -39,6 +39,7 @@
     "react-native-dropdown-picker": "^5.3.0",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^2.1.2",
+    "react-native-google-places-autocomplete": "^2.4.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-map": "0.0.1",
@@ -51,7 +52,8 @@
     "react-native-svg": "^12.1.1",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-web": "0.17.1",
-    "warn-once": "^0.1.0"
+    "warn-once": "^0.1.0",
+    "expo-constants": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",

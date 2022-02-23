@@ -1,6 +1,6 @@
-import { appId, baseUrl } from "../utils/Variables";
-import { useContext, useEffect, useState } from "react";
-import { MainContext } from "../contexts/MainContext";
+import {appId, baseUrl} from '../utils/Variables';
+import {useContext, useEffect, useState} from 'react';
+import {MainContext} from '../contexts/MainContext';
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -22,9 +22,8 @@ const doFetch = async (url, options = {}) => {
 const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const {update, selectedPetType, isSearching, searchValue, user} = useContext(MainContext);
-
+  const {update, selectedPetType, isSearching, searchValue} =
+    useContext(MainContext);
   const {getFilesByTag} = useTag();
   let jsonFilter;
 
@@ -50,7 +49,9 @@ const useMedia = (myFilesOnly) => {
         }
 
         if (isSearching) {
-          jsonFilter = json.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+          jsonFilter = json.filter((item) =>
+            item.title.toLowerCase().includes(searchValue.toLowerCase())
+          );
         }
 
         const media = await Promise.all(
@@ -71,14 +72,11 @@ const useMedia = (myFilesOnly) => {
     }
   };
 
-
   // Call loadMedia() only once when the component is loaded
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
   }, [update, searchValue]);
-
-
 
   const postMedia = async (formData, token) => {
     setLoading(true);
@@ -103,8 +101,6 @@ const useMedia = (myFilesOnly) => {
     };
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
-
-
 
   const deleteMedia = async (fileId, token) => {
     const options = {
@@ -249,8 +245,6 @@ const useFavourite = () => {
     };
     return await doFetch(baseUrl + 'favourites', options);
   };
-
-
 
   return {postFavourite, getFavouritesByFileId, deleteFavourite, getFavourites};
 };

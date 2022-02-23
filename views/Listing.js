@@ -1,28 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  SafeAreaView,
-} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, Dimensions, View, SafeAreaView} from 'react-native';
 import PropTypes from 'prop-types';
 import {FAB, SearchBar} from 'react-native-elements';
 import List from '../components/List';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import * as Location from 'expo-location';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import { MainContext } from "../contexts/MainContext";
+import {MainContext} from '../contexts/MainContext';
 
 const Listing = ({navigation}) => {
   // TODO: Move map permission to a common file.
   // TODO: Add google API to Hooks for searching
   const insets = useSafeAreaInsets();
   const [isFullMap, setIsFullMap] = useState(false);
-  const {isSearching, setIsSearching, searchValue, setSearchValue} = useContext(MainContext);
+  const {isSearching, setIsSearching, searchValue, setSearchValue} =
+    useContext(MainContext);
 
   const updateSearch = (search) => {
-    setSearchValue(search)
-    setIsSearching(true)
+    setSearchValue(search);
+    setIsSearching(true);
   };
 
   const checkPermission = async () => {
@@ -45,7 +41,7 @@ const Listing = ({navigation}) => {
 
   useEffect(async () => {
     if (checkPermission()) {
-      console.log("USER LOCATION", await getUserLocation());
+      console.log('USER LOCATION', await getUserLocation());
     }
   });
 
@@ -94,7 +90,7 @@ const Listing = ({navigation}) => {
             setIsSearching(false);
           }}
           platform={'ios'}
-          containerStyle={{ height: 60}}
+          containerStyle={{height: 60}}
         />
         <List navigation={navigation} style={{zIndex: 1, flex: 1}} />
       </View>

@@ -16,8 +16,8 @@ import {Video} from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
 import LottieView from 'lottie-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PropTypes from 'prop-types';
-import {Card, Input, Icon, Text} from 'react-native-elements';
+import PropTypes, {checkPropTypes} from 'prop-types';
+import {Card, Input, Icon, Text, FAB, Overlay} from 'react-native-elements';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -26,9 +26,10 @@ import {pickRandomImage, formatDate, getFonts} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
-import {appId} from '../utils/Variables';
+import {appId, colors} from '../utils/Variables';
 import CheckBoxComponent from '../components/CheckBoxComponent';
 import CustomDropDownPicker from '../components/DropDownPicker';
+import OverlayComponent from '../components/OverlayComponent';
 
 const Upload = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -49,6 +50,7 @@ const Upload = ({navigation}) => {
   const [endTime, setEndTime] = useState();
   const {userType} = useContext(MainContext);
   const {petType} = useContext(MainContext);
+  const [overlayVisible, setOverlayVisible] = useState(false);
 
   const {
     control,
@@ -272,6 +274,27 @@ const Upload = ({navigation}) => {
               name="description"
             ></Controller>
 
+            <View>
+              <FAB
+                visible={true}
+                title="Add location"
+                upperCase={false}
+                size="small"
+                icon={{name: 'place', color: 'black'}}
+                onPress={() => {
+                  setOverlayVisible(!overlayVisible);
+                }}
+                color={colors.brightButtonGreen}
+                style={{padding: 15}}
+                titleStyle={[styles.text, {color: 'black'}]}
+              />
+              {overlayVisible ? (
+                <OverlayComponent onPressOpen={overlayVisible} />
+              ) : (
+                <></>
+              )}
+            </View>
+
             <View
               style={{
                 width: '100%',
@@ -423,7 +446,7 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     borderRadius: 10,
-    backgroundColor: '#9DCD5A',
+    backgroundColor: colors.darkerBackgroundGreen,
     alignSelf: 'center',
     width: '60%',
     height: undefined,
