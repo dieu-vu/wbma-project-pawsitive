@@ -9,9 +9,10 @@ const MainProvider = (props) => {
   const [update, setUpdate] = useState(0);
   const [userType, setUserType] = useState('owner');
   const [petType, setPetType] = useState(null);
-  const [selectedPetType, setSelectedPetType] = useState("all")
+  const [selectedPetType, setSelectedPetType] = useState('all');
   const [isSearching, setIsSearching] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [mapOverlayVisible, setMapOverlayVisible] = useState(false);
 
   return (
     <MainContext.Provider
@@ -32,6 +33,8 @@ const MainProvider = (props) => {
         setIsSearching,
         searchValue,
         setSearchValue,
+        mapOverlayVisible,
+        setMapOverlayVisible,
       }}
     >
       {props.children}

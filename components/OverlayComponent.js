@@ -1,18 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Button, Overlay, Icon} from 'react-native-elements';
 import {View, Text, StyleSheet, Dimensions} from 'react-native';
 import MapSearch from './MapSearch';
 import PropTypes from 'prop-types';
+import {MainContext} from '../contexts/MainContext';
 
-const OverlayComponent = ({onToggle}) => {
-  const [visible, setVisible] = useState(onToggle);
+const MapOverlayComponent = () => {
+  const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
 
   return (
     <View>
       <Overlay
-        isVisible={visible}
+        isVisible={mapOverlayVisible}
         onBackdropPress={() => {
-          setVisible(!visible);
+          setMapOverlayVisible(!mapOverlayVisible);
         }}
         overlayStyle={styles.container}
       >
@@ -21,7 +22,7 @@ const OverlayComponent = ({onToggle}) => {
           title="Confirm location"
           buttonStyle={styles.button}
           onPress={() => {
-            setVisible(!visible);
+            setMapOverlayVisible(!mapOverlayVisible);
           }}
         />
       </Overlay>
@@ -39,8 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-OverlayComponent.propTypes = {
-  onToggle: PropTypes.bool,
-};
-
-export default OverlayComponent;
+export default MapOverlayComponent;

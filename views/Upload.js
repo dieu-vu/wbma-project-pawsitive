@@ -50,7 +50,7 @@ const Upload = ({navigation}) => {
   const [endTime, setEndTime] = useState();
   const {userType} = useContext(MainContext);
   const {petType} = useContext(MainContext);
-  const [overlayVisible, setOverlayVisible] = useState(false);
+  const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
 
   const {
     control,
@@ -282,17 +282,13 @@ const Upload = ({navigation}) => {
                 size="small"
                 icon={{name: 'place', color: 'black'}}
                 onPress={() => {
-                  setOverlayVisible(!overlayVisible);
+                  setMapOverlayVisible(!mapOverlayVisible);
                 }}
                 color={colors.brightButtonGreen}
                 style={{padding: 15}}
                 titleStyle={[styles.text, {color: 'black'}]}
               />
-              {overlayVisible ? (
-                <OverlayComponent onPressOpen={overlayVisible} />
-              ) : (
-                <></>
-              )}
+              {mapOverlayVisible ? <OverlayComponent /> : <></>}
             </View>
 
             <View
