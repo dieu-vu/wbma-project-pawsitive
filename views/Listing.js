@@ -7,14 +7,25 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import * as Location from 'expo-location';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
+import CustomDropDownPicker from "../components/DropDownPicker";
 
 const Listing = ({navigation}) => {
   // TODO: Move map permission to a common file.
   // TODO: Add google API to Hooks for searching
   const insets = useSafeAreaInsets();
   const [isFullMap, setIsFullMap] = useState(false);
-  const {isSearching, setIsSearching, searchValue, setSearchValue} =
+  const [currentLatitude, setCurrentLatitude] = useState(62.04164);
+  const [currentLongitude, setCurrentLongitude] = useState(26.40757);
+  const {isSearching, setIsSearching, searchValue, setSearchValue, setSelectedPetType} =
     useContext(MainContext);
+
+  const items = [
+    {label: 'All', value: 'all'},
+    {label: 'Dog', value: 'dog'},
+    {label: 'Cat', value: 'cat'},
+    {label: 'Bird', value: 'bird'},
+    {label: 'Other', value: 'other'},
+  ];
 
   const updateSearch = (search) => {
     setSearchValue(search);
@@ -49,12 +60,17 @@ const Listing = ({navigation}) => {
     ? Dimensions.get('window').height
     : Dimensions.get('window').height * 0.4;
   const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
-  console.log('searchbar value', searchValue);
-  console.log('searchingstate', isSearching);
 
   return (
     <SafeAreaView style={styles.container}>
       <MapView
+        initialRegion={{
+          // TODO make current latitude and longitude to be current location if user gives permission sharing their location
+          latitude: currentLatitude,
+          longitude: currentLongitude,
+          latitudeDelta: 5,
+          longitudeDelta: 5.5,
+        }}
         style={{
           width: Dimensions.get('window').width,
           height: mapState,
@@ -82,16 +98,32 @@ const Listing = ({navigation}) => {
           flex: 1,
         }}
       >
-        <SearchBar
-          placeholder="Search..."
-          onChangeText={updateSearch}
-          value={searchValue}
-          onCancel={() => {
-            setIsSearching(false);
-          }}
-          platform={'ios'}
-          containerStyle={{height: 60}}
-        />
+        <View style={styles.SbAndDropContainer}>
+          <SearchBar
+            placeholder="Search..."
+            onChangeText={updateSearch}
+            value={searchValue}
+            onCancel={() => {
+              setIsSearching(false);
+            }}
+            platform={'ios'}
+            containerStyle={{
+              height: 60,
+              width: Dimensions.get('window').width * 0.68,
+            }}
+          />
+
+          <CustomDropDownPicker
+            // TODO When dropdown item selected re-render based on tag
+            dropdownTextStyle={{display: 'none'}}
+            componentContainerStyle={{width: '30%'}}
+            dropdownContainerStyle={{alignSelf: 'center'}}
+            dropdownPlaceholder="Filter By"
+            items={items}
+            setValue={setSelectedPetType}
+          />
+        </View>
+
         <List navigation={navigation} style={{zIndex: 1, flex: 1}} />
       </View>
     </SafeAreaView>
@@ -107,6 +139,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  SbAndDropContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: Dimensions.get('window').width,
+  }
 });
 
 export default Listing;

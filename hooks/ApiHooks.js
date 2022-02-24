@@ -49,8 +49,15 @@ const useMedia = (myFilesOnly) => {
           jsonFilter = await getFilesByTag(`${appId}_pet_${selectedPetType}`);
         }
 
-        if (isSearching) {
+        if (isSearching && selectedPetType === 'all') {
           jsonFilter = json.filter((item) =>
+            item.title.toLowerCase().includes(searchValue.toLowerCase())
+          );
+        } else if (isSearching && selectedPetType !== 'all') {
+          const filesByTag = await getFilesByTag(
+            `${appId}_pet_${selectedPetType}`
+          );
+          jsonFilter = filesByTag.filter((item) =>
             item.title.toLowerCase().includes(searchValue.toLowerCase())
           );
         }
@@ -77,7 +84,7 @@ const useMedia = (myFilesOnly) => {
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
-  }, [update, searchValue]);
+  }, [update, searchValue, selectedPetType]);
 
   const postMedia = async (formData, token) => {
     setLoading(true);

@@ -3,31 +3,39 @@ import {StyleSheet, View, Text} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {getFonts} from '../utils/Utils';
 import {MainContext} from '../contexts/MainContext';
+import PropTypes from 'prop-types';
 
-const CustomDropDownPicker = () => {
+const CustomDropDownPicker = (props) => {
   const [open, setOpen] = useState(false);
   const {petType, setPetType} = useContext(MainContext);
-  const [items, setItems] = useState([
-    {label: 'Dog', value: 'dog'},
-    {label: 'Cat', value: 'cat'},
-    {label: 'Bird', value: 'bird'},
-    {label: 'Other', value: 'other'},
-  ]);
+  const [items, setItems] = useState(
+    props.items || [
+      {label: 'Dog', value: 'dog'},
+      {label: 'Cat', value: 'cat'},
+      {label: 'Bird', value: 'bird'},
+      {label: 'Other', value: 'other'},
+    ]
+  );
   getFonts();
 
   return (
-    <View style={styles.componentContainer}>
-      <Text style={styles.dropdownText}>Type of pet:</Text>
+    <View style={props.componentContainerStyle || styles.componentContainer}>
+      <Text style={props.dropdownTextStyle || styles.dropdownText}>
+        Type of pet:
+      </Text>
       <DropDownPicker
         open={open}
         value={petType}
         items={items}
+        placeholder={props.dropdownPlaceholder}
         style={{
           width: '100%',
           backgroundColor: 'white',
           zIndex: 1,
         }}
-        containerStyle={styles.dropdownContainer}
+        containerStyle={
+          props.dropdownContainerStyle || styles.dropdownContainer
+        }
         dropDownDirection="TOP"
         textStyle={styles.dropdownText}
         setOpen={setOpen}
@@ -62,5 +70,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+CustomDropDownPicker.propTypes = {
+  componentContainerStyle: PropTypes.object,
+  dropdownContainerStyle: PropTypes.object,
+  dropdownTextStyle: PropTypes.object,
+  dropdownPlaceholder: PropTypes.string,
+  items: PropTypes.array,
+  setValue: PropTypes.func,
+};
 
 export default CustomDropDownPicker;
