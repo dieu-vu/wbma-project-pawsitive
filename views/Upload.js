@@ -282,7 +282,6 @@ const Upload = ({navigation}) => {
                 size="small"
                 icon={{name: 'place', color: 'black'}}
                 onPress={() => {
-                  // navigation.navigate('AddLocation');
                   setMapOverlayVisible(!mapOverlayVisible);
                 }}
                 color={colors.brightButtonGreen}

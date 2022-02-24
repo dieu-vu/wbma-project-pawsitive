@@ -29,14 +29,7 @@ const MapSearch = () => {
     console.log('address Geocode ' + coords);
   };
   return (
-    <View style={{flex: 1}}>
-      <MapView
-        style={styles.container}
-        provider={PROVIDER_GOOGLE}
-        showsMyLocationButton={true}
-        showsUserLocation={true}
-        initialRegion={state.region}
-      />
+    <View style={{flex: 1, flexDirection: 'column'}}>
       <GooglePlacesAutocomplete
         placeholder="search"
         onPress={(data, details = null) => {
@@ -47,8 +40,15 @@ const MapSearch = () => {
           key: apiKey,
           language: 'en',
         }}
-        style={{zIndex: 1}}
+        style={styles.mapSearchBox}
       ></GooglePlacesAutocomplete>
+      <MapView
+        style={styles.map}
+        provider={PROVIDER_GOOGLE}
+        showsMyLocationButton={true}
+        showsUserLocation={true}
+        initialRegion={state.region}
+      />
     </View>
   );
 };
@@ -56,10 +56,12 @@ const styles = StyleSheet.create({
   button: {
     margin: 10,
   },
-  container: {
+  map: {
     width: '100%',
     height: '100%',
+    zIndex: -1,
   },
+  mapSearchBox: {},
 });
 
 export default MapSearch;
