@@ -21,6 +21,13 @@ const Home = ({navigation}) => {
             Welcome to Pawsitive!
           </Text>
           <Button
+          title="Map"
+          onPress={() => {
+            navigation.navigate('Map');
+          }}
+          buttonStyle={styles.listings}
+        />
+          <Button
             title="Listings"
             onPress={() => {
               navigation.navigate('Listing');
@@ -28,6 +35,7 @@ const Home = ({navigation}) => {
             }}
             buttonStyle={styles.listings}
           />
+
           <Text style={styles.titles} h4>
             Listings around you
           </Text>

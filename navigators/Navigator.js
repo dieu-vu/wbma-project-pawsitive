@@ -9,6 +9,7 @@ import Profile from '../views/Profile';
 import Upload from '../views/Upload';
 import Single from '../views/Single';
 import MyPosts from '../views/MyPosts';
+import Map from '../views/Map';
 import {MainContext} from '../contexts/MainContext';
 import Home from '../views/Home';
 import {createDrawerNavigator} from '@react-navigation/drawer';
@@ -122,6 +123,16 @@ const HomeStackScreen = () => {
         component={Listing}
         options={{
           title: 'Listing',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+        }}
+      />
+      <HomeStack.Screen
+        name="Map"
+        component={Map}
+        options={{
+          title: 'Map',
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
