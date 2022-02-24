@@ -25,7 +25,7 @@ const CustomDropDownPicker = (props) => {
       </Text>
       <DropDownPicker
         open={open}
-        value={petType}
+        value={props.value || petType}
         items={items}
         placeholder={props.dropdownPlaceholder}
         style={{
@@ -34,12 +34,12 @@ const CustomDropDownPicker = (props) => {
           zIndex: 1,
         }}
         containerStyle={
-          props.dropdownContainerStyle || styles.dropdownContainer
+          props.containerStyle || styles.dropdownContainer
         }
-        dropDownDirection="TOP"
+        dropDownDirection={props.dropDownDirection || 'TOP'}
         textStyle={styles.dropdownText}
         setOpen={setOpen}
-        setValue={setPetType}
+        setValue={props.setValue || setPetType}
         setItems={setItems}
         listMode="SCROLLVIEW"
         scrollViewProps={{
@@ -73,11 +73,13 @@ const styles = StyleSheet.create({
 
 CustomDropDownPicker.propTypes = {
   componentContainerStyle: PropTypes.object,
-  dropdownContainerStyle: PropTypes.object,
+  containerStyle: PropTypes.object,
   dropdownTextStyle: PropTypes.object,
   dropdownPlaceholder: PropTypes.string,
   items: PropTypes.array,
   setValue: PropTypes.func,
+  value: PropTypes.string,
+  dropDownDirection: PropTypes.string,
 };
 
 export default CustomDropDownPicker;

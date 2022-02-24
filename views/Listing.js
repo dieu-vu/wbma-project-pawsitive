@@ -16,8 +16,14 @@ const Listing = ({navigation}) => {
   const [isFullMap, setIsFullMap] = useState(false);
   const [currentLatitude, setCurrentLatitude] = useState(62.04164);
   const [currentLongitude, setCurrentLongitude] = useState(26.40757);
-  const {isSearching, setIsSearching, searchValue, setSearchValue, setSelectedPetType} =
-    useContext(MainContext);
+  const {
+    isSearching,
+    setIsSearching,
+    searchValue,
+    setSearchValue,
+    selectedPetType,
+    setSelectedPetType
+  } = useContext(MainContext);
 
   const items = [
     {label: 'All', value: 'all'},
@@ -50,16 +56,18 @@ const Listing = ({navigation}) => {
     return userLocation.coords;
   };
 
-  useEffect(async () => {
-    if (checkPermission()) {
-      console.log('USER LOCATION', await getUserLocation());
-    }
-  });
+  // useEffect(async () => {
+  //   if (checkPermission()) {
+  //     // console.log('USER LOCATION', await getUserLocation());
+  //   }
+  // });
 
   const mapState = isFullMap
     ? Dimensions.get('window').height
     : Dimensions.get('window').height * 0.4;
   const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
+
+  console.log('selectedPetType', selectedPetType);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -114,21 +122,23 @@ const Listing = ({navigation}) => {
           />
 
           <CustomDropDownPicker
-            // TODO When dropdown item selected re-render based on tag
+            value={selectedPetType}
             dropdownTextStyle={{display: 'none'}}
             componentContainerStyle={{width: '30%'}}
-            dropdownContainerStyle={{alignSelf: 'center'}}
+            containerStyle={{alignSelf: 'center'}}
             dropdownPlaceholder="Filter By"
             items={items}
             setValue={setSelectedPetType}
           />
         </View>
 
-        <List navigation={navigation} style={{zIndex: 1, flex: 1}} />
+        <List navigation={navigation} style={{flex: 1}} />
       </View>
     </SafeAreaView>
   );
 };
+
+
 
 Listing.propTypes = {
   navigation: PropTypes.object,
