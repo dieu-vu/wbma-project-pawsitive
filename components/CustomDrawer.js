@@ -29,12 +29,11 @@ const CustomDrawer = (props) => {
             overflow: 'hidden',
             marginTop: 25,
             alignSelf: 'center',
-
           }}
           titleStyle={{
             color: 'white',
             fontSize: 18,
-            padding: 2,
+            paddingVertical: 7,
             fontFamily: 'Montserrat-Bold',
           }}
           style={styles.button}
