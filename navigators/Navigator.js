@@ -140,12 +140,26 @@ const HomeStackScreen = () => {
 
 const DrawerNavigator = () => {
   return (
-    <Drawer.Navigator drawerContent={(props) => <CustomDrawer {...props} />}>
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      screenOptions={{
+        drawerActiveTintColor: '#8DD35E',
+        drawerLabelStyle: {
+          color: 'black',
+          fontSize: 17,
+          fontFamily: 'Montserrat-SemiBold',
+          marginLeft: -10,
+        },
+      }}
+    >
       <Stack.Screen
         name="Main"
         component={TabScreen}
         options={{
           headerShown: false,
+          drawerIcon: () => (
+            <Icon name="home" type="feather" size={20} color={'#425E20'} />
+          ),
         }}
       />
       <Drawer.Screen
@@ -153,7 +167,7 @@ const DrawerNavigator = () => {
         component={SavedPosts}
         options={{
           drawerIcon: () => (
-            <Icon name="person-outline" size={20} color={'black'} />
+            <Icon name="bookmark" type="feather" size={20} color={'#425E20'} />
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',
@@ -165,7 +179,7 @@ const DrawerNavigator = () => {
         component={MyPosts}
         options={{
           drawerIcon: () => (
-            <Icon name="person-outline" size={20} color={'black'} />
+            <Icon name="archive" type="feather" size={20} color={'#425E20'} />
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',

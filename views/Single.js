@@ -31,7 +31,10 @@ const Single = ({navigation, route}) => {
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postFavourite(file.file_id, token);
-      response && Alert.alert('Saved to favourites') && setUpdate(update + 1);
+      if (response) {
+        Alert.alert('Saved to favourites');
+        setUpdate(update + 1);
+      }
     } catch (error) {
       console.error('create like error', error);
     }

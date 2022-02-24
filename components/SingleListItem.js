@@ -24,7 +24,10 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
           try {
             const token = await AsyncStorage.getItem('userToken');
             const response = await deleteMedia(singleMedia.file_id, token);
-            response && Alert.alert('Post deleted') && setUpdate(update + 1);
+            if (response) {
+              Alert.alert('Post deleted');
+              setUpdate(update + 1);
+            }
           } catch (error) {
             console.error(error);
           }
@@ -42,9 +45,10 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
           try {
             const token = await AsyncStorage.getItem('userToken');
             const response = await deleteFavourite(singleMedia.file_id, token);
-            response &&
-              Alert.alert('Favourite removed') &&
+            if (response) {
+              console.log('favourite removed');
               setUpdate(update + 1);
+            }
           } catch (error) {
             console.error(error);
           }
