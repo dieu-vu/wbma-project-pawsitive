@@ -4,25 +4,29 @@ import PropTypes from 'prop-types';
 import {FAB, SearchBar} from 'react-native-elements';
 import List from '../components/List';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import * as Location from 'expo-location';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
-import CustomDropDownPicker from "../components/DropDownPicker";
+import CustomDropDownPicker from '../components/DropDownPicker';
+import {
+  checkLocationPermission,
+  askPermission,
+  getUserLocation,
+} from '../utils/Utils';
 
 const Listing = ({navigation}) => {
   // TODO: Move map permission to a common file.
   // TODO: Add google API to Hooks for searching
   const insets = useSafeAreaInsets();
   const [isFullMap, setIsFullMap] = useState(false);
-  const [currentLatitude, setCurrentLatitude] = useState(62.04164);
-  const [currentLongitude, setCurrentLongitude] = useState(26.40757);
+  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
+
   const {
     isSearching,
     setIsSearching,
     searchValue,
     setSearchValue,
     selectedPetType,
-    setSelectedPetType
+    setSelectedPetType,
   } = useContext(MainContext);
 
   const items = [
@@ -38,29 +42,16 @@ const Listing = ({navigation}) => {
     setIsSearching(true);
   };
 
-  const checkPermission = async () => {
-    const hasPermission = await Location.requestForegroundPermissionsAsync();
-    if (hasPermission.status === 'granted') {
-      const permission = await askPermission();
-      return permission;
+  /* make current latitude and longitude to be current location if user gives permission sharing their location
+   otherwise, ask for permission*/
+  useEffect(async () => {
+    if (checkLocationPermission()) {
+      setCurrentUserLocation(await getUserLocation());
+      console.log('USER LOCATION', currentUserLocation);
+    } else {
+      askPermission();
     }
-    return true;
-  };
-  const askPermission = async () => {
-    const permission = await Location.requestForegroundPermissionsAsync();
-    return permission.status === 'granted';
-  };
-
-  const getUserLocation = async () => {
-    const userLocation = await Location.getCurrentPositionAsync();
-    return userLocation.coords;
-  };
-
-  // useEffect(async () => {
-  //   if (checkPermission()) {
-  //     // console.log('USER LOCATION', await getUserLocation());
-  //   }
-  // });
+  });
 
   const mapState = isFullMap
     ? Dimensions.get('window').height
@@ -73,11 +64,10 @@ const Listing = ({navigation}) => {
     <SafeAreaView style={styles.container}>
       <MapView
         initialRegion={{
-          // TODO make current latitude and longitude to be current location if user gives permission sharing their location
-          latitude: currentLatitude,
-          longitude: currentLongitude,
-          latitudeDelta: 5,
-          longitudeDelta: 5.5,
+          latitude: currentUserLocation.latitude,
+          longitude: currentUserLocation.longitude,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
         }}
         style={{
           width: Dimensions.get('window').width,
@@ -138,8 +128,6 @@ const Listing = ({navigation}) => {
   );
 };
 
-
-
 Listing.propTypes = {
   navigation: PropTypes.object,
 };
@@ -153,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width,
-  }
+  },
 });
 
 export default Listing;

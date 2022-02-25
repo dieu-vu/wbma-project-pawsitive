@@ -13,6 +13,10 @@ const MainProvider = (props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [mapOverlayVisible, setMapOverlayVisible] = useState(false);
+  const [currentUserLocation, setCurrentUserLocation] = useState({
+    latitude: 60.168415993,
+    longitude: 24.9333962664,
+  });
 
   return (
     <MainContext.Provider
@@ -35,6 +39,8 @@ const MainProvider = (props) => {
         setSearchValue,
         mapOverlayVisible,
         setMapOverlayVisible,
+        currentUserLocation,
+        setCurrentUserLocation,
       }}
     >
       {props.children}

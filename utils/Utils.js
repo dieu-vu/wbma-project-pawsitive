@@ -2,6 +2,7 @@ import React from 'react';
 import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
 import {useUser, useTag} from '../hooks/ApiHooks';
+import * as Location from 'expo-location';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),
@@ -48,4 +49,31 @@ const fetchAvatar = async (data) => {
   }
 };
 
-export {pickRandomImage, formatDate, getFonts, fetchAvatar};
+const checkLocationPermission = async () => {
+  const hasPermission = await Location.requestForegroundPermissionsAsync();
+  if (hasPermission.status === 'granted') {
+    const permission = await askPermission();
+    return permission;
+  }
+  return true;
+};
+
+const askPermission = async () => {
+  const permission = await Location.requestForegroundPermissionsAsync();
+  return permission.status === 'granted';
+};
+
+const getUserLocation = async () => {
+  const userLocation = await Location.getCurrentPositionAsync();
+  return userLocation.coords;
+};
+
+export {
+  pickRandomImage,
+  formatDate,
+  getFonts,
+  fetchAvatar,
+  checkLocationPermission,
+  askPermission,
+  getUserLocation,
+};
