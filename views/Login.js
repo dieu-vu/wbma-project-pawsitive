@@ -14,7 +14,7 @@ import RegisterForm from '../components/RegisterForm';
 import LoginForm from '../components/LoginForm';
 import {LinearGradient} from 'expo-linear-gradient';
 import MainButton from '../components/MainButton';
-import Logo from '../assets/pawsitiveLogo.svg';
+import Logo from '../assets/pawsitiveLogo2.svg';
 import {useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
