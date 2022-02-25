@@ -1,6 +1,14 @@
 import React, {useEffect, useRef, useState, useContext} from 'react';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {StyleSheet, Platform, View, Dimensions} from 'react-native';
+import {
+  StyleSheet,
+  Platform,
+  View,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Keyboard,
+  ScrollView,
+} from 'react-native';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 
 import {MainContext} from '../contexts/MainContext';
@@ -24,10 +32,6 @@ const MapSearch = () => {
   let mapView = Object();
   const ref = useRef();
 
-  useEffect(() => {
-    ref.current?.setAddressText('');
-  }, []);
-
   const [region, setRegion] = useState({
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
@@ -48,12 +52,14 @@ const MapSearch = () => {
   useEffect(async () => {
     if (checkLocationPermission()) {
       setCurrentUserLocation(await getUserLocation());
-      console.log('get USER LOCATION', await getUserLocation());
-      console.log('USER LOCATION', currentUserLocation);
     } else {
       askPermission();
     }
   }, [currentUserLocation]);
+
+  useEffect(() => {
+    ref.current?.setAddressText('');
+  }, []);
 
   const goToInitialLocation = () => {
     let initialRegion = Object(currentUserLocation);
@@ -76,8 +82,8 @@ const MapSearch = () => {
       );
       const responseJson = await response.json();
       const coords = await JSON.stringify(responseJson);
-      console.log('address Geocode ' + coords);
-      setRegion({
+      console.log('ADDRESS Geocode ' + coords);
+      setAddress({
         address: JSON.stringify(
           await responseJson.results[0].formatted_address
         ).replace(/"/g, ''),
@@ -87,73 +93,91 @@ const MapSearch = () => {
     }
   };
 
+  // TODO: can select onPress, check API result
   return (
-    <View style={{flex: 1, flexDirection: 'column'}}>
-      <GooglePlacesAutocomplete
-        ref={ref}
-        placeholder="Search"
-        minLength={2}
-        onPress={(data, details = null) => {
-          console.log('GG MAP SEARCH', data, details);
-        }}
-        onFail={(error) => console.error(error)}
-        query={{
-          key: apiKey,
-          language: 'en',
-        }}
-        styles={{
-          textInputContainer: {
-            flexDirection: 'row',
-            borderEndColor: colors.darkestGreen,
-            borderWidth: 1,
-            borderRadius: 10,
-            paddingTop: 5,
-            marginTop: 5,
-          },
-          textInput: {
-            fontFamily: 'Montserrat-Regular',
-            height: 38,
-            color: colors.darkestGreen,
-            fontSize: 16,
-          },
-          description: {
-            fontFamily: 'Montserrat-Regular',
-            color: 'black',
-            fontSize: 12,
-          },
-          predefinedPlacesDescription: {
-            color: 'black',
-          },
-          listView: {
-            position: 'relative',
-            marginTop: 5,
-            marginBottom: 10,
-            backgroundColor: 'white',
-            borderBottomEndRadius: 15,
-            elevation: 2,
-          },
-        }}
-        enablePoweredByContainer={false}
-        isRowScrollable={true}
-        currentLocation={false}
-        nearbyPlacesAPI="GooglePlacesSearch"
-        GooglePlacesSearchQuery={{
-          rankby: 'distance',
-        }}
-      ></GooglePlacesAutocomplete>
-
-      <MapView
-        ref={(ref) => (mapView = ref)}
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        showsMyLocationButton={true}
-        showsUserLocation={true}
-        initialRegion={region}
-        onMapReady={() => {
-          goToInitialLocation();
-        }}
-        onRegionChangeComplete={onRegionChange}
-      />
+    <View
+      style={{flex: 1, flexDirection: 'column', zIndex: -2}}
+      keyboardShouldPersistTaps="handled"
+    >
+      <View style={styles.mapSearchBox} keyboardShouldPersistTaps="handled">
+        <GooglePlacesAutocomplete
+          ref={ref}
+          placeholder="Search"
+          minLength={2}
+          autoFocus={false}
+          keepResultsAfterBlur={true}
+          onPress={(data, details = null) => {
+            console.log('GG MAP SEARCH', data, details);
+            setListViewDisplay(false);
+            setAddress(data.description);
+            setcurrentLat(details.geometry.location.latitude);
+            setcurrentLng(details.geometry.location.longitude);
+          }}
+          onFail={(error) => console.error(error)}
+          query={{
+            key: apiKey,
+            language: 'en',
+          }}
+          renderDescription={(row) => row.description}
+          listViewDisplayed={true}
+          enablePoweredByContainer={false}
+          isRowScrollable={true}
+          currentLocation={false}
+          nearbyPlacesAPI="GooglePlacesSearch"
+          GooglePlacesSearchQuery={{
+            rankby: 'distance',
+          }}
+          styles={{
+            textInputContainer: {
+              flexDirection: 'row',
+              borderEndColor: colors.darkestGreen,
+              borderWidth: 1,
+              borderRadius: 10,
+              paddingTop: 5,
+              marginTop: 5,
+            },
+            textInput: {
+              fontFamily: 'Montserrat-Regular',
+              height: 38,
+              color: colors.darkestGreen,
+              fontSize: 16,
+            },
+            description: {
+              fontFamily: 'Montserrat-Regular',
+              color: 'black',
+              fontSize: 12,
+            },
+            predefinedPlacesDescription: {
+              color: 'black',
+            },
+            listView: {
+              marginBottom: 10,
+              backgroundColor: 'white',
+              borderBottomEndRadius: 15,
+              elevation: 2,
+            },
+            container: {
+              positition: 'absolute',
+              height: 50,
+            },
+          }}
+        ></GooglePlacesAutocomplete>
+      </View>
+      <View style={styles.mapContainer}>
+        <MapView
+          ref={(ref) => (mapView = ref)}
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          showsMyLocationButton={true}
+          showsUserLocation={true}
+          initialRegion={region}
+          onMapReady={() => {
+            goToInitialLocation();
+          }}
+          onRegionChangeComplete={onRegionChange}
+          debounce={500}
+        />
+      </View>
     </View>
   );
 };
@@ -161,13 +185,25 @@ const styles = StyleSheet.create({
   button: {
     margin: 10,
   },
-  map: {
+  mapContainer: {
     flex: 1,
     width: '100%',
     height: '60%',
     zIndex: -1,
   },
-  mapSearchBox: {flex: 1, width: '100%', height: '40%'},
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+
+  mapSearchBox: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+  },
 });
 
 export default MapSearch;

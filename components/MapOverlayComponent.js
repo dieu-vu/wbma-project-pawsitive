@@ -1,6 +1,13 @@
 import React, {useState, useContext} from 'react';
 import {Button, Overlay, Icon} from 'react-native-elements';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 import MapSearch from './MapSearch';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
@@ -9,7 +16,11 @@ const MapOverlayComponent = () => {
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
 
   return (
-    <View>
+    <TouchableOpacity
+      style={{flexGrow: 1}}
+      activeOpacity={1}
+      onPress={() => Keyboard.dismiss()}
+    >
       <Overlay
         isVisible={mapOverlayVisible}
         onBackdropPress={() => {
@@ -26,7 +37,7 @@ const MapOverlayComponent = () => {
           }}
         />
       </Overlay>
-    </View>
+    </TouchableOpacity>
   );
 };
 
