@@ -16,6 +16,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import SavedPosts from '../views/SavedPosts';
 import CustomDrawer from '../components/CustomDrawer';
 import {TouchableOpacity} from 'react-native';
+import FullScreenMap from "../components/FullScreenMap";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();

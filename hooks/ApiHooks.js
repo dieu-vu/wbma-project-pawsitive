@@ -118,7 +118,13 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
-  return {mediaArray, postMedia, loading, getSingleMedia, deleteMedia};
+  return {
+    mediaArray,
+    postMedia,
+    loading,
+    getSingleMedia,
+    deleteMedia,
+  };
 };
 
 const useLogin = () => {
