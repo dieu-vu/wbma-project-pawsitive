@@ -37,9 +37,9 @@ const MapSearch = () => {
 
   const defaultDelta = 0.05;
   const [listViewDisplayed, setListViewDisplay] = useState(true);
+  // const [showAddress, setShowAddress] = useState(false);
+  // const [search, setSearch] = useState();
   const [address, setAddress] = useState('');
-  const [showAddress, setShowAddress] = useState(false);
-  const [search, setSearch] = useState();
   const [currentLat, setCurrentLat] = useState();
   const [currentLng, setCurrentLng] = useState();
   const [forceRefresh, setForceRefresh] = useState(0);
@@ -50,20 +50,10 @@ const MapSearch = () => {
     longitude: currentUserLocation.longitude,
   });
 
-  const mapView = Object();
   const mapRef = useRef();
   const searchRef = useRef();
 
   getFonts();
-
-  // const refCallBack = () => {
-  //   const ref = useRef();
-  //   const setRef = useCallback((node) => {
-  //     if (ref.current && node) {
-  //       ref.current.setAddressText('');
-  //     }
-  //   }, []);
-  // };
 
   useEffect(async () => {
     if (checkLocationPermission()) {
@@ -93,25 +83,6 @@ const MapSearch = () => {
     setRegion(region);
     setForceRefresh(Math.floor(Math.random() * 100));
     setCurrentUserLocation(region);
-  };
-
-  const getAddress = async () => {
-    //function to get address using current lat and lng
-    try {
-      const response = await fetch(
-        `${searchUrl}${region.latitude},${region.longitude}${keyQuery}`
-      );
-      const responseJson = await response.json();
-      const coords = await JSON.stringify(responseJson);
-      console.log('ADDRESS Geocode ' + coords);
-      setAddress({
-        address: JSON.stringify(
-          await responseJson.results[0].formatted_address
-        ).replace(/"/g, ''),
-      });
-    } catch (e) {
-      console.error('GET ADDRESS ERROR ', e);
-    }
   };
 
   const updateLocationOnSelect = (data, details) => {
