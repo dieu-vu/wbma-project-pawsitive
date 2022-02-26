@@ -96,7 +96,7 @@ const MapSearch = () => {
   // TODO: can select onPress, check API result
   return (
     <View
-      style={{flex: 1, flexDirection: 'column', zIndex: -2}}
+      style={{flex: 1, flexDirection: 'column'}}
       keyboardShouldPersistTaps="handled"
     >
       <View style={styles.mapSearchBox} keyboardShouldPersistTaps="handled">
@@ -106,6 +106,7 @@ const MapSearch = () => {
           minLength={2}
           autoFocus={false}
           keepResultsAfterBlur={true}
+          fetchDetails={true}
           onPress={(data, details = null) => {
             console.log('GG MAP SEARCH', data, details);
             setListViewDisplay(false);
@@ -119,7 +120,7 @@ const MapSearch = () => {
             language: 'en',
           }}
           renderDescription={(row) => row.description}
-          listViewDisplayed={true}
+          listViewDisplayed={listViewDisplayed}
           enablePoweredByContainer={false}
           isRowScrollable={true}
           currentLocation={false}
@@ -151,6 +152,7 @@ const MapSearch = () => {
               color: 'black',
             },
             listView: {
+              marginTop: 5,
               marginBottom: 10,
               backgroundColor: 'white',
               borderBottomEndRadius: 15,

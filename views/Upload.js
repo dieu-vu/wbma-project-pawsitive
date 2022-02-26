@@ -209,12 +209,14 @@ const Upload = ({navigation}) => {
       <KeyboardAwareScrollView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled"
       >
         <View
           style={{
             paddingBottom: insets.bottom,
             flex: 1,
           }}
+          keyboardShouldPersistTaps="handled"
         >
           <Card style={styles.container}>
             {!image ? (
@@ -274,7 +276,7 @@ const Upload = ({navigation}) => {
               name="description"
             ></Controller>
 
-            <View>
+            <View keyboardShouldPersistTaps="handled">
               <FAB
                 visible={true}
                 title="Add location"

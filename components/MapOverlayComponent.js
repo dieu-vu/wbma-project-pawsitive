@@ -20,6 +20,7 @@ const MapOverlayComponent = () => {
       style={{flexGrow: 1}}
       activeOpacity={1}
       onPress={() => Keyboard.dismiss()}
+      keyboardShouldPersistTaps="handled"
     >
       <Overlay
         isVisible={mapOverlayVisible}
@@ -27,6 +28,7 @@ const MapOverlayComponent = () => {
           setMapOverlayVisible(!mapOverlayVisible);
         }}
         overlayStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
       >
         <MapSearch />
         <Button
