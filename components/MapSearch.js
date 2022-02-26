@@ -29,12 +29,14 @@ const MapSearch = () => {
   const keyQuery = `&key=${apiKey}`;
   const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
 
+  let searchText = Object();
   let mapView = Object();
+  const defaultDelta = 0.05;
   const ref = useRef();
 
   const [region, setRegion] = useState({
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
+    latitudeDelta: defaultDelta,
+    longitudeDelta: defaultDelta,
     latitude: currentUserLocation.latitude,
     longitude: currentUserLocation.longitude,
   });
@@ -61,10 +63,11 @@ const MapSearch = () => {
     ref.current?.setAddressText('');
   }, []);
 
-  const goToInitialLocation = () => {
-    let initialRegion = Object(currentUserLocation);
-    initialRegion['latitudeDelta'] = 0.025;
-    initialRegion['longitudeDelta'] = 0.025;
+  const goToInitialLocation = (region) => {
+    console.log('ASSIGNED REGION', region);
+
+    let initialRegion = Object.assign(region);
+    console.log('INITIAL REGION', initialRegion);
     mapView.animateToRegion(initialRegion, 500);
   };
 
@@ -101,24 +104,56 @@ const MapSearch = () => {
     >
       <View style={styles.mapSearchBox} keyboardShouldPersistTaps="handled">
         <GooglePlacesAutocomplete
-          ref={ref}
+          ref={(ref) => (searchText = ref)}
           placeholder="Search"
           minLength={2}
           autoFocus={false}
           keepResultsAfterBlur={true}
           fetchDetails={true}
-          onPress={(data, details = null) => {
-            console.log('GG MAP SEARCH', data, details);
+          onPress={(data, details) => {
+            console.log('GG MAP SEARCH DATA', data);
+            console.log('GG MAP SEARCH DETAILS', details);
+            console.log(
+              'GG MAP SEARCH DETAILS LOCATION',
+              details.geometry.location
+            );
+            const selectedAdress = data.description;
+            const selectedLocation = details.geometry.location;
+
+            console.log('SELECTED LOCATION', selectedLocation);
             setListViewDisplay(false);
-            setAddress(data.description);
-            setcurrentLat(details.geometry.location.latitude);
-            setcurrentLng(details.geometry.location.longitude);
+            setAddress(selectedAdress);
+            console.log('CURRENT ADDRESS', address);
+
+            console.log(
+              'CURRENT LAT FROM DETAILS ',
+              details.geometry.location.latitude
+            );
+            setcurrentLat(selectedLocation.latitude);
+            console.log('CURRENT LAT', currentLat);
+
+            setcurrentLng(selectedLocation.longitude);
+            console.log('CURRENT Lng', currentLng);
+
+            setRegion({
+              latitudeDelta: defaultDelta,
+              longitudeDelta: defaultDelta,
+              latitude: selectedLocation.latitude,
+              longitude: selectedLocation.longitude,
+            });
+
+            console.log('CURRENT REGION', region);
+            searchText.setAddressText('');
+            // goToInitialLocation(region);
           }}
           onFail={(error) => console.error(error)}
           query={{
             key: apiKey,
             language: 'en',
           }}
+          // getDefaultValue={() => {
+          //   return ''; // text input default value
+          // }}
           renderDescription={(row) => row.description}
           listViewDisplayed={listViewDisplayed}
           enablePoweredByContainer={false}
@@ -174,7 +209,7 @@ const MapSearch = () => {
           showsUserLocation={true}
           initialRegion={region}
           onMapReady={() => {
-            goToInitialLocation();
+            goToInitialLocation(region);
           }}
           onRegionChangeComplete={onRegionChange}
           debounce={500}
