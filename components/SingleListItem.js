@@ -80,10 +80,10 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
         }}
       />
       <ListItem.Content>
-        <ListItem.Title numberOfLines={1} h4>
+        <ListItem.Title numberOfLines={1} h4 style={styles.title}>
           {singleMedia.title}
         </ListItem.Title>
-        <ListItem.Subtitle>{fileInfo.description}</ListItem.Subtitle>
+        <ListItem.Subtitle style={styles.subTitle}>{fileInfo.description}</ListItem.Subtitle>
         {myFilesOnly && (
           <Button
             title="Delete"
@@ -91,10 +91,24 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
             style={styles.button}
             buttonStyle={{backgroundColor: '#A9FC73'}}
             containerStyle={{
-              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: '#425E20',
               marginTop: 10,
+              shadowColor: '#425E20',
+              shadowOffset: {
+                width: 0,
+                height: 9,
+              },
+              shadowOpacity: 0.48,
+              shadowRadius: 11.95,
+              elevation: 18,
+              alignSelf: 'flex-end',
             }}
-            titleStyle={{color: 'black', fontSize: 17, padding: 2}}
+            titleStyle={{
+              color: 'black',
+              fontSize: 16,
+              fontFamily: 'Montserrat-SemiBold',
+            }}
           />
         )}
         {savedPosts && (
@@ -104,10 +118,24 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
             buttonStyle={{backgroundColor: '#A9FC73'}}
             style={styles.button}
             containerStyle={{
-              borderRadius: 10,
+              borderWidth: 0.5,
+              borderColor: '#425E20',
               marginTop: 10,
+              shadowColor: '#425E20',
+              shadowOffset: {
+                width: 0,
+                height: 9,
+              },
+              shadowOpacity: 0.48,
+              shadowRadius: 11.95,
+              elevation: 18,
+              alignSelf: 'flex-end',
             }}
-            titleStyle={{color: 'black', fontSize: 17, padding: 2}}
+            titleStyle={{
+              color: 'black',
+              fontSize: 16,
+              fontFamily: 'Montserrat-SemiBold',
+            }}
           />
         )}
       </ListItem.Content>
@@ -121,8 +149,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 5,
   },
-  button: {
-    backgroundColor: 'white',
+  title: {
+    fontFamily: 'Montserrat-Bold',
+  },
+  subTitle: {
+    fontFamily: 'Montserrat-SemiBold',
+    color: 'black',
   },
 });
 

@@ -238,11 +238,11 @@ const styles = StyleSheet.create({
   },
   logoIos: {
     position: 'absolute',
-    bottom: Dimensions.get('window').height * -0.125,
+    bottom: Dimensions.get('window').height * 0.05,
   },
   logoAndroid: {
     position: 'absolute',
-    bottom: Dimensions.get('window').height * -0.125,
+    bottom: Dimensions.get('window').height * 0.05,
   },
   buttonContainer: {
     flex: 1,

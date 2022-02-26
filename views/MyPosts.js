@@ -4,21 +4,18 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import List from '../components/List';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
+
 const MyPosts = ({navigation}) => {
-  const insets = useSafeAreaInsets();
 
   return (
     <SafeAreaView style={styles.container}>
       <View
-        style={{
-          paddingBottom: insets.bottom,
-          flex: 1,
-        }}
+        style={styles.listContainer}
       >
         <List
           navigation={navigation}
           myFilesOnly={true}
-          style={{zIndex: 1, flex: 1}}
+          style={styles.flatList}
         />
       </View>
     </SafeAreaView>
@@ -28,10 +25,26 @@ const MyPosts = ({navigation}) => {
 MyPosts.propTypes = {
   navigation: PropTypes.object,
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  listContainer: {
+    alignSelf: 'center',
+    transform: [{scaleX: 0.95}],
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingTop: 5,
+    paddingBottom: 6,
+    marginHorizontal: 5,
+    marginTop: 3,
+    borderWidth: 3,
+    borderStyle: 'solid',
+    borderColor: '#8DD35E',
+    borderRadius: 12,
+    bottom: -15,
   },
 });
 

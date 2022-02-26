@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, {useState, useEffect, useContext} from 'react';
 import {StyleSheet, View, ScrollView, Dimensions, Alert} from 'react-native';
-import {Card, Text, Avatar, Image} from 'react-native-elements';
+import {Card, Text, Avatar, Image, Button, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
-import MainButton from '../components/MainButton';
 import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
+
 
 const Single = ({navigation, route}) => {
   const {file} = route.params;
@@ -86,6 +86,7 @@ const Single = ({navigation, route}) => {
   return (
     <ScrollView style={styles.container}>
       <View>
+
         {file.media_type === 'image' ? (
           <Image
             PlaceholderContent={<PlaceholderImage />}
@@ -110,6 +111,7 @@ const Single = ({navigation, route}) => {
         colors={['#8DD35E', '#FFFFFF']}
         style={styles.linearGradient}
       >
+
         <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
           <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
             {file.title}
@@ -134,12 +136,20 @@ const Single = ({navigation, route}) => {
             </Card.Title>
           </View>
           <View style={styles.userInfo}>
+
             <Avatar source={{uri: avatar}} rounded={1} />
             <Text style={[styles.text, {marginLeft: 10}]}>
               {owner.username}
             </Text>
           </View>
-          <MainButton onPress={savePost} title={'Save post'} />
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={savePost}
+              title={'Save post'}
+              buttonStyle={styles.buttonStyle}
+              titleStyle={styles.titleStyle}
+            />
+          </View>
         </Card>
       </LinearGradient>
     </ScrollView>
@@ -194,6 +204,35 @@ const styles = StyleSheet.create({
     color: 'black',
     alignItems: 'flex-start',
     padding: 5,
+  },
+  titleStyle: {
+    fontFamily: 'Montserrat-Regular',
+    color: 'black',
+    fontSize: 25,
+  },
+  buttonStyle: {
+    alignSelf: 'center',
+    width: Dimensions.get('window').width * 0.3,
+    height: 50,
+    backgroundColor: '#A9FC73',
+    borderRadius: 35,
+    marginBottom: '30%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+  },
+  icon: {
+    position: 'absolute',
+    zIndex: 5,
+    elevation: 5,
   },
 });
 

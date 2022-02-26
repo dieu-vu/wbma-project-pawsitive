@@ -56,7 +56,7 @@ const TabScreen = () => {
             onPress={() => navigation.toggleDrawer()}
             style={{marginLeft: 16}}
           >
-            <Icon name="menu" type="feather" size={22} color="black" />
+            <Icon name="menu" type="feather" size={23} color="black" />
           </TouchableOpacity>
         ),
       })}
@@ -95,29 +95,32 @@ const HomeStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => {
   return (
-    <HomeStack.Navigator
-      screenOptions={({navigation}) => ({
-        headerStyle: {
-          backgroundColor: '#8DD35E',
-        },
-        headerTintColor: 'black',
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
-            <Icon name="menu" type="feather" size={22} color="black" />
-          </TouchableOpacity>
-        ),
-      })}
-    >
+    <HomeStack.Navigator>
       <HomeStack.Screen
         name="HomeStack"
         component={Home}
-        options={{
+        options={({navigation}) => ({
           tabBarLabel: 'Home',
           title: 'Home',
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
-        }}
+          headerTintColor: 'black',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+              <Icon
+                name="menu"
+                type="feather"
+                size={23}
+                color="black"
+                style={{marginRight: 18}}
+              />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <HomeStack.Screen
         name="Listing"
@@ -126,6 +129,9 @@ const HomeStackScreen = () => {
           title: 'Listing',
           headerStyle: {
             backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
           },
         }}
       />
@@ -137,6 +143,9 @@ const HomeStackScreen = () => {
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
         }}
       />
       <HomeStack.Screen
@@ -144,6 +153,12 @@ const HomeStackScreen = () => {
         component={Single}
         options={({route}) => ({
           title: route.params.file.title,
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
         })}
       />
     </HomeStack.Navigator>
@@ -184,6 +199,9 @@ const DrawerNavigator = () => {
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
         }}
       />
       <Drawer.Screen
@@ -195,6 +213,9 @@ const DrawerNavigator = () => {
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
           },
         }}
       />
@@ -209,6 +230,7 @@ const StackScreen = () => {
       screenOptions={{
         headerStyle: {
           backgroundColor: '#8DD35E',
+          fontFamily: 'Montserrat-Bold',
         },
         headerTintColor: 'black',
       }}

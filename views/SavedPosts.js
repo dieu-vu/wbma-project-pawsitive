@@ -1,11 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {PropTypes} from 'prop-types';
-import {FlatList, SafeAreaView} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useMedia, useTag} from '../hooks/ApiHooks';
 import {appId} from '../utils/Variables';
 import SingleListItem from '../components/SingleListItem';
 import {MainContext} from '../contexts/MainContext';
+import {LinearGradient} from 'expo-linear-gradient';
 
 const SavedPosts = ({navigation}) => {
   const [itemsList, setItemsList] = useState([]);
@@ -58,20 +65,25 @@ const SavedPosts = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      <FlatList
-        data={itemsList}
-        keyExtractor={(item) => item.file_id.toString()}
-        renderItem={({item}) => (
-          <SingleListItem
-            navigation={navigation}
-            singleMedia={item}
-            savedPosts={true}
-          />
-        )}
-        ListFooterComponent={() => {
-          return null;
-        }}
-      />
+      <View
+        style={styles.listContainer}
+      >
+        <FlatList
+          style={styles.flatList}
+          data={itemsList}
+          keyExtractor={(item) => item.file_id.toString()}
+          renderItem={({item}) => (
+            <SingleListItem
+              navigation={navigation}
+              singleMedia={item}
+              savedPosts={true}
+            />
+          )}
+          ListFooterComponent={() => {
+            return null;
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -79,5 +91,23 @@ const SavedPosts = ({navigation}) => {
 SavedPosts.propTypes = {
   navigation: PropTypes.object,
 };
+
+const styles = StyleSheet.create({
+  listContainer: {
+    alignSelf: 'center',
+    transform: [{scaleX: 0.95}],
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingTop: 5,
+    paddingBottom: 6,
+    marginHorizontal: 5,
+    marginTop: 3,
+    borderWidth: 3,
+    borderStyle: 'solid',
+    borderColor: '#8DD35E',
+    borderRadius: 12,
+    bottom: -15,
+  },
+});
 
 export default SavedPosts;
