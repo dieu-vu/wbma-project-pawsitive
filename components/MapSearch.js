@@ -1,4 +1,10 @@
-import React, {useEffect, useRef, useState, useContext} from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useContext,
+  useCallback,
+} from 'react';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {
   StyleSheet,
@@ -29,11 +35,14 @@ const MapSearch = () => {
   const keyQuery = `&key=${apiKey}`;
   const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
 
-  let searchText = Object();
-  let mapView = Object();
   const defaultDelta = 0.05;
-  const ref = useRef();
-
+  const [listViewDisplayed, setListViewDisplay] = useState(true);
+  const [address, setAddress] = useState('');
+  const [showAddress, setShowAddress] = useState(false);
+  const [search, setSearch] = useState();
+  const [currentLat, setCurrentLat] = useState();
+  const [currentLng, setCurrentLng] = useState();
+  const [forceRefresh, setForceRefresh] = useState(0);
   const [region, setRegion] = useState({
     latitudeDelta: defaultDelta,
     longitudeDelta: defaultDelta,
@@ -41,15 +50,20 @@ const MapSearch = () => {
     longitude: currentUserLocation.longitude,
   });
 
-  const [listViewDisplayed, setListViewDisplay] = useState(true);
-  const [address, setAddress] = useState('');
-  const [showAddress, setShowAddress] = useState(false);
-  const [search, setSearch] = useState();
-  const [currentLat, setcurrentLat] = useState();
-  const [currentLng, setcurrentLng] = useState();
-  const [forceRefresh, setForceRefresh] = useState(0);
+  const mapView = Object();
+  const mapRef = useRef();
+  const searchRef = useRef();
 
   getFonts();
+
+  // const refCallBack = () => {
+  //   const ref = useRef();
+  //   const setRef = useCallback((node) => {
+  //     if (ref.current && node) {
+  //       ref.current.setAddressText('');
+  //     }
+  //   }, []);
+  // };
 
   useEffect(async () => {
     if (checkLocationPermission()) {
@@ -60,15 +74,19 @@ const MapSearch = () => {
   }, [currentUserLocation]);
 
   useEffect(() => {
-    ref.current?.setAddressText('');
-  }, []);
+    console.log('SEARCH REF GET ADDRESS', searchRef.current?.getAddressText());
+    searchRef.current?.setAddressText('');
+    console.log('CURRENT ADDRESS setState ', address);
+    console.log('CURRENT REGION', region);
+    goToInitialLocation(region);
+  }, [address, region]);
 
   const goToInitialLocation = (region) => {
     console.log('ASSIGNED REGION', region);
 
     let initialRegion = Object.assign(region);
     console.log('INITIAL REGION', initialRegion);
-    mapView.animateToRegion(initialRegion, 500);
+    mapRef.current.animateToRegion(initialRegion, 500);
   };
 
   const onRegionChange = (region) => {
@@ -96,6 +114,31 @@ const MapSearch = () => {
     }
   };
 
+  const updateLocationOnSelect = (data, details) => {
+    const selectedAdress = data.description;
+    const selectedLocation = {
+      latitudeDelta: defaultDelta,
+      longitudeDelta: defaultDelta,
+      latitude: details.geometry.location.lat,
+      longitude: details.geometry.location.lng,
+    };
+    console.log('GG MAP SEARCH ADDRESS', selectedAdress);
+
+    console.log('GG MAP SEARCH DETAILS LOCATION', selectedLocation);
+    setListViewDisplay(false);
+    setAddress(selectedAdress);
+    console.log('CURRENT ADDRESS', selectedAdress);
+
+    // console.log('CURRENT LAT FROM DETAILS ', selectedLocation.latitude);
+    // console.log('CURRENT LAT FROM STATE ', typeof selectedLocation.latitude);
+
+    setCurrentLat(selectedLocation.latitude);
+
+    setCurrentLng(selectedLocation.longitude);
+
+    setRegion(selectedLocation);
+  };
+
   // TODO: can select onPress, check API result
   return (
     <View
@@ -104,56 +147,25 @@ const MapSearch = () => {
     >
       <View style={styles.mapSearchBox} keyboardShouldPersistTaps="handled">
         <GooglePlacesAutocomplete
-          ref={(ref) => (searchText = ref)}
+          ref={searchRef}
           placeholder="Search"
           minLength={2}
           autoFocus={false}
           keepResultsAfterBlur={true}
           fetchDetails={true}
           onPress={(data, details) => {
-            console.log('GG MAP SEARCH DATA', data);
-            console.log('GG MAP SEARCH DETAILS', details);
-            console.log(
-              'GG MAP SEARCH DETAILS LOCATION',
-              details.geometry.location
-            );
-            const selectedAdress = data.description;
-            const selectedLocation = details.geometry.location;
-
-            console.log('SELECTED LOCATION', selectedLocation);
-            setListViewDisplay(false);
-            setAddress(selectedAdress);
-            console.log('CURRENT ADDRESS', address);
-
-            console.log(
-              'CURRENT LAT FROM DETAILS ',
-              details.geometry.location.latitude
-            );
-            setcurrentLat(selectedLocation.latitude);
-            console.log('CURRENT LAT', currentLat);
-
-            setcurrentLng(selectedLocation.longitude);
-            console.log('CURRENT Lng', currentLng);
-
-            setRegion({
-              latitudeDelta: defaultDelta,
-              longitudeDelta: defaultDelta,
-              latitude: selectedLocation.latitude,
-              longitude: selectedLocation.longitude,
-            });
-
-            console.log('CURRENT REGION', region);
-            searchText.setAddressText('');
-            // goToInitialLocation(region);
+            updateLocationOnSelect(data, details);
+            console.log('SEARCH TEXT', searchRef);
+            searchRef.current.setAddressText(address);
           }}
           onFail={(error) => console.error(error)}
           query={{
             key: apiKey,
             language: 'en',
           }}
-          // getDefaultValue={() => {
-          //   return ''; // text input default value
-          // }}
+          getDefaultValue={() => {
+            return ''; // text input default value
+          }}
           renderDescription={(row) => row.description}
           listViewDisplayed={listViewDisplayed}
           enablePoweredByContainer={false}
@@ -198,11 +210,12 @@ const MapSearch = () => {
               height: 50,
             },
           }}
+          debounce={200}
         ></GooglePlacesAutocomplete>
       </View>
       <View style={styles.mapContainer}>
         <MapView
-          ref={(ref) => (mapView = ref)}
+          ref={mapRef}
           style={styles.map}
           provider={PROVIDER_GOOGLE}
           showsMyLocationButton={true}
