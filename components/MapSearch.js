@@ -66,13 +66,13 @@ const MapSearch = () => {
     console.log('CURRENT REGION', region);
     console.log('POST LOCATION', postLocation);
     goToInitialLocation(region);
+    setPostLocation({address: address, ...region});
   }, [address, region]);
 
   const goToInitialLocation = (region) => {
-    console.log('ASSIGNED REGION', region);
-
+    // console.log('ASSIGNED REGION', region);
     let initialRegion = Object.assign(region);
-    console.log('INITIAL REGION', initialRegion);
+    // console.log('INITIAL REGION', initialRegion);
     mapRef.current.animateToRegion(initialRegion, 500);
   };
 
@@ -99,7 +99,6 @@ const MapSearch = () => {
     setCurrentLng(selectedLocation.longitude);
     setRegion(selectedLocation);
     setMarker(selectedLocation);
-    setPostLocation({address: address, ...region});
   };
 
   // TODO: get Address if select current location

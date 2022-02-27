@@ -30,6 +30,7 @@ import {appId, colors} from '../utils/Variables';
 import CheckBoxComponent from '../components/CheckBoxComponent';
 import CustomDropDownPicker from '../components/DropDownPicker';
 import MapOverlayComponent from '../components/MapOverlayComponent';
+import {onChange} from 'react-native-reanimated';
 
 const Upload = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -51,6 +52,7 @@ const Upload = ({navigation}) => {
   const {userType} = useContext(MainContext);
   const {petType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
+  const {postLocation} = useContext(MainContext);
 
   const {
     control,
@@ -66,8 +68,6 @@ const Upload = ({navigation}) => {
     },
     mode: 'onBlur',
   });
-
-  // TODO: add location
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -117,7 +117,9 @@ const Upload = ({navigation}) => {
     json['start_time'] = data.startTime;
     // console.log('start time from form', data.startTime);
     // console.log('end time from form', data.endTime);
+
     json['end_time'] = data.endTime;
+    json['coords'] = postLocation;
 
     // TODO: to add more field here for location, subsribers, etc
     return JSON.stringify(json);
@@ -274,7 +276,7 @@ const Upload = ({navigation}) => {
               )}
               name="description"
             ></Controller>
-            {/* TODO: Add controller here to get post Location */}
+
             <View keyboardShouldPersistTaps="handled">
               <FAB
                 visible={true}
@@ -289,8 +291,13 @@ const Upload = ({navigation}) => {
                 style={{padding: 15}}
                 titleStyle={[styles.text, {color: 'black'}]}
               />
-              {mapOverlayVisible ? <MapOverlayComponent /> : <></>}
+              {mapOverlayVisible ? (
+                <MapOverlayComponent isVisible={onChange} />
+              ) : (
+                <></>
+              )}
             </View>
+
             <View
               style={{
                 width: '100%',
