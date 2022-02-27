@@ -65,7 +65,7 @@ const MapSearch = () => {
 
   useEffect(() => {
     console.log('SEARCH REF GET ADDRESS', searchRef.current?.getAddressText());
-    searchRef.current?.setAddressText('');
+    searchRef.current?.setAddressText(address);
     console.log('CURRENT ADDRESS setState ', address);
     console.log('CURRENT REGION', region);
     goToInitialLocation(region);
@@ -94,19 +94,12 @@ const MapSearch = () => {
       longitude: details.geometry.location.lng,
     };
     console.log('GG MAP SEARCH ADDRESS', selectedAdress);
-
     console.log('GG MAP SEARCH DETAILS LOCATION', selectedLocation);
     setListViewDisplay(false);
     setAddress(selectedAdress);
-    console.log('CURRENT ADDRESS', selectedAdress);
-
-    // console.log('CURRENT LAT FROM DETAILS ', selectedLocation.latitude);
-    // console.log('CURRENT LAT FROM STATE ', typeof selectedLocation.latitude);
 
     setCurrentLat(selectedLocation.latitude);
-
     setCurrentLng(selectedLocation.longitude);
-
     setRegion(selectedLocation);
   };
 
@@ -127,15 +120,18 @@ const MapSearch = () => {
           onPress={(data, details) => {
             updateLocationOnSelect(data, details);
             console.log('SEARCH TEXT', searchRef);
-            searchRef.current.setAddressText(address);
           }}
           onFail={(error) => console.error(error)}
           query={{
             key: apiKey,
             language: 'en',
           }}
-          getDefaultValue={() => {
-            return ''; // text input default value
+          // getDefaultValue={() => {
+          //   return ''; // text input default value
+          // }}
+          textInputProps={{
+            placeholderTextColor: 'gray',
+            returnKeyType: 'search',
           }}
           renderDescription={(row) => row.description}
           listViewDisplayed={listViewDisplayed}
@@ -196,7 +192,7 @@ const MapSearch = () => {
             goToInitialLocation(region);
           }}
           onRegionChangeComplete={onRegionChange}
-          debounce={500}
+          debounce={200}
         />
       </View>
     </View>
