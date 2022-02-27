@@ -18,7 +18,7 @@ const MapSearch = () => {
   const apiKey = Platform.OS === 'ios' ? iosApiKey : androidApiKey;
   // const searchUrl =
   //   'https://maps.googleapis.com/maps/api/geocode/json?address=';
-  // const keyQuery = `&key=${apiKey}`;
+  // const keyQuery = `&key=${apiKey}`; // For geocode request if needed
   const {
     currentUserLocation,
     setCurrentUserLocation,
@@ -28,8 +28,6 @@ const MapSearch = () => {
 
   const defaultDelta = 0.05;
   const [listViewDisplayed, setListViewDisplay] = useState(true);
-  // const [showAddress, setShowAddress] = useState(false);
-  // const [search, setSearch] = useState();
   const [address, setAddress] = useState('');
   const [currentLat, setCurrentLat] = useState();
   const [currentLng, setCurrentLng] = useState();
@@ -101,7 +99,6 @@ const MapSearch = () => {
     setMarker(selectedLocation);
   };
 
-  // TODO: get Address if select current location
   return (
     <View
       style={{flex: 1, flexDirection: 'column'}}

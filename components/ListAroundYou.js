@@ -4,6 +4,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
 
+// @SAM: in MainContext, we have userCurrentLocation and postLocation which maybe useful here
 const fakeData = [
   {
     title: 'fluffy',

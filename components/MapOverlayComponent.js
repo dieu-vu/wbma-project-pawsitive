@@ -1,20 +1,11 @@
-import React, {useState, useContext} from 'react';
-import {Button, Overlay, Icon} from 'react-native-elements';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Keyboard,
-} from 'react-native';
+import React, {useContext} from 'react';
+import {Button, Overlay} from 'react-native-elements';
+import {StyleSheet, Dimensions, TouchableOpacity, Keyboard} from 'react-native';
 import MapSearch from './MapSearch';
-import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
 const MapOverlayComponent = () => {
-  const {mapOverlayVisible, setMapOverlayVisible, postLocation} =
-    useContext(MainContext);
+  const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
 
   return (
     <TouchableOpacity
