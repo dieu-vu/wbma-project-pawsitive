@@ -44,6 +44,16 @@ const Listing = ({navigation}) => {
 
   /* make current latitude and longitude to be current location if user gives permission sharing their location
    otherwise, ask for permission*/
+
+  const mapState = isFullMap
+    ? Dimensions.get('window').height
+    : Dimensions.get('window').height * 0.4;
+  const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
+
+  useEffect(() => {
+    console.log('selectedPetType', selectedPetType);
+  }, [selectedPetType]);
+
   useEffect(async () => {
     if (checkLocationPermission()) {
       setCurrentUserLocation(await getUserLocation());
@@ -51,14 +61,7 @@ const Listing = ({navigation}) => {
     } else {
       askPermission();
     }
-  });
-
-  const mapState = isFullMap
-    ? Dimensions.get('window').height
-    : Dimensions.get('window').height * 0.4;
-  const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
-
-  console.log('selectedPetType', selectedPetType);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

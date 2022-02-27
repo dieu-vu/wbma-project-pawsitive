@@ -1,18 +1,28 @@
 import PropTypes from 'prop-types';
 import React, {useState, useEffect, useContext} from 'react';
-import {StyleSheet, View, ScrollView, Dimensions, Alert} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Dimensions,
+  Alert,
+  SafeAreaView,
+} from 'react-native';
 import {Card, Text, Avatar, Image, Button, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
-import {uploadsUrl} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import {uploadsUrl} from '../utils/Variables';
+import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
 import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
-
+import CustomButton from '../components/CustomButton';
 
 const Single = ({navigation, route}) => {
+  const insets = useSafeAreaInsets();
   const {file} = route.params;
   // fileInfo contains extra info of the media
   const fileInfo = JSON.parse(file.description);
@@ -84,79 +94,83 @@ const Single = ({navigation, route}) => {
 
   getFonts();
   return (
-    <ScrollView style={styles.container}>
-      <View>
-
-        {file.media_type === 'image' ? (
-          <Image
-            PlaceholderContent={<PlaceholderImage />}
-            transition
-            source={{uri: uploadsUrl + file.filename}}
-            containerStyle={styles.image}
-          />
-        ) : (
-          <Video
-            source={{uri: uploadsUrl + file.filename}}
-            style={styles.image}
-            useNativeControls={true}
-            resizeMode="cover"
-            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-            onError={(err) => {
-              console.log('Video error', err);
-            }}
-          />
-        )}
-      </View>
-      <LinearGradient
-        colors={['#8DD35E', '#FFFFFF']}
-        style={styles.linearGradient}
-      >
-
-        <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
-          <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
-            {file.title}
-          </Card.Title>
-          <Card.Title style={[styles.text, {textAlign: 'center'}]}>
-            {addedTimeText(file.time_added)}
-          </Card.Title>
-          <Card.Title style={[styles.text, {fontSize: 16}]}>
-            {fileInfo.description}
-          </Card.Title>
-          <View>
-            <Card.Title
-              style={[styles.text, {fontSize: 20, fontWeight: 'bold'}]}
-            >
-              Timeframe
-            </Card.Title>
-            <Card.Title style={styles.text}>
-              From: {getTime(fileInfo.start_time)}
-            </Card.Title>
-            <Card.Title style={styles.text}>
-              To: {getTime(fileInfo.end_time)}
-            </Card.Title>
-          </View>
-          <View style={styles.userInfo}>
-
-            <Avatar source={{uri: avatar}} rounded={1} />
-            <Text style={[styles.text, {marginLeft: 10}]}>
-              {owner.username}
-            </Text>
-          </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={savePost}
-              title={'Save post'}
-              buttonStyle={styles.buttonStyle}
-              titleStyle={styles.titleStyle}
+    <ScrollView style={[styles.container]}>
+      <View style={{flex: 1, paddingBottom: insets.bottom}}>
+        <View>
+          {file.media_type === 'image' ? (
+            <Image
+              PlaceholderContent={<PlaceholderImage />}
+              transition
+              source={{uri: uploadsUrl + file.filename}}
+              containerStyle={styles.image}
             />
-          </View>
-        </Card>
-      </LinearGradient>
+          ) : (
+            <Video
+              source={{uri: uploadsUrl + file.filename}}
+              style={styles.image}
+              useNativeControls={true}
+              resizeMode="cover"
+              onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+              onError={(err) => {
+                console.log('Video error', err);
+              }}
+            />
+          )}
+        </View>
+        <LinearGradient
+          colors={['#8DD35E', '#FFFFFF']}
+          style={[styles.linearGradient]}
+        >
+          <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
+            <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
+              {file.title}
+            </Card.Title>
+            <Card.Title style={[styles.text, {textAlign: 'center'}]}>
+              {addedTimeText(file.time_added)}
+            </Card.Title>
+            <Card.Title style={[styles.text, {fontSize: 16}]}>
+              {fileInfo.description}
+            </Card.Title>
+            <View>
+              <Card.Title
+                style={[styles.text, {fontSize: 20, fontWeight: 'bold'}]}
+              >
+                Timeframe
+              </Card.Title>
+              <Card.Title style={styles.text}>
+                From: {getTime(fileInfo.start_time)}
+              </Card.Title>
+              <Card.Title style={styles.text}>
+                To: {getTime(fileInfo.end_time)}
+              </Card.Title>
+            </View>
+            <View style={styles.userInfo}>
+              <Avatar source={{uri: avatar}} rounded={1} />
+              <Text style={[styles.text, {marginLeft: 10}]}>
+                {owner.username}
+              </Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={savePost}
+                title={'Save post'}
+                buttonStyle={styles.buttonStyle}
+                titleStyle={styles.titleStyle}
+              />
+              <CustomButton
+                title="Edit post"
+                fontSize={16}
+                onPress={() => {
+                  navigation.navigate('Edit post', {file: file});
+                }}
+              ></CustomButton>
+            </View>
+          </Card>
+        </LinearGradient>
+      </View>
     </ScrollView>
   );
 };
-
-// TODO: if possible do open map
 
 const styles = StyleSheet.create({
   container: {
@@ -216,7 +230,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#A9FC73',
     borderRadius: 35,
-    marginBottom: '30%',
+    marginBottom: 15,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -227,7 +241,9 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flex: 1,
+    flexDirection: 'column',
+    marginBottom: 20,
   },
   icon: {
     position: 'absolute',

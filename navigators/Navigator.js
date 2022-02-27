@@ -16,7 +16,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import SavedPosts from '../views/SavedPosts';
 import CustomDrawer from '../components/CustomDrawer';
 import {TouchableOpacity} from 'react-native';
-import FullScreenMap from "../components/FullScreenMap";
+import FullScreenMap from '../components/FullScreenMap';
+import EditPost from '../views/EditPost';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -160,6 +161,19 @@ const HomeStackScreen = () => {
             fontFamily: 'Montserrat-SemiBold',
           },
         })}
+      />
+      <HomeStack.Screen
+        name="Edit post"
+        component={EditPost}
+        options={{
+          title: 'Edit Post',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+        }}
       />
     </HomeStack.Navigator>
   );

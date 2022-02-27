@@ -84,7 +84,7 @@ const useMedia = (myFilesOnly) => {
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
-  }, [update, searchValue, selectedPetType]);
+  }, [update, searchValue, selectedPetType, mediaArray]);
 
   const postMedia = async (formData, token) => {
     setLoading(true);
@@ -118,12 +118,22 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
+  const putMedia = async (data, token, fileId) => {
+    const options = {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json', 'x-access-token': token},
+      body: JSON.stringify(data),
+    };
+    return await doFetch(`${baseUrl}media/${fileId}`, options);
+  };
+
   return {
     mediaArray,
     postMedia,
     loading,
     getSingleMedia,
     deleteMedia,
+    putMedia,
   };
 };
 
