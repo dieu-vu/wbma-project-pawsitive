@@ -121,6 +121,8 @@ const Upload = ({navigation}) => {
     json['end_time'] = data.endTime;
     json['coords'] = postLocation;
 
+    json['rating'] = [];
+
     // TODO: to add more field here for location, subsribers, etc
     return JSON.stringify(json);
   };

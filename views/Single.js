@@ -20,6 +20,7 @@ import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 import CustomButton from '../components/CustomButton';
+import BookMarkLogo from '../assets/bookmark8.svg';
 
 const Single = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
@@ -94,7 +95,7 @@ const Single = ({navigation, route}) => {
 
   getFonts();
   return (
-    <ScrollView style={[styles.container]}>
+    <ScrollView style={styles.container}>
       <View style={{flex: 1, paddingBottom: insets.bottom}}>
         <View>
           {file.media_type === 'image' ? (
@@ -119,8 +120,11 @@ const Single = ({navigation, route}) => {
         </View>
         <LinearGradient
           colors={['#8DD35E', '#FFFFFF']}
-          style={[styles.linearGradient]}
+          style={styles.linearGradient}
         >
+          <View style={styles.logoContainer}>
+            <BookMarkLogo onPress={savePost} style={styles.bookMarkLogo} />
+          </View>
           <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
             <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
               {file.title}
@@ -249,6 +253,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 5,
     elevation: 5,
+  },
+  logoContainer: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+  },
+  bookMarkLogo: {
+    transform: [{scaleX: 0.3}, {scaleY: 0.3}],
+    elevation: 10,
+    zIndex: 10,
   },
 });
 
