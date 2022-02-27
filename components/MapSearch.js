@@ -1,20 +1,6 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useContext,
-  useCallback,
-} from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import {
-  StyleSheet,
-  Platform,
-  View,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Keyboard,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, Platform, View} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
 import {MainContext} from '../contexts/MainContext';
@@ -30,10 +16,15 @@ const MapSearch = () => {
   const iosApiKey = 'AIzaSyBiAfVQPbsDoRsc9PV3mUuLmcrFv-XDl4Q';
   const androidApiKey = 'AIzaSyCGBZwLYfYtbzlny0r3qSRCFZCnxhP6-Qg';
   const apiKey = Platform.OS === 'ios' ? iosApiKey : androidApiKey;
-  const searchUrl =
-    'https://maps.googleapis.com/maps/api/geocode/json?address=';
-  const keyQuery = `&key=${apiKey}`;
-  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
+  // const searchUrl =
+  //   'https://maps.googleapis.com/maps/api/geocode/json?address=';
+  // const keyQuery = `&key=${apiKey}`;
+  const {
+    currentUserLocation,
+    setCurrentUserLocation,
+    postLocation,
+    setPostLocation,
+  } = useContext(MainContext);
 
   const defaultDelta = 0.05;
   const [listViewDisplayed, setListViewDisplay] = useState(true);
@@ -73,6 +64,7 @@ const MapSearch = () => {
     searchRef.current?.setAddressText(address);
     console.log('CURRENT ADDRESS setState ', address);
     console.log('CURRENT REGION', region);
+    console.log('POST LOCATION', postLocation);
     goToInitialLocation(region);
   }, [address, region]);
 
@@ -107,9 +99,10 @@ const MapSearch = () => {
     setCurrentLng(selectedLocation.longitude);
     setRegion(selectedLocation);
     setMarker(selectedLocation);
+    setPostLocation({address: address, ...region});
   };
 
-  // TODO: can select onPress, check API result
+  // TODO: get Address if select current location
   return (
     <View
       style={{flex: 1, flexDirection: 'column'}}

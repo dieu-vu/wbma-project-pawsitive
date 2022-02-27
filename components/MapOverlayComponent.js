@@ -13,7 +13,8 @@ import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
 const MapOverlayComponent = () => {
-  const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
+  const {mapOverlayVisible, setMapOverlayVisible, postLocation} =
+    useContext(MainContext);
 
   return (
     <TouchableOpacity

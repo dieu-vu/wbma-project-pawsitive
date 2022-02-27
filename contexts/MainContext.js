@@ -17,6 +17,7 @@ const MainProvider = (props) => {
     latitude: 60.168415993,
     longitude: 24.9333962664,
   });
+  const [postLocation, setPostLocation] = useState();
 
   return (
     <MainContext.Provider
@@ -41,6 +42,8 @@ const MainProvider = (props) => {
         setMapOverlayVisible,
         currentUserLocation,
         setCurrentUserLocation,
+        postLocation,
+        setPostLocation,
       }}
     >
       {props.children}

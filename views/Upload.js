@@ -254,7 +254,6 @@ const Upload = ({navigation}) => {
               )}
               name="title"
             />
-
             <Controller
               control={control}
               rules={{require: true}}
@@ -275,7 +274,7 @@ const Upload = ({navigation}) => {
               )}
               name="description"
             ></Controller>
-
+            {/* TODO: Add controller here to get post Location */}
             <View keyboardShouldPersistTaps="handled">
               <FAB
                 visible={true}
@@ -292,7 +291,6 @@ const Upload = ({navigation}) => {
               />
               {mapOverlayVisible ? <MapOverlayComponent /> : <></>}
             </View>
-
             <View
               style={{
                 width: '100%',
@@ -398,7 +396,6 @@ const Upload = ({navigation}) => {
               <CustomDropDownPicker></CustomDropDownPicker>
             </View>
             <CheckBoxComponent customText="Post as: "></CheckBoxComponent>
-
             <CustomButton
               disabled={!imageSelected}
               loading={loading}
