@@ -15,7 +15,7 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 
 import {MainContext} from '../contexts/MainContext';
 import {
@@ -48,6 +48,11 @@ const MapSearch = () => {
     longitudeDelta: defaultDelta,
     latitude: currentUserLocation.latitude,
     longitude: currentUserLocation.longitude,
+  });
+
+  const [marker, setMarker] = useState({
+    latitude: region.latitude,
+    longitude: region.longitude,
   });
 
   const mapRef = useRef();
@@ -101,6 +106,7 @@ const MapSearch = () => {
     setCurrentLat(selectedLocation.latitude);
     setCurrentLng(selectedLocation.longitude);
     setRegion(selectedLocation);
+    setMarker(selectedLocation);
   };
 
   // TODO: can select onPress, check API result
@@ -126,9 +132,9 @@ const MapSearch = () => {
             key: apiKey,
             language: 'en',
           }}
-          // getDefaultValue={() => {
-          //   return ''; // text input default value
-          // }}
+          getDefaultValue={() => {
+            return !address ? '' : address; // text input default value
+          }}
           textInputProps={{
             placeholderTextColor: 'gray',
             returnKeyType: 'search',
@@ -193,7 +199,14 @@ const MapSearch = () => {
           }}
           onRegionChangeComplete={onRegionChange}
           debounce={200}
-        />
+        >
+          <Marker
+            coordinate={{
+              latitude: marker.latitude,
+              longitude: marker.longitude,
+            }}
+          />
+        </MapView>
       </View>
     </View>
   );
