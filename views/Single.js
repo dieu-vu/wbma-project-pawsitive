@@ -26,12 +26,11 @@ const Single = ({navigation, route}) => {
   const {getUserById} = useUser();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
-  const {putMedia} = useMedia();
+  const {putMedia, deleteMedia} = useMedia();
   const {update, setUpdate, user} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
-
   // Function to save post
   const savePost = async () => {
     try {
@@ -44,6 +43,28 @@ const Single = ({navigation, route}) => {
     } catch (error) {
       console.error('create like error', error);
     }
+  };
+
+  // Function to delete post
+  const deletePost = () => {
+    Alert.alert('Delete', 'your post permanently', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('userToken');
+            const response = await deleteMedia(file.file_id, token);
+            if (response) {
+              Alert.alert('Post deleted');
+              setUpdate(update + 1);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      },
+    ]);
   };
 
   // Function to handle time data in extra file info
@@ -246,13 +267,23 @@ const Single = ({navigation, route}) => {
             </View>
             <View style={styles.buttonContainer}>
               {user.user_id === owner.user_id ? (
-                <CustomButton
-                  title="Edit post"
-                  fontSize={16}
-                  onPress={() => {
-                    navigation.navigate('Edit post', {file: file});
-                  }}
-                ></CustomButton>
+                <>
+                  <CustomButton
+                    title="Edit post"
+                    fontSize={16}
+                    onPress={() => {
+                      navigation.navigate('Edit post', {file: file});
+                    }}
+                  ></CustomButton>
+                  <CustomButton
+                    title="Delete post"
+                    fontSize={16}
+                    onPress={() => {
+                      deletePost();
+                      navigation.navigate('Listing');
+                    }}
+                  ></CustomButton>
+                </>
               ) : (
                 <></>
               )}
@@ -336,6 +367,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     marginBottom: 20,
+    justifyContent: 'center',
   },
   icon: {
     position: 'absolute',
