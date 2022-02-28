@@ -3,6 +3,7 @@ import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
 import {useUser, useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),
@@ -68,6 +69,21 @@ const getUserLocation = async () => {
   return userLocation.coords;
 };
 
+const getMediaCurrentPetType = async (file) => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    const {getTagsForFile} = useTag();
+    const listCurrentTags = await getTagsForFile(file.file_id, token);
+    const currentPetType = listCurrentTags
+      .map((tag) => tag.tag)
+      .filter((tag) => tag.includes('pawsitive_pet_'));
+    // console.log('LIST OF FILE TAG', listCurrentTags);
+    return currentPetType;
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 export {
   pickRandomImage,
   formatDate,
@@ -76,4 +92,5 @@ export {
   checkLocationPermission,
   askPermission,
   getUserLocation,
+  getMediaCurrentPetType,
 };

@@ -165,7 +165,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen
         name="Edit post"
         component={EditPost}
-        options={{
+        options={({route}) => ({
           title: 'Edit Post',
           headerStyle: {
             backgroundColor: '#8DD35E',
@@ -173,7 +173,7 @@ const HomeStackScreen = () => {
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
           },
-        }}
+        })}
       />
     </HomeStack.Navigator>
   );

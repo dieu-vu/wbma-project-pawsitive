@@ -17,7 +17,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {formatDate, getFonts} from '../utils/Utils';
+import {formatDate, getFonts, getMediaCurrentPetType} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -35,7 +35,7 @@ const EditPost = ({navigation, route}) => {
 
   const {putMedia, loading} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
-  const {postTag, getTagsForFile} = useTag();
+  const {postTag} = useTag();
   const [isFromDatePickerVisible, setFromDatePickerVisibility] =
     useState(false);
   const [isToDatePickerVisible, setToDatePickerVisibility] = useState(false);
@@ -44,7 +44,7 @@ const EditPost = ({navigation, route}) => {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const {userType} = useContext(MainContext);
-  const {petType} = useContext(MainContext);
+  const {petType, setPetType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
   const {postLocation} = useContext(MainContext);
 
@@ -69,6 +69,11 @@ const EditPost = ({navigation, route}) => {
     setIsDark(colorScheme === 'dark');
   }, [animation, colorScheme]);
 
+  useEffect(() => {
+    console.log('user type', userType);
+    console.log('pet type', petType);
+  }, [petType, userType]);
+
   const createJsonString = (data) => {
     const json = {};
     json['description'] = data.description;
@@ -83,46 +88,45 @@ const EditPost = ({navigation, route}) => {
   const onSubmit = async (data) => {
     console.log(data);
     const fileInfoJson = createJsonString(data);
+    const currentPetType = await getMediaCurrentPetType(file);
+
     const putData = {};
     putData['title'] = data.title;
     putData['description'] = fileInfoJson;
+    console.log('PUT DATA', putData);
+    console.log('current pet type', currentPetType);
 
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await putMedia(putData, token, file.file_id);
       console.log('EDIT POST response', response);
 
-      const tagResponse = await postTag(
-        {file_id: response.file_id, tag: appId},
-        token
-      );
       const userTypeTag = await postTag(
-        {file_id: response.file_id, tag: `${appId}_user_${userType}`},
+        {file_id: file.file_id, tag: `${appId}_user_${userType}`},
         token
       );
+      console.log('EDIT USER TYPE RESPONSE', userTypeTag);
 
+      let petTypeTag;
       // If change pet type, remove the old tag and add new petType tag
       console.log('PET TYPE', petType);
-      const oldPetType = await getTagsForFile(file.file_id);
-      const listCurrentTags = oldPetType
-        .map((tag) => tag.tag)
-        .filter((tag) => tag.includes('pawsitive_pet_'));
-      if (!listCurrentTags.includes(petType)) {
+      if (!petType || !currentPetType.includes(petType)) {
         // we should remove old petType tag, but delete tag is restricted to admin
-        await postTag(
-          {file_id: response.file_id, tag: `${appId}_pet_${petType}`},
+        petTypeTag = await postTag(
+          {file_id: file.file_id, tag: `${appId}_pet_${petType}`},
           token
         );
+        console.log('EDIT PET TYPE RESPONSE', petTypeTag);
       }
 
-      tagResponse &&
-        userTypeTag &&
+      userTypeTag &&
+        petTypeTag &&
         Alert.alert('Post', 'Succesfully updated', [
           {
             text: 'OK',
             onPress: () => {
               setUpdate(update + 1);
-              navigation.navigate('Listing');
+              navigation.navigate('Single', {file: file});
             },
           },
         ]);
