@@ -191,6 +191,7 @@ const HomeStackScreen = () => {
           headerBackTitleStyle: {
             fontFamily: 'Montserrat-Regular',
           },
+          headerBackTitle: 'Post',
         })}
       />
     </HomeStack.Navigator>
