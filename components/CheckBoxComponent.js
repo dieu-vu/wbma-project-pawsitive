@@ -5,13 +5,27 @@ import {getFonts} from '../utils/Utils';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 
-const CheckboxComponent = ({customText}) => {
+const CheckboxComponent = ({customText, file = null}) => {
   const {userType, setUserType} = useContext(MainContext);
-  const [oneOptionChecked, setOneOptionChecked] = useState(false);
-
+  const {previousUserType} = useContext(MainContext);
+  const [isOwner, setOwner] = useState(false);
+  const [isSitter, setSitter] = useState(false);
+  console.log('IS OWNER', isOwner);
+  console.log('IS SITTER', isSitter);
   useEffect(() => {
     console.log('POST AS USER TYPE \n', userType);
   }, [userType]);
+
+  useEffect(() => {
+    console.log('PREVIOUS USER TYPE \n', previousUserType);
+    setOwner(previousUserType == 'owner');
+    setSitter(previousUserType == 'sitter');
+  }, [previousUserType]);
+
+  useEffect(() => {
+    console.log('IS OWNER', isOwner);
+    console.log('IS SITTER', isSitter);
+  }, [isOwner, isSitter]);
 
   getFonts();
   return (
@@ -22,23 +36,25 @@ const CheckboxComponent = ({customText}) => {
       <CheckBox
         center
         title="Pet owner"
-        checked={oneOptionChecked}
+        checked={isOwner}
         checkedColor="#425E20"
         onPress={() => {
-          setUserType(!oneOptionChecked ? 'owner' : 'sitter');
-          setOneOptionChecked(!oneOptionChecked);
+          setOwner(true);
+          setSitter(false);
+          setUserType('owner');
         }}
         containerStyle={styles.checkBoxContainer}
         titleProps={{style: styles.checkBoxTitle}}
       />
       <CheckBox
-        center
+        centerx
         title="Pet sitter"
-        checked={!oneOptionChecked}
+        checked={isSitter}
         checkedColor="#425E20"
         onPress={() => {
-          setUserType(oneOptionChecked ? 'sitter' : 'owner');
-          setOneOptionChecked(!oneOptionChecked);
+          setSitter(true);
+          setOwner(false);
+          setUserType('sitter');
         }}
         containerStyle={styles.checkBoxContainer}
         titleProps={{style: styles.checkBoxTitle}}
@@ -66,6 +82,7 @@ const styles = StyleSheet.create({
 
 CheckboxComponent.propTypes = {
   customText: PropTypes.string,
+  file: PropTypes.object,
 };
 
 export default CheckboxComponent;

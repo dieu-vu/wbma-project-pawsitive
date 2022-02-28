@@ -17,7 +17,11 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {formatDate, getFonts, getMediaCurrentPetType} from '../utils/Utils';
+import {
+  formatDate,
+  getFonts,
+  getMediaPreviousCategoryTag,
+} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -47,6 +51,7 @@ const EditPost = ({navigation, route}) => {
   const {petType, setPetType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
   const {postLocation} = useContext(MainContext);
+  const {previousUserType, setPreviousUserType} = useContext(MainContext);
 
   const {
     control,
@@ -74,6 +79,12 @@ const EditPost = ({navigation, route}) => {
     console.log('pet type', petType);
   }, [petType, userType]);
 
+  useEffect(async () => {
+    const previousUserTypeApi = await getMediaPreviousCategoryTag(file, 'user');
+    setPreviousUserType(previousUserTypeApi);
+    console.log('previous user type', previousUserType);
+  }, []);
+
   const createJsonString = (data) => {
     const json = {};
     json['description'] = data.description;
@@ -86,9 +97,14 @@ const EditPost = ({navigation, route}) => {
   };
 
   const onSubmit = async (data) => {
+    if (!petType) {
+      Alert.alert('Please select a pet type');
+      return;
+    }
+
     console.log(data);
     const fileInfoJson = createJsonString(data);
-    const currentPetType = await getMediaCurrentPetType(file);
+    const currentPetType = await getMediaPreviousCategoryTag(file, 'pet');
 
     const putData = {};
     putData['title'] = data.title;
@@ -101,22 +117,31 @@ const EditPost = ({navigation, route}) => {
       const response = await putMedia(putData, token, file.file_id);
       console.log('EDIT POST response', response);
 
-      const userTypeTag = await postTag(
-        {file_id: file.file_id, tag: `${appId}_user_${userType}`},
-        token
-      );
-      console.log('EDIT USER TYPE RESPONSE', userTypeTag);
+      // Post tag if user type changed from the latest useType Tag:
+      let userTypeTag;
+      if (previousUserType !== userType) {
+        userTypeTag = await postTag(
+          {file_id: file.file_id, tag: `${appId}_user_${userType}`},
+          token
+        );
+        console.log('EDIT USER TYPE RESPONSE', userTypeTag);
+      } else {
+        userTypeTag = true;
+      }
 
+      // Post tag if pet type changed from the latest petType Tag:
       let petTypeTag;
-      // If change pet type, remove the old tag and add new petType tag
       console.log('PET TYPE', petType);
-      if (!petType || !currentPetType.includes(petType)) {
+
+      if (currentPetType !== petType) {
         // we should remove old petType tag, but delete tag is restricted to admin
         petTypeTag = await postTag(
           {file_id: file.file_id, tag: `${appId}_pet_${petType}`},
           token
         );
         console.log('EDIT PET TYPE RESPONSE', petTypeTag);
+      } else {
+        petTypeTag = true;
       }
 
       userTypeTag &&
@@ -312,7 +337,10 @@ const EditPost = ({navigation, route}) => {
             <View>
               <CustomDropDownPicker></CustomDropDownPicker>
             </View>
-            <CheckBoxComponent customText="Post as: "></CheckBoxComponent>
+            <CheckBoxComponent
+              customText="Post as: "
+              file={file}
+            ></CheckBoxComponent>
             <CustomButton
               loading={loading}
               buttonStyle={styles.button}

@@ -27,7 +27,7 @@ const Single = ({navigation, route}) => {
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
   const {putMedia} = useMedia();
-  const {update, setUpdate} = useContext(MainContext);
+  const {update, setUpdate, user} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
@@ -109,7 +109,7 @@ const Single = ({navigation, route}) => {
       const token = await AsyncStorage.getItem('userToken');
       const userData = await getUserById(file.user_id, token);
       const avatarFile = await fetchAvatar(file);
-      console.log('OWNER DATA', userData);
+
       setOwner(userData);
       setAvatar(uploadsUrl + avatarFile);
     } catch (error) {
@@ -151,16 +151,24 @@ const Single = ({navigation, route}) => {
           colors={['#8DD35E', '#FFFFFF']}
           style={styles.linearGradient}
         >
-          <View style={styles.logoContainer}>
-            <BookMarkLogo onPress={savePost} style={styles.bookMarkLogo} />
-          </View>
           <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
-            <Card.Title h3 style={[styles.text, {textAlign: 'center'}]}>
-              {file.title}
-            </Card.Title>
-            <Card.Title style={[styles.text, {textAlign: 'center'}]}>
-              {addedTimeText(file.time_added)}
-            </Card.Title>
+            <View style={styles.logoContainer}>
+              <View style={{flex: 2, flexDirection: 'column', flexGrow: 2}}>
+                <Card.Title h3 style={[styles.text, {textAlign: 'left'}]}>
+                  {file.title}
+                </Card.Title>
+                <Card.Title style={[styles.text, {textAlign: 'left'}]}>
+                  {addedTimeText(file.time_added)}
+                </Card.Title>
+              </View>
+              <BookMarkLogo
+                height="50%"
+                width="50%"
+                onPress={savePost}
+                style={styles.bookMarkLogo}
+              />
+            </View>
+
             <Card.Title style={[styles.text, {fontSize: 16}]}>
               {fileInfo.description}
             </Card.Title>
@@ -199,27 +207,26 @@ const Single = ({navigation, route}) => {
                 defaultRating={3}
                 size={20}
               />
-              <Button
-                title="Save"
+              <CustomButton
+                title="Send ratings"
                 onPress={() => {
                   saveRating();
                 }}
+                fontSize={16}
               />
             </View>
             <View style={styles.buttonContainer}>
-              <Button
-                onPress={savePost}
-                title={'Save post'}
-                buttonStyle={styles.buttonStyle}
-                titleStyle={styles.titleStyle}
-              />
-              <CustomButton
-                title="Edit post"
-                fontSize={16}
-                onPress={() => {
-                  navigation.navigate('Edit post', {file: file});
-                }}
-              ></CustomButton>
+              {user.user_id === owner.user_id ? (
+                <CustomButton
+                  title="Edit post"
+                  fontSize={16}
+                  onPress={() => {
+                    navigation.navigate('Edit post', {file: file});
+                  }}
+                ></CustomButton>
+              ) : (
+                <></>
+              )}
             </View>
           </Card>
         </LinearGradient>
@@ -307,14 +314,13 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   logoContainer: {
-    position: 'absolute',
-    right: -10,
-    top: 100,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   },
   bookMarkLogo: {
-    transform: [{scaleX: 0.3}, {scaleY: 0.3}],
-    elevation: 10,
     zIndex: 10,
+    flex: 1,
   },
   rating: {
     marginBottom: 200,

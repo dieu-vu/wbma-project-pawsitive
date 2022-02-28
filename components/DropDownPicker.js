@@ -33,9 +33,7 @@ const CustomDropDownPicker = (props) => {
           backgroundColor: 'white',
           zIndex: 1,
         }}
-        containerStyle={
-          props.containerStyle || styles.dropdownContainer
-        }
+        containerStyle={props.containerStyle || styles.dropdownContainer}
         dropDownDirection={props.dropDownDirection || 'TOP'}
         textStyle={styles.dropdownText}
         setOpen={setOpen}

@@ -7,7 +7,7 @@ const MainProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
   const [update, setUpdate] = useState(0);
-  const [userType, setUserType] = useState('owner');
+  const [userType, setUserType] = useState();
   const [petType, setPetType] = useState(null);
   const [selectedPetType, setSelectedPetType] = useState('all');
   const [isSearching, setIsSearching] = useState(false);
@@ -18,6 +18,7 @@ const MainProvider = (props) => {
     longitude: 24.9333962664,
   });
   const [postLocation, setPostLocation] = useState();
+  const [previousUserType, setPreviousUserType] = useState();
 
   return (
     <MainContext.Provider
@@ -44,6 +45,8 @@ const MainProvider = (props) => {
         setCurrentUserLocation,
         postLocation,
         setPostLocation,
+        previousUserType,
+        setPreviousUserType,
       }}
     >
       {props.children}
