@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
 import {Alert, Dimensions, ScrollView, StyleSheet, View} from 'react-native';
-import {Avatar, Button, Card, Image, Text} from 'react-native-elements';
+import {Avatar, Card, Image, Text, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,6 +48,9 @@ const Single = ({navigation, route}) => {
 
   // Function to handle time data in extra file info
   const getTime = (timeField) => {
+    if (!timeField) {
+      return 'unknown';
+    }
     const date = new Date(timeField);
     return formatDate(date);
   };
@@ -151,28 +154,59 @@ const Single = ({navigation, route}) => {
           colors={['#8DD35E', '#FFFFFF']}
           style={styles.linearGradient}
         >
+          {/* Post's title and bookmark */}
           <Card containerStyle={[styles.infoCard]} wrapperStyle={styles.text}>
             <View style={styles.logoContainer}>
-              <View style={{flex: 2, flexDirection: 'column', flexGrow: 2}}>
-                <Card.Title h3 style={[styles.text, {textAlign: 'left'}]}>
+              <View style={{flex: 3, flexDirection: 'column', flexGrow: 3}}>
+                <Card.Title
+                  h4
+                  style={[
+                    styles.text,
+                    {textAlign: 'left', fontFamily: 'Montserrat-SemiBold'},
+                  ]}
+                >
                   {file.title}
                 </Card.Title>
                 <Card.Title style={[styles.text, {textAlign: 'left'}]}>
                   {addedTimeText(file.time_added)}
                 </Card.Title>
               </View>
-              <BookMarkLogo
-                height="50%"
-                width="50%"
-                onPress={savePost}
-                style={styles.bookMarkLogo}
-              />
+              <View style={styles.bookMarkLogo}>
+                <BookMarkLogo height="50%" width="50%" onPress={savePost} />
+              </View>
+            </View>
+            <View style={styles.postSection}>
+              <View style={styles.userInfo}>
+                <Avatar source={{uri: avatar}} rounded={1} />
+                <Text style={[styles.text, {marginLeft: 10}]}>
+                  {owner.username}
+                </Text>
+              </View>
+              <View
+                style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}
+              >
+                <Icon name="map-pin" type="feather" color="black" />
+                <Text style={[styles.text, {marginLeft: 10}]}>
+                  {!fileInfo.coords
+                    ? 'Address not provided'
+                    : !fileInfo.coords.address
+                    ? 'Address not provided'
+                    : fileInfo.coords.address}
+                </Text>
+              </View>
             </View>
 
-            <Card.Title style={[styles.text, {fontSize: 16}]}>
-              {fileInfo.description}
-            </Card.Title>
-            <View>
+            {/* Post's Text description */}
+            <View style={styles.postSection}>
+              <Card.Title style={[styles.text, {fontSize: 18}]}>
+                {fileInfo.description
+                  ? fileInfo.description
+                  : 'No text descriptions'}
+              </Card.Title>
+            </View>
+
+            {/* Post's timeframe */}
+            <View style={styles.postSection}>
               <Card.Title
                 style={[styles.text, {fontSize: 20, fontWeight: 'bold'}]}
               >
@@ -185,12 +219,7 @@ const Single = ({navigation, route}) => {
                 To: {getTime(fileInfo.end_time)}
               </Card.Title>
             </View>
-            <View style={styles.userInfo}>
-              <Avatar source={{uri: avatar}} rounded={1} />
-              <Text style={[styles.text, {marginLeft: 10}]}>
-                {owner.username}
-              </Text>
-            </View>
+
             <View>
               <Card.Title h4>Rate your experience with the user</Card.Title>
               <AirbnbRating
@@ -279,30 +308,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderColor: 'transparent',
     color: 'black',
-    alignItems: 'flex-start',
-    padding: 5,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   titleStyle: {
     fontFamily: 'Montserrat-Regular',
     color: 'black',
     fontSize: 25,
   },
-  buttonStyle: {
-    alignSelf: 'center',
-    width: Dimensions.get('window').width * 0.3,
-    height: 50,
-    backgroundColor: '#A9FC73',
-    borderRadius: 35,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-  },
+  // buttonStyle: {
+  //   alignSelf: 'center',
+  //   width: Dimensions.get('window').width * 0.3,
+  //   height: 50,
+  //   backgroundColor: '#A9FC73',
+  //   borderRadius: 35,
+  //   marginBottom: 15,
+  //   shadowColor: '#000',
+  //   shadowOffset: {
+  //     width: 0,
+  //     height: 4,
+  //   },
+  //   shadowOpacity: 0.29,
+  //   shadowRadius: 4.65,
+  //   elevation: 7,
+  // },
   buttonContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -316,14 +345,21 @@ const styles = StyleSheet.create({
   logoContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
+    width: '100%',
   },
   bookMarkLogo: {
-    zIndex: 10,
     flex: 1,
+    alignSelf: 'flex-start',
   },
   rating: {
     marginBottom: 200,
+  },
+  postSection: {
+    flex: 1,
+    flexDirection: 'column',
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
