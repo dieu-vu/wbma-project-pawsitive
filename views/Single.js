@@ -27,7 +27,7 @@ const Single = ({navigation, route}) => {
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
   const {putMedia} = useMedia();
-  const {update, setUpdate} = useContext(MainContext);
+  const {update, setUpdate, user} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
@@ -109,7 +109,7 @@ const Single = ({navigation, route}) => {
       const token = await AsyncStorage.getItem('userToken');
       const userData = await getUserById(file.user_id, token);
       const avatarFile = await fetchAvatar(file);
-      console.log('OWNER DATA', userData);
+
       setOwner(userData);
       setAvatar(uploadsUrl + avatarFile);
     } catch (error) {
@@ -213,13 +213,17 @@ const Single = ({navigation, route}) => {
                 buttonStyle={styles.buttonStyle}
                 titleStyle={styles.titleStyle}
               />
-              <CustomButton
-                title="Edit post"
-                fontSize={16}
-                onPress={() => {
-                  navigation.navigate('Edit post', {file: file});
-                }}
-              ></CustomButton>
+              {user.user_id === owner.user_id ? (
+                <CustomButton
+                  title="Edit post"
+                  fontSize={16}
+                  onPress={() => {
+                    navigation.navigate('Edit post', {file: file});
+                  }}
+                ></CustomButton>
+              ) : (
+                <></>
+              )}
             </View>
           </Card>
         </LinearGradient>
