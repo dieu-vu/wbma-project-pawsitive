@@ -10,8 +10,7 @@ const CheckboxComponent = ({customText, file = null}) => {
   const {previousUserType} = useContext(MainContext);
   const [isOwner, setOwner] = useState(false);
   const [isSitter, setSitter] = useState(false);
-  console.log('IS OWNER', isOwner);
-  console.log('IS SITTER', isSitter);
+
   useEffect(() => {
     console.log('POST AS USER TYPE \n', userType);
   }, [userType]);

@@ -96,7 +96,15 @@ const HomeStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => {
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#8DD35E',
+          fontFamily: 'Montserrat-Bold',
+        },
+        headerTintColor: 'black',
+      }}
+    >
       <HomeStack.Screen
         name="HomeStack"
         component={Home}
@@ -109,7 +117,6 @@ const HomeStackScreen = () => {
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
-          headerTintColor: 'black',
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
               <Icon
@@ -134,6 +141,9 @@ const HomeStackScreen = () => {
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
           },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
+          },
         }}
       />
       <HomeStack.Screen
@@ -155,10 +165,15 @@ const HomeStackScreen = () => {
         options={({route}) => ({
           title: route.params.file.title,
           headerStyle: {
+            fontSize: 20,
             backgroundColor: '#8DD35E',
+            color: 'black',
           },
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
           },
         })}
       />
@@ -172,6 +187,9 @@ const HomeStackScreen = () => {
           },
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
           },
         })}
       />
