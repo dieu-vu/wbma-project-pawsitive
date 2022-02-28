@@ -102,6 +102,18 @@ const useMedia = (myFilesOnly) => {
     return result;
   };
 
+  const putMedia = async (data, token, fileId) => {
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: data,
+    };
+    return await doFetch(`${baseUrl}media/${fileId}`, options);
+  };
+
   const getSingleMedia = async (fileId, token) => {
     const options = {
       method: 'GET',
@@ -114,15 +126,6 @@ const useMedia = (myFilesOnly) => {
     const options = {
       method: 'DELETE',
       headers: {'x-access-token': token},
-    };
-    return await doFetch(`${baseUrl}media/${fileId}`, options);
-  };
-
-  const putMedia = async (data, token, fileId) => {
-    const options = {
-      method: 'PUT',
-      headers: {'Content-Type': 'application/json', 'x-access-token': token},
-      body: JSON.stringify(data),
     };
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };

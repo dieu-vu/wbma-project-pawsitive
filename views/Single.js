@@ -11,6 +11,10 @@ import {
 import {Card, Text, Avatar, Image, Button, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
+<<<<<<< HEAD
+=======
+import {useFavourite, useMedia, useTag, useUser} from '../hooks/ApiHooks';
+>>>>>>> 96eb785 (rating added)
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
@@ -21,6 +25,7 @@ import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 import CustomButton from '../components/CustomButton';
 import BookMarkLogo from '../assets/bookmark8.svg';
+import {AirbnbRating} from 'react-native-ratings';
 
 const Single = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
@@ -33,9 +38,11 @@ const Single = ({navigation, route}) => {
   const {getUserById} = useUser();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
+  const {putMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
+  const [rating, setRating] = useState(3);
 
   // Function to save post
   const savePost = async () => {
@@ -55,6 +62,43 @@ const Single = ({navigation, route}) => {
   const getTime = (timeField) => {
     const date = new Date(timeField);
     return formatDate(date);
+  };
+
+  const ratingCompleted = (value) => {
+    setRating(value);
+  };
+
+  const saveRating = async () => {
+    try {
+      const fileId=file.file_id;
+      const previousRatings = fileInfo.rating;
+      previousRatings.push(rating);
+
+      const description = JSON.stringify(fileInfo);
+
+      file.description = description;
+
+      console.log('##################description', file);
+
+      const data=JSON.stringify(file);
+
+
+      const userToken = await AsyncStorage.getItem('userToken');
+      const response = await putMedia(data, userToken, fileId);
+      console.log('modify response', response);
+      response &&
+        Alert.alert('Rating', 'added', [
+          {
+            text: 'ok',
+            onPress: () => {
+              setUpdate(update + 1);
+            },
+          },
+        ]);
+    } catch (error) {
+      // You should notify the user about problems
+      console.log('Rating not added', error);
+    }
   };
 
   // Function to format added time:
@@ -117,7 +161,9 @@ const Single = ({navigation, route}) => {
               }}
             />
           )}
-        </View>
+          />
+        )}
+      </View>
         <LinearGradient
           colors={['#8DD35E', '#FFFFFF']}
           style={styles.linearGradient}
@@ -153,6 +199,29 @@ const Single = ({navigation, route}) => {
               <Text style={[styles.text, {marginLeft: 10}]}>
                 {owner.username}
               </Text>
+            </View>
+            <View>
+              <Card.Title h4>Rate your experience with the user</Card.Title>
+              <AirbnbRating
+                onFinishRating={ratingCompleted}
+                style={styles.rating}
+                count={5}
+                reviews={[
+                  'Terrible',
+                  'Not very good',
+                  'OK',
+                  'Good',
+                  'Excellent!',
+                ]}
+                defaultRating={3}
+                size={20}
+              />
+              <Button
+                title="Save"
+                onPress={() => {
+                  saveRating();
+                }}
+              />
             </View>
             <View style={styles.buttonContainer}>
               <Button
@@ -263,6 +332,9 @@ const styles = StyleSheet.create({
     transform: [{scaleX: 0.3}, {scaleY: 0.3}],
     elevation: 10,
     zIndex: 10,
+  },
+  rating: {
+    marginBottom: 200,
   },
 });
 

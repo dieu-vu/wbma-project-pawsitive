@@ -65,6 +65,7 @@ const SavedPosts = ({navigation}) => {
 
   return (
     <SafeAreaView>
+
       <View
         style={styles.listContainer}
       >
