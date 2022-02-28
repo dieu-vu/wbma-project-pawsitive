@@ -1,21 +1,14 @@
 import PropTypes from 'prop-types';
-import React, {useState, useEffect, useContext} from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Dimensions,
-  Alert,
-  SafeAreaView,
-} from 'react-native';
-import {Card, Text, Avatar, Image, Button, Icon} from 'react-native-elements';
+import React, {useContext, useEffect, useState} from 'react';
+import {Alert, Dimensions, ScrollView, StyleSheet, View} from 'react-native';
+import {Avatar, Button, Card, Image, Text} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {uploadsUrl} from '../utils/Variables';
-import {useFavourite, useMedia, useTag, useUser} from '../hooks/ApiHooks';
-import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
+import {useFavourite, useMedia, useUser} from '../hooks/ApiHooks';
+import {fetchAvatar, formatDate, getFonts} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 import CustomButton from '../components/CustomButton';
@@ -68,15 +61,8 @@ const Single = ({navigation, route}) => {
       const fileId = file.file_id;
       const previousRatings = fileInfo.rating;
       previousRatings.push(rating);
-
-      const description = JSON.stringify(fileInfo);
-
-      file.description = description;
-
-      console.log('##################description', file);
-
+      file.description = JSON.stringify(fileInfo);
       const data = JSON.stringify(file);
-
       const userToken = await AsyncStorage.getItem('userToken');
       const response = await putMedia(data, userToken, fileId);
       console.log('modify response', response);
@@ -86,6 +72,7 @@ const Single = ({navigation, route}) => {
             text: 'ok',
             onPress: () => {
               setUpdate(update + 1);
+              updateRatingToUser();
             },
           },
         ]);
@@ -93,6 +80,10 @@ const Single = ({navigation, route}) => {
       // You should notify the user about problems
       console.log('Rating not added', error);
     }
+  };
+
+  const updateRatingToUser = () => {
+    // to be added later
   };
 
   // Function to format added time:
@@ -155,7 +146,7 @@ const Single = ({navigation, route}) => {
               }}
             />
           )}
-      </View>
+        </View>
         <LinearGradient
           colors={['#8DD35E', '#FFFFFF']}
           style={styles.linearGradient}
@@ -317,8 +308,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     position: 'absolute',
-    right: 10,
-    top: 10,
+    right: -10,
+    top: 100,
   },
   bookMarkLogo: {
     transform: [{scaleX: 0.3}, {scaleY: 0.3}],
