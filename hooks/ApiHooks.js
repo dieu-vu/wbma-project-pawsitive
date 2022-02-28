@@ -84,7 +84,7 @@ const useMedia = (myFilesOnly) => {
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
-  }, [update, searchValue, selectedPetType, mediaArray]);
+  }, [update, searchValue, selectedPetType]);
 
   const postMedia = async (formData, token) => {
     setLoading(true);

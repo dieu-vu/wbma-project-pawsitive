@@ -4,6 +4,7 @@ import {useFonts} from '@expo-google-fonts/inter';
 import {useUser, useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {configs} from 'eslint-plugin-prettier';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),
@@ -69,12 +70,11 @@ const getUserLocation = async () => {
   return userLocation.coords;
 };
 
-const getMediaCurrentCategoryTag = async (file, category) => {
+const getMediaPreviousCategoryTag = async (file, category) => {
   try {
     const token = await AsyncStorage.getItem('userToken');
     const {getTagsForFile} = useTag();
     const listCurrentTags = await getTagsForFile(file.file_id, token);
-    console.log('LIST OF FILE TAG', listCurrentTags);
 
     if (!listCurrentTags) {
       return;
@@ -85,6 +85,7 @@ const getMediaCurrentCategoryTag = async (file, category) => {
     if (!latestCategoryTypeTag) {
       return;
     }
+    console.log('latest category tag', latestCategoryTypeTag);
     return latestCategoryTypeTag.tag.split('_').pop();
   } catch (e) {
     console.error(e);
@@ -99,5 +100,5 @@ export {
   checkLocationPermission,
   askPermission,
   getUserLocation,
-  getMediaCurrentCategoryTag,
+  getMediaPreviousCategoryTag,
 };

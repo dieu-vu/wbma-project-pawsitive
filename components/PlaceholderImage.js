@@ -15,10 +15,11 @@ const PlaceholderImage = () => {
       autoPlay={true}
       loop={true}
       style={{
-        width: undefined,
-        height: Dimensions.get('window').height * 0.4,
+        width: '100%',
+        height: Dimensions.get('window').height * 0.5,
         aspectRatio: 1,
         alignSelf: 'center',
+        backgroundColor: 'white',
       }}
     />
   );
