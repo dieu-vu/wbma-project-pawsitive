@@ -130,6 +130,12 @@ const useMedia = (myFilesOnly) => {
     return await doFetch(`${baseUrl}media/${fileId}`, options);
   };
 
+  const getPostsByUserId = async (userId) => {
+    const json = await useTag().getFilesByTag(appId);
+
+    return json.filter((item) => item.user_id === userId);
+  };
+
   return {
     mediaArray,
     postMedia,
@@ -137,6 +143,7 @@ const useMedia = (myFilesOnly) => {
     getSingleMedia,
     deleteMedia,
     putMedia,
+    getPostsByUserId,
   };
 };
 
@@ -276,4 +283,29 @@ const useFavourite = () => {
   return {postFavourite, getFavouritesByFileId, deleteFavourite, getFavourites};
 };
 
-export {useMedia, useLogin, useUser, useTag, useFavourite};
+const useRating = () => {
+  const addRating = async (ratingData, token) =>{
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': token,
+      },
+      body: JSON.stringify(ratingData),
+    };
+    return await doFetch(baseUrl + 'ratings', options);
+  };
+  const getRatingsForFile = async (fileId, token) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    return await doFetch(`${baseUrl}ratings/file/${fileId}`, options);
+  };
+
+  return {addRating, getRatingsForFile};
+};
+
+export {useMedia, useLogin, useUser, useTag, useFavourite, useRating};

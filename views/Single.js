@@ -7,7 +7,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {uploadsUrl} from '../utils/Variables';
-import {useFavourite, useMedia, useUser} from '../hooks/ApiHooks';
+import {useFavourite, useMedia, useRating, useUser} from '../hooks/ApiHooks';
 import {fetchAvatar, formatDate, getFonts} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
@@ -24,9 +24,10 @@ const Single = ({navigation, route}) => {
   console.log('SINGLE FILE EXTRA \n', fileInfo);
 
   const {getUserById} = useUser();
+  const {addRating, getRatingsForFile} = useRating();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
-  const {putMedia, deleteMedia} = useMedia();
+  const {putMedia, deleteMedia, getPostsByUserId} = useMedia();
   const {update, setUpdate, user} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
@@ -76,38 +77,66 @@ const Single = ({navigation, route}) => {
     return formatDate(date);
   };
 
+  // Function to update the rating
   const ratingCompleted = (value) => {
     setRating(value);
   };
 
+  // Function to save rating
   const saveRating = async () => {
-    try {
-      const fileId = file.file_id;
-      const previousRatings = fileInfo.rating;
-      previousRatings.push(rating);
-      file.description = JSON.stringify(fileInfo);
-      const data = JSON.stringify(file);
-      const userToken = await AsyncStorage.getItem('userToken');
-      const response = await putMedia(data, userToken, fileId);
-      console.log('modify response', response);
-      response &&
-        Alert.alert('Rating', 'added', [
-          {
-            text: 'ok',
-            onPress: () => {
-              setUpdate(update + 1);
-              updateRatingToUser();
+    const userToken = await AsyncStorage.getItem('userToken');
+    const fileId = file.file_id;
+
+    if (file.user_id === user.user_id) {
+      Alert.alert('You can not rate you own post');
+    } else {
+      try {
+        const response = await addRating(
+          {file_id: fileId, rating: rating},
+          userToken
+        );
+        response &&
+          Alert.alert('Rating', 'added', [
+            {
+              text: 'ok',
+              onPress: () => {
+                setUpdate(update + 1);
+                calculateRatingForUser(file.user_id);
+              },
             },
-          },
-        ]);
-    } catch (error) {
-      // You should notify the user about problems
-      console.log('Rating not added', error);
+          ]);
+      } catch (error) {
+        console.error('create rating error', error);
+      }
     }
   };
 
-  const updateRatingToUser = () => {
-    // to be added later
+  // Function to calculate the rating for user, based on rating on all their posts
+  const calculateRatingForUser = async (userId) => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const mediaFiles = await getPostsByUserId(userId);
+      console.log('media files', mediaFiles);
+      let sum = 0;
+      let count = 0;
+      const response = await Promise.all(
+        mediaFiles.map(async (item) => {
+          const ratings = await getRatingsForFile(item.file_id, userToken);
+          ratings.forEach((item) => {
+            const rating = item.rating;
+            console.log(rating);
+            sum += rating;
+            count++;
+          });
+        })
+      );
+      if (response) {
+        const average = sum / count;
+        console.log('average', Math.round(average));
+      }
+    } catch (error) {
+      console.error('getting post for user error', error);
+    }
   };
 
   // Function to format added time:
