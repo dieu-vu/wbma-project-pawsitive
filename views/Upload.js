@@ -128,6 +128,11 @@ const Upload = ({navigation}) => {
   };
 
   const onSubmit = async (data) => {
+    if (!petType) {
+      Alert.alert('Please select a pet type');
+      return;
+    }
+
     if (!imageSelected) {
       Alert.alert('Please select a file');
       return;

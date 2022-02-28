@@ -69,16 +69,23 @@ const getUserLocation = async () => {
   return userLocation.coords;
 };
 
-const getMediaCurrentPetType = async (file) => {
+const getMediaCurrentCategoryTag = async (file, category) => {
   try {
     const token = await AsyncStorage.getItem('userToken');
     const {getTagsForFile} = useTag();
     const listCurrentTags = await getTagsForFile(file.file_id, token);
-    const currentPetType = listCurrentTags
-      .map((tag) => tag.tag)
-      .filter((tag) => tag.includes('pawsitive_pet_'));
-    // console.log('LIST OF FILE TAG', listCurrentTags);
-    return currentPetType;
+    console.log('LIST OF FILE TAG', listCurrentTags);
+
+    if (!listCurrentTags) {
+      return;
+    }
+    const latestCategoryTypeTag = listCurrentTags
+      .filter((tag) => tag.tag.includes(`pawsitive_${category}_`))
+      .pop();
+    if (!latestCategoryTypeTag) {
+      return;
+    }
+    return latestCategoryTypeTag.tag.split('_').pop();
   } catch (e) {
     console.error(e);
   }
@@ -92,5 +99,5 @@ export {
   checkLocationPermission,
   askPermission,
   getUserLocation,
-  getMediaCurrentPetType,
+  getMediaCurrentCategoryTag,
 };

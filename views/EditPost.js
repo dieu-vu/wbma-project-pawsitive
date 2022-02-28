@@ -17,7 +17,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {formatDate, getFonts, getMediaCurrentPetType} from '../utils/Utils';
+import {formatDate, getFonts, getMediaCurrentCategoryTag} from '../utils/Utils';
 import CustomButton from '../components/CustomButton';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -86,9 +86,15 @@ const EditPost = ({navigation, route}) => {
   };
 
   const onSubmit = async (data) => {
+    if (!petType) {
+      Alert.alert('Please select a pet type');
+      return;
+    }
+
     console.log(data);
     const fileInfoJson = createJsonString(data);
-    const currentPetType = await getMediaCurrentPetType(file);
+    const currentPetType = await getMediaCurrentCategoryTag(file, 'pet');
+    const currentUserType = await getMediaCurrentCategoryTag(file, 'user');
 
     const putData = {};
     putData['title'] = data.title;
@@ -101,16 +107,21 @@ const EditPost = ({navigation, route}) => {
       const response = await putMedia(putData, token, file.file_id);
       console.log('EDIT POST response', response);
 
-      const userTypeTag = await postTag(
-        {file_id: file.file_id, tag: `${appId}_user_${userType}`},
-        token
-      );
-      console.log('EDIT USER TYPE RESPONSE', userTypeTag);
+      // Post tag if user type changed from the latest useType Tag:
+      let userTypeTag;
+      if (currentUserType !== userType) {
+        userTypeTag = await postTag(
+          {file_id: file.file_id, tag: `${appId}_user_${userType}`},
+          token
+        );
+        console.log('EDIT USER TYPE RESPONSE', userTypeTag);
+      }
 
+      // Post tag if pet type changed from the latest petType Tag:
       let petTypeTag;
-      // If change pet type, remove the old tag and add new petType tag
       console.log('PET TYPE', petType);
-      if (!petType || !currentPetType.includes(petType)) {
+
+      if (currentPetType !== petType) {
         // we should remove old petType tag, but delete tag is restricted to admin
         petTypeTag = await postTag(
           {file_id: file.file_id, tag: `${appId}_pet_${petType}`},
@@ -119,7 +130,9 @@ const EditPost = ({navigation, route}) => {
         console.log('EDIT PET TYPE RESPONSE', petTypeTag);
       }
 
-      userTypeTag &&
+      currentUserType !== userType &&
+        userTypeTag &&
+        currentPetType !== petType &&
         petTypeTag &&
         Alert.alert('Post', 'Succesfully updated', [
           {

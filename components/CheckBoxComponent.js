@@ -22,7 +22,11 @@ const CheckboxComponent = ({customText}) => {
       <CheckBox
         center
         title="Pet owner"
-        checked={userType === 'sitter' ? oneOptionChecked : !oneOptionChecked}
+        checked={
+          userType === 'sitter' && !oneOptionChecked
+            ? oneOptionChecked
+            : !oneOptionChecked
+        }
         checkedColor="#425E20"
         onPress={() => {
           setUserType(!oneOptionChecked ? 'owner' : 'sitter');
@@ -34,7 +38,11 @@ const CheckboxComponent = ({customText}) => {
       <CheckBox
         center
         title="Pet sitter"
-        checked={userType === 'sitter' ? !oneOptionChecked : oneOptionChecked}
+        checked={
+          userType === 'sitter' && !oneOptionChecked
+            ? !oneOptionChecked
+            : oneOptionChecked
+        }
         checkedColor="#425E20"
         onPress={() => {
           setUserType(oneOptionChecked ? 'sitter' : 'owner');
