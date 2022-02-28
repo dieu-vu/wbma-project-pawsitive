@@ -11,15 +11,10 @@ import {
 import {Card, Text, Avatar, Image, Button, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
-<<<<<<< HEAD
-=======
-import {useFavourite, useMedia, useTag, useUser} from '../hooks/ApiHooks';
->>>>>>> 96eb785 (rating added)
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-
 import {uploadsUrl} from '../utils/Variables';
-import {useFavourite, useTag, useUser} from '../hooks/ApiHooks';
+import {useFavourite, useMedia, useTag, useUser} from '../hooks/ApiHooks';
 import {formatDate, getFonts, fetchAvatar} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
@@ -70,7 +65,7 @@ const Single = ({navigation, route}) => {
 
   const saveRating = async () => {
     try {
-      const fileId=file.file_id;
+      const fileId = file.file_id;
       const previousRatings = fileInfo.rating;
       previousRatings.push(rating);
 
@@ -80,8 +75,7 @@ const Single = ({navigation, route}) => {
 
       console.log('##################description', file);
 
-      const data=JSON.stringify(file);
-
+      const data = JSON.stringify(file);
 
       const userToken = await AsyncStorage.getItem('userToken');
       const response = await putMedia(data, userToken, fileId);
@@ -161,8 +155,6 @@ const Single = ({navigation, route}) => {
               }}
             />
           )}
-          />
-        )}
       </View>
         <LinearGradient
           colors={['#8DD35E', '#FFFFFF']}
