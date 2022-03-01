@@ -191,28 +191,22 @@ const Upload = ({navigation}) => {
   const displayMedia = (type) => {
     return (
       <>
-        {loading ? (
-          <PlaceholderImage />
+        {type === 'image' ? (
+          <Card.Image
+            source={{uri: image}}
+            style={styles.image}
+            onPress={pickImage}
+          ></Card.Image>
         ) : (
-          <>
-            {type === 'image' ? (
-              <Card.Image
-                source={{uri: image}}
-                style={styles.image}
-                onPress={pickImage}
-              ></Card.Image>
-            ) : (
-              <Video
-                source={{uri: image}}
-                style={styles.image}
-                useNativeControls={true}
-                resizeMode="cover"
-                onError={(err) => {
-                  console.log('Video error', err);
-                }}
-              ></Video>
-            )}
-          </>
+          <Video
+            source={{uri: image}}
+            style={styles.image}
+            useNativeControls={true}
+            resizeMode="cover"
+            onError={(err) => {
+              console.log('Video error', err);
+            }}
+          ></Video>
         )}
       </>
     );
@@ -252,6 +246,7 @@ const Upload = ({navigation}) => {
             ) : (
               displayMedia(type)
             )}
+            {loading ? <PlaceholderImage /> : <></>}
             <Controller
               control={control}
               rules={{require: true}}
