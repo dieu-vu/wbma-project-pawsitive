@@ -27,7 +27,7 @@ const Home = ({navigation}) => {
   }, [animation]);
   getFonts();
 
-  console.log('mediaArray', mediaArray.length);
+  // console.log('mediaArray', mediaArray.length);
 
   return (
     <SafeAreaView>

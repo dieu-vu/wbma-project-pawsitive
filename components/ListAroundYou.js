@@ -50,14 +50,14 @@ const ListAroundYou = ({navigation, mediaArray}) => {
         100
       );
 
-      console.log(
-        'mediaPost title: ',
-        mediaPost.title,
-        'distance: ',
-        distance,
-        'is withing radius 10km ',
-        result
-      );
+      // console.log(
+      //   'mediaPost title: ',
+      //   mediaPost.title,
+      //   'distance: ',
+      //   distance,
+      //   'is withing radius 10km ',
+      //   result
+      // );
       if (result) {
         setPostsInRange((oldPost) => [
           ...oldPost,
@@ -78,7 +78,7 @@ const ListAroundYou = ({navigation, mediaArray}) => {
   useEffect(async () => {
     if (checkLocationPermission()) {
       setCurrentUserLocation(await getUserLocation());
-      console.log('USER LOCATION', currentUserLocation);
+      // console.log('USER LOCATION', currentUserLocation);
     } else {
       askPermission();
     }
@@ -87,7 +87,7 @@ const ListAroundYou = ({navigation, mediaArray}) => {
   // TODO figure out how to get mediaArray load first before rendering anything
   useEffect(() => {
     loadPostsInRange();
-    console.log('posts loaded in range', postsInRange);
+    // console.log('posts loaded in range', postsInRange);
   }, [currentUserLocation]);
 
   const renderItem = ({item, index}) => (
