@@ -31,6 +31,7 @@ import CheckBoxComponent from '../components/CheckBoxComponent';
 import CustomDropDownPicker from '../components/DropDownPicker';
 import MapOverlayComponent from '../components/MapOverlayComponent';
 import {onChange} from 'react-native-reanimated';
+import PlaceholderImage from '../components/PlaceholderImage';
 
 const Upload = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -190,22 +191,28 @@ const Upload = ({navigation}) => {
   const displayMedia = (type) => {
     return (
       <>
-        {type === 'image' ? (
-          <Card.Image
-            source={{uri: image}}
-            style={styles.image}
-            onPress={pickImage}
-          ></Card.Image>
+        {loading ? (
+          <PlaceholderImage />
         ) : (
-          <Video
-            source={{uri: image}}
-            style={styles.image}
-            useNativeControls={true}
-            resizeMode="cover"
-            onError={(err) => {
-              console.log('Video error', err);
-            }}
-          ></Video>
+          <>
+            {type === 'image' ? (
+              <Card.Image
+                source={{uri: image}}
+                style={styles.image}
+                onPress={pickImage}
+              ></Card.Image>
+            ) : (
+              <Video
+                source={{uri: image}}
+                style={styles.image}
+                useNativeControls={true}
+                resizeMode="cover"
+                onError={(err) => {
+                  console.log('Video error', err);
+                }}
+              ></Video>
+            )}
+          </>
         )}
       </>
     );
