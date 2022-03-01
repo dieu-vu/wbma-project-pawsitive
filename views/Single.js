@@ -109,6 +109,7 @@ const Single = ({navigation, route}) => {
             },
           ]);
       } catch (error) {
+        Alert.alert('You have already rated this user');
         console.error('create rating error', error);
       }
     }

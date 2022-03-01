@@ -9,8 +9,6 @@ import {AirbnbRating} from 'react-native-ratings';
 
 const MyPosts = ({navigation}) => {
 
-
-
   return (
     <SafeAreaView style={styles.container}>
 
@@ -28,6 +26,8 @@ const MyPosts = ({navigation}) => {
 MyPosts.propTypes = {
   navigation: PropTypes.object,
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

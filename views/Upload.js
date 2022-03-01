@@ -305,6 +305,7 @@ const Upload = ({navigation}) => {
               name="price"
             ></Controller>
 
+
             <View keyboardShouldPersistTaps="handled">
               <FAB
                 visible={true}
@@ -353,6 +354,7 @@ const Upload = ({navigation}) => {
                         flexGrow: 1,
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
+
                       }}
                     >
                       <Text style={[styles.text, {marginRight: 2, width: 50}]}>
@@ -379,7 +381,7 @@ const Upload = ({navigation}) => {
                     </View>
                   </TouchableHighlight>
                 )}
-              ></Controller>
+              />
 
               {/* Input end time */}
               <Controller
@@ -425,7 +427,7 @@ const Upload = ({navigation}) => {
                     </View>
                   </TouchableHighlight>
                 )}
-              ></Controller>
+              />
             </View>
             <View>
               <CustomDropDownPicker></CustomDropDownPicker>

@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     alignSelf: 'center',
     width: '60%',
-    backgroundColor: 'white',
   },
   dropdownText: {
     fontFamily: 'Montserrat-Regular',
