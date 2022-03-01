@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Platform} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {getFonts} from '../utils/Utils';
 import {MainContext} from '../contexts/MainContext';
@@ -33,7 +33,7 @@ const CustomDropDownPicker = (props) => {
           backgroundColor: 'white',
           zIndex: 1,
         }}
-        containerStyle={props.containerStyle || styles.dropdownContainer}
+        containerStyle={props.containerStyle || Platform.OS === 'ios' ? styles.dropdownContainerIos : styles.dropdownContainerAndroid}
         dropDownDirection={props.dropDownDirection || 'TOP'}
         textStyle={styles.dropdownText}
         setOpen={setOpen}
@@ -57,7 +57,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignContent: 'center',
   },
-  dropdownContainer: {
+
+  dropdownContainerIos: {
+    alignSelf: 'center',
+    width: '60%',
+    backgroundColor: 'white',
+  },
+  dropdownContainerAndroid: {
     alignSelf: 'center',
     width: '60%',
   },

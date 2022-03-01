@@ -105,6 +105,7 @@ const Single = ({navigation, route}) => {
               onPress: () => {
                 setUpdate(update + 1);
                 calculateRatingForUser(file.user_id);
+                calculateRatingForPost(file.file_id);
               },
             },
           ]);
@@ -141,6 +142,21 @@ const Single = ({navigation, route}) => {
     } catch (error) {
       console.error('getting post for user error', error);
     }
+  };
+
+  const calculateRatingForPost = async (file_id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const ratings = await getRatingsForFile(file_id, userToken);
+    let sum = 0;
+    let count = 0;
+    ratings.forEach((item) => {
+      const rating = item.rating;
+      console.log(rating);
+      sum += rating;
+      count++;
+      const average = sum / count;
+      console.log('average', Math.round(average));
+    });
   };
 
   // Function to format added time:
