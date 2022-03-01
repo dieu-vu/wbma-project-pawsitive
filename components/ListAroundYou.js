@@ -1,16 +1,18 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Dimensions, StyleSheet} from 'react-native';
-import { askPermission, checkLocationPermission, getFonts, getUserLocation } from "../utils/Utils";
+import {
+  askPermission,
+  checkLocationPermission,
+  getFonts,
+  getUserLocation,
+} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
 import {getDistance, isPointWithinRadius} from 'geolib';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import PlaceholderImage from './PlaceholderImage';
+import {MainContext} from '../contexts/MainContext';
 
 // @SAM: in MainContext, we have userCurrentLocation and postLocation which maybe useful here
 
@@ -18,12 +20,12 @@ const ListAroundYou = ({navigation, mediaArray}) => {
   const [postsInRange, setPostsInRange] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
-  const [currentUserLocation, setCurrentUserLocation] = useState({})
+  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
 
   getFonts();
 
-  const loadPostsInRange = () => {
-    mediaArray?.map((mediaPost) => {
+  const loadPostsInRange = async () => {
+    await mediaArray?.map((mediaPost) => {
       const desc = JSON.parse(mediaPost.description);
       const result = isPointWithinRadius(
         {
@@ -70,8 +72,8 @@ const ListAroundYou = ({navigation, mediaArray}) => {
           },
         ]);
       }
-    })
-  }
+    });
+  };
 
   useEffect(async () => {
     if (checkLocationPermission()) {
@@ -83,8 +85,8 @@ const ListAroundYou = ({navigation, mediaArray}) => {
   }, []);
 
   // TODO figure out how to get mediaArray load first before rendering anything
-  useEffect(async () => {
-    loadPostsInRange()
+  useEffect(() => {
+    loadPostsInRange();
     console.log('posts loaded in range', postsInRange);
   }, [currentUserLocation]);
 
