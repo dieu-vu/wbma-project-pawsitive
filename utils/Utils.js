@@ -4,7 +4,6 @@ import {useFonts} from '@expo-google-fonts/inter';
 import {useUser, useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {configs} from 'eslint-plugin-prettier';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),

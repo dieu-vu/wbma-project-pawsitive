@@ -1,17 +1,21 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from 'prop-types';
 import {SafeAreaView, ScrollView, View, StyleSheet} from 'react-native';
-import {Button, Text} from 'react-native-elements';
+import { Button, Text, Tile } from "react-native-elements";
 import {getFonts} from '../utils/Utils';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListAroundYou from '../components/ListAroundYou';
 import ListByPetType from '../components/ListByPetType';
 import { MainContext } from "../contexts/MainContext";
+import { useMedia } from "../hooks/ApiHooks";
 
 const Home = ({navigation}) => {
   const {setSelectedPetType} = useContext(MainContext);
+  const {mediaArray} = useMedia();
   const insets = useSafeAreaInsets();
   getFonts();
+
+  console.log('mediaArray', mediaArray.length)
 
   return (
     <SafeAreaView>
@@ -39,7 +43,18 @@ const Home = ({navigation}) => {
           <Text style={styles.titles} h4>
             Listings around you
           </Text>
-          <ListAroundYou />
+          {(mediaArray.length > 0) ?
+            <ListAroundYou navigation={navigation} mediaArray={mediaArray} />
+           :
+            <Tile
+              title="No posts around you"
+              featured
+              activeOpacity={1}
+              width={300}
+              height={250}
+            />
+          }
+
 
           <Text style={styles.titles} h4>
             Discover by type of pets

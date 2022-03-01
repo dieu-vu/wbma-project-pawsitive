@@ -45,8 +45,8 @@ const Login = () => {
     }
     try {
       const userData = await getUserByToken(userToken);
-      console.log('check token', userData);
-      console.log('token in asyncStorage', userToken);
+      // console.log('check token', userData);
+      // console.log('token in asyncStorage', userToken);
       setUser(userData);
       setIsLoggedIn(true);
     } catch (e) {

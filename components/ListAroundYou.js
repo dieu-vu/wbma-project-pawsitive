@@ -1,81 +1,148 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Dimensions, StyleSheet} from 'react-native';
-import {getFonts} from '../utils/Utils';
+import { askPermission, checkLocationPermission, getFonts, getUserLocation } from "../utils/Utils";
 import {Tile} from 'react-native-elements';
+import {getDistance, isPointWithinRadius} from 'geolib';
+import {uploadsUrl} from '../utils/Variables';
+import PropTypes from 'prop-types';
+import PlaceholderImage from './PlaceholderImage';
 
 // @SAM: in MainContext, we have userCurrentLocation and postLocation which maybe useful here
-const fakeData = [
-  {
-    title: 'fluffy',
-    uri: require('../assets/dogSmiling1.jpg'),
-  },
-  {
-    title: 'fluffy2',
-    uri: require('../assets/dogSmiling2.jpg'),
-  },
-  {
-    title: 'fluffy3',
-    uri: require('../assets/sheepGroup.jpg'),
-  },
-];
 
-const ListAroundYou = () => {
+const ListAroundYou = ({navigation, mediaArray}) => {
+  const [postsInRange, setPostsInRange] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
+  const [currentUserLocation, setCurrentUserLocation] = useState({})
 
   getFonts();
 
-  const renderItem = useCallback(
-    ({item, index}) => (
-      <Tile
-        imageSrc={fakeData[index].uri}
-        title={fakeData[index].title}
-        titleStyle={styles.title}
-        imageContainerStyle={{borderRadius: 20}}
-        featured
-        activeOpacity={1}
-        width={300}
-        height={250}
-      />
-    ),
-    []
+  const loadPostsInRange = () => {
+    mediaArray?.map((mediaPost) => {
+      const desc = JSON.parse(mediaPost.description);
+      const result = isPointWithinRadius(
+        {
+          latitude: desc.coords.latitude,
+          longitude: desc.coords.longitude,
+        },
+        {
+          latitude: currentUserLocation.latitude,
+          longitude: currentUserLocation.longitude,
+        },
+        10000
+      );
+      const distance = getDistance(
+        {
+          latitude: currentUserLocation.latitude,
+          longitude: currentUserLocation.longitude,
+        },
+        {
+          latitude: desc.coords.latitude,
+          longitude: desc.coords.longitude,
+        },
+        100
+      );
+
+      console.log(
+        'mediaPost title: ',
+        mediaPost.title,
+        'distance: ',
+        distance,
+        'is withing radius 10km ',
+        result
+      );
+      if (result) {
+        setPostsInRange((oldPost) => [
+          ...oldPost,
+          {
+            whole: mediaPost,
+            title: mediaPost.title,
+            thumbnails: mediaPost.thumbnails,
+            coordinates: {
+              latitude: desc.coords.latitude,
+              longitude: desc.coords.longitude,
+            },
+          },
+        ]);
+      }
+    })
+  }
+
+  useEffect(async () => {
+    if (checkLocationPermission()) {
+      setCurrentUserLocation(await getUserLocation());
+      console.log('USER LOCATION', currentUserLocation);
+    } else {
+      askPermission();
+    }
+  }, []);
+
+  // TODO figure out how to get mediaArray load first before rendering anything
+  useEffect(async () => {
+    loadPostsInRange()
+    console.log('posts loaded in range', postsInRange);
+  }, [currentUserLocation]);
+
+  const renderItem = ({item, index}) => (
+    <Tile
+      imageSrc={{uri: uploadsUrl + postsInRange[index].thumbnails.w640}}
+      title={postsInRange[index].title}
+      titleStyle={styles.title}
+      imageContainerStyle={{borderRadius: 20}}
+      featured
+      activeOpacity={1}
+      width={300}
+      height={250}
+      onPress={() => {
+        navigation.navigate('Single', {file: postsInRange[index].whole});
+      }}
+    />
   );
-  return (
-    <>
-      <Carousel
-        activeSlideAlignment="start"
-        containerCustomStyle={{marginHorizontal: 20}}
-        renderItem={renderItem}
-        data={fakeData}
-        ref={ref}
-        sliderWidth={Dimensions.get('window').width}
-        itemWidth={300}
-        onSnapToItem={(index) => setActiveIndex(index)}
-      />
-      <Pagination
-        dotsLength={fakeData.length}
-        activeDotIndex={activeIndex}
-        carouselRef={ref}
-        dotStyle={{
-          width: 15,
-          height: 15,
-          borderRadius: 50,
-          marginHorizontal: 8,
-          backgroundColor: '#425E20',
-        }}
-        tappableDots={true}
-        inactiveDotStyle={{
-          borderColor: '#425E20',
-          borderWidth: 3,
-          backgroundColor: 'white',
-          // Define styles for inactive dots here
-        }}
-        inactiveDotOpacity={0.4}
-        inactiveDotScale={0.6}
-      />
-    </>
-  );
+
+  if (postsInRange.length === 0) {
+    return <PlaceholderImage />;
+  } else {
+    return (
+      <>
+        <Carousel
+          activeSlideAlignment="start"
+          containerCustomStyle={{marginHorizontal: 20}}
+          renderItem={renderItem}
+          data={postsInRange}
+          ref={ref}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={300}
+          onSnapToItem={(index) => setActiveIndex(index)}
+        />
+        <Pagination
+          dotsLength={postsInRange.length}
+          activeDotIndex={activeIndex}
+          carouselRef={ref}
+          dotStyle={{
+            width: 15,
+            height: 15,
+            borderRadius: 50,
+            marginHorizontal: 8,
+            backgroundColor: '#425E20',
+          }}
+          tappableDots={true}
+          inactiveDotStyle={{
+            borderColor: '#425E20',
+            borderWidth: 3,
+            backgroundColor: 'white',
+            // Define styles for inactive dots here
+          }}
+          inactiveDotOpacity={0.4}
+          inactiveDotScale={0.6}
+        />
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -88,5 +155,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
   },
 });
+
+ListAroundYou.propTypes = {
+  navigation: PropTypes.object,
+  mediaArray: PropTypes.array,
+};
 
 export default ListAroundYou;

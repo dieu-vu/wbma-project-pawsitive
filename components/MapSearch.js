@@ -69,7 +69,7 @@ const MapSearch = () => {
 
   const goToInitialLocation = (region) => {
     // console.log('ASSIGNED REGION', region);
-    let initialRegion = Object.assign(region);
+    const initialRegion = Object.assign(region);
     // console.log('INITIAL REGION', initialRegion);
     mapRef.current.animateToRegion(initialRegion, 500);
   };
