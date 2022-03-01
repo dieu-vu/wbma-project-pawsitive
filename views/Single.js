@@ -251,7 +251,9 @@ const Single = ({navigation, route}) => {
                   color="black"
                 />
                 <Text style={[styles.text, {marginLeft: 10}]}>
-                  {!fileInfo.price ? 'Price not provided' : fileInfo.price} €
+                  {!fileInfo.price
+                    ? 'Price not provided'
+                    : `${fileInfo.price} €`}
                 </Text>
               </View>
             </View>
