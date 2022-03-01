@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Alert, StyleSheet, TouchableOpacity} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {Avatar, ListItem, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/Variables';
@@ -88,6 +88,13 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
             ? `${fileInfo.description.substring(0, 100)} ...`
             : fileInfo.description}
         </ListItem.Subtitle>
+        {!myFilesOnly && !savedPosts ? (
+          <>
+            <Text>{!fileInfo.price ? '' : fileInfo.price}</Text>
+          </>
+        ) : (
+          <></>
+        )}
         {myFilesOnly && (
           <Button
             title="Delete"
