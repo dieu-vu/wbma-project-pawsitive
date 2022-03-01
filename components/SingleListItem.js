@@ -83,7 +83,11 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
         <ListItem.Title numberOfLines={1} h4 style={styles.title}>
           {singleMedia.title}
         </ListItem.Title>
-        <ListItem.Subtitle style={styles.subTitle}>{fileInfo.description}</ListItem.Subtitle>
+        <ListItem.Subtitle style={styles.subTitle}>
+          {fileInfo.description.length > 100
+            ? `${fileInfo.description.substring(0, 100)} ...`
+            : fileInfo.description}
+        </ListItem.Subtitle>
         {myFilesOnly && (
           <Button
             title="Delete"
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
   },
   subTitle: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: 'Montserrat-Regular',
     color: 'black',
   },
 });
