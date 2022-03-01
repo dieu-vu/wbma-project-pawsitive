@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Alert, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {Alert, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
 import {Avatar, ListItem, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/Variables';
@@ -79,19 +79,23 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
           uri: uploadsUrl + singleMedia.thumbnails.w160,
         }}
       />
-      <ListItem.Content>
-        <ListItem.Title numberOfLines={1} h4 style={styles.title}>
-          {singleMedia.title}
-        </ListItem.Title>
-        <ListItem.Subtitle style={styles.subTitle}>
-          {fileInfo.description.length > 100
-            ? `${fileInfo.description.substring(0, 100)} ...`
-            : fileInfo.description}
-        </ListItem.Subtitle>
+      <ListItem.Content style={styles.itemContent}>
+        <View style={{flex: 1, flexDirection: 'column'}}>
+          <ListItem.Title numberOfLines={1} h4 style={styles.title}>
+            {singleMedia.title}
+          </ListItem.Title>
+          <ListItem.Subtitle style={styles.subTitle}>
+            {fileInfo.description.length > 100
+              ? `${fileInfo.description.substring(0, 100)} ...`
+              : fileInfo.description}
+          </ListItem.Subtitle>
+        </View>
         {!myFilesOnly && !savedPosts ? (
-          <>
-            <Text>{!fileInfo.price ? '' : fileInfo.price}</Text>
-          </>
+          <View style={{marginLeft: 5, marginRight: 5}}>
+            <Text style={{fontSize: 20, fontFamily: 'Montserrat-SemiBold'}}>
+              {!fileInfo.price ? '' : `${fileInfo.price}€`}
+            </Text>
+          </View>
         ) : (
           <></>
         )}
@@ -166,6 +170,12 @@ const styles = StyleSheet.create({
   subTitle: {
     fontFamily: 'Montserrat-Regular',
     color: 'black',
+  },
+  itemContent: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
 });
 
