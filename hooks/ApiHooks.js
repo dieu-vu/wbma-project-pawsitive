@@ -284,7 +284,7 @@ const useFavourite = () => {
 };
 
 const useRating = () => {
-  const addRating = async (ratingData, token) =>{
+  const addRating = async (ratingData, token) => {
     const options = {
       method: 'POST',
       headers: {

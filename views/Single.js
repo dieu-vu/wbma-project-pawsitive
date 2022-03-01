@@ -32,6 +32,8 @@ const Single = ({navigation, route}) => {
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
+
+  getFonts();
   // Function to save post
   const savePost = async () => {
     try {
@@ -175,7 +177,6 @@ const Single = ({navigation, route}) => {
     fetchOwner();
   }, []);
 
-  getFonts();
   return (
     <ScrollView style={styles.container}>
       <View style={{flex: 1, paddingBottom: insets.bottom}}>
