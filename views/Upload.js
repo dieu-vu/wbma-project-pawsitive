@@ -118,9 +118,10 @@ const Upload = ({navigation}) => {
     json['start_time'] = data.startTime;
     // console.log('start time from form', data.startTime);
     // console.log('end time from form', data.endTime);
-
+    json['price'] = data.price;
     json['end_time'] = data.endTime;
     json['coords'] = postLocation;
+    json['price'] = data.price;
 
     // TODO: to add more field here for location, subsribers, etc
     return JSON.stringify(json);
@@ -282,6 +283,26 @@ const Upload = ({navigation}) => {
                 ></Input>
               )}
               name="description"
+            ></Controller>
+            <Controller
+              control={control}
+              rules={{
+                pattern: {
+                  value: /^(0|[1-9]\d*)(\.\d+)?$/g,
+                  message: 'Min 8, Uppercase, Number',
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Price in EUR"
+                  style={[styles.input]}
+                ></Input>
+              )}
+              name="price"
             ></Controller>
 
             <View keyboardShouldPersistTaps="handled">

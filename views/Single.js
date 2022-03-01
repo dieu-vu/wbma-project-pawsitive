@@ -234,9 +234,7 @@ const Single = ({navigation, route}) => {
                   {owner.username}
                 </Text>
               </View>
-              <View
-                style={{flex: 1, flexDirection: 'row', alignItems: 'flex-end'}}
-              >
+              <View style={styles.userInfo}>
                 <Icon name="map-pin" type="feather" color="black" />
                 <Text style={[styles.text, {marginLeft: 10}]}>
                   {!fileInfo.coords
@@ -246,11 +244,23 @@ const Single = ({navigation, route}) => {
                     : fileInfo.coords.address}
                 </Text>
               </View>
+              <View style={styles.userInfo}>
+                <Icon
+                  name="cash-multiple"
+                  type="material-community"
+                  color="black"
+                />
+                <Text style={[styles.text, {marginLeft: 10}]}>
+                  {!fileInfo.price ? 'Price not provided' : fileInfo.price} €
+                </Text>
+              </View>
             </View>
 
             {/* Post's Text description */}
             <View style={styles.postSection}>
-              <Card.Title style={[styles.text, {fontSize: 18}]}>
+              <Card.Title
+                style={[styles.text, {fontSize: 18, fontStyle: 'italic'}]}
+              >
                 {fileInfo.description
                   ? fileInfo.description
                   : 'No text descriptions'}

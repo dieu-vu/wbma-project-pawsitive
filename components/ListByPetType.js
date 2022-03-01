@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, {useCallback, useContext, useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Dimensions, StyleSheet} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
-import { MainContext } from "../contexts/MainContext";
+import {MainContext} from '../contexts/MainContext';
 
 const PetTypesArray = [
   {
