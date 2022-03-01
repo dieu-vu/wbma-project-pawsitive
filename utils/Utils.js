@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
 import {useUser, useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {MainContext} from '../contexts/MainContext';
+import {Alert} from 'react-native';
+import {useMedia} from '../hooks/ApiHooks';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),

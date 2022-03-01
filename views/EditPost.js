@@ -1,4 +1,4 @@
-import React, {useContext, useState, useCallback, useEffect} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Platform,
@@ -109,12 +109,13 @@ const EditPost = ({navigation, route}) => {
     const putData = {};
     putData['title'] = data.title;
     putData['description'] = fileInfoJson;
-    console.log('PUT DATA', putData);
+    const putDataJson = JSON.stringify(putData);
+    console.log('PUT DATA', JSON.stringify(putData));
     console.log('current pet type', currentPetType);
 
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const response = await putMedia(putData, token, file.file_id);
+      const response = await putMedia(putDataJson, token, file.file_id);
       console.log('EDIT POST response', response);
 
       // Post tag if user type changed from the latest useType Tag:
