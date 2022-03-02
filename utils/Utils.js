@@ -55,11 +55,8 @@ const fetchAvatar = async (data) => {
 
 const checkLocationPermission = async () => {
   const hasPermission = await Location.requestForegroundPermissionsAsync();
-  if (hasPermission.status === 'granted') {
-    const permission = await askPermission();
-    return permission;
-  }
-  return true;
+  // console.log('Permission ', hasPermission);
+  return hasPermission.granted;
 };
 
 const askPermission = async () => {

@@ -27,7 +27,7 @@ const Home = ({navigation}) => {
   }, [animation]);
   getFonts();
 
-  // console.log('mediaArray', mediaArray.length);
+  console.log('mediaArray', mediaArray.length);
 
   return (
     <SafeAreaView>
@@ -95,7 +95,6 @@ const Home = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-
           <Text style={styles.titles} h4>
             Listings around you
           </Text>
@@ -110,7 +109,6 @@ const Home = ({navigation}) => {
               height={250}
             />
           )}
-
           <Text style={styles.titles} h4>
             Discover by type of pets
           </Text>

@@ -13,10 +13,11 @@ const MainProvider = (props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [mapOverlayVisible, setMapOverlayVisible] = useState(false);
-  const [currentUserLocation, setCurrentUserLocation] = useState({
-    latitude: 60.168415993,
-    longitude: 24.9333962664,
-  });
+  const defautLocation = {latitude: 60.168415993, longitude: 24.9333962664};
+  const [currentUserLocation, setCurrentUserLocation] =
+    useState(defautLocation);
+  // latitude: 60.168415993,
+  // longitude: 24.9333962664,
   const [postLocation, setPostLocation] = useState();
   const [previousUserType, setPreviousUserType] = useState();
 

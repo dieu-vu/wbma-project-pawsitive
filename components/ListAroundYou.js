@@ -8,89 +8,100 @@ import {
   getUserLocation,
 } from '../utils/Utils';
 import {Tile} from 'react-native-elements';
-import {getDistance, isPointWithinRadius} from 'geolib';
+import {isPointWithinRadius} from 'geolib';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import PlaceholderImage from './PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
+import {cos} from 'react-native-reanimated';
 
-// @SAM: in MainContext, we have userCurrentLocation and postLocation which maybe useful here
+const initialLoad = async (currentUserLocation, setCurrentUserLocation) => {
+  console.log('Load initialload');
+  const hasPermission = await checkLocationPermission();
+  // console.log('has Permission: ', hasPermission);
+  if (!hasPermission) {
+    await askPermission();
+  }
+  const userLocation = await getUserLocation();
+  // console.log('user loc ', userLocation);
+  setCurrentUserLocation(userLocation);
+  // console.log('USER LOCATION', currentUserLocation);
+  console.log('Init succeeds');
+};
 
-const ListAroundYou = ({navigation, mediaArray}) => {
+const loadPostsInRange = (mediaArray, currentUserLocation, setPostsInRange) => {
+  mediaArray?.map((mediaPost) => {
+    const desc = JSON.parse(mediaPost.description);
+    const result = isPointWithinRadius(
+      {
+        latitude: desc.coords.latitude,
+        longitude: desc.coords.longitude,
+      },
+      currentUserLocation,
+      10000
+    );
+    if (result) {
+      setPostsInRange((oldPost) => [
+        ...oldPost,
+        {
+          whole: mediaPost,
+          title: mediaPost.title,
+          thumbnails: mediaPost.thumbnails,
+          coordinates: {
+            latitude: desc.coords.latitude,
+            longitude: desc.coords.longitude,
+          },
+        },
+      ]);
+    }
+  });
+};
+
+const ListAroundYou = async ({navigation, mediaArray}) => {
   const [postsInRange, setPostsInRange] = useState([]);
+  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
-  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
-
+  console.log('Load listaroundyou');
+  // initialLoad(currentUserLocation, setCurrentUserLocation);
   getFonts();
-
-  const loadPostsInRange = async () => {
-    await mediaArray?.map((mediaPost) => {
-      const desc = JSON.parse(mediaPost.description);
-      const result = isPointWithinRadius(
-        {
+  console.log('getFonts succeeds');
+  const newPostsInRange = [];
+  mediaArray?.map((mediaPost) => {
+    const desc = JSON.parse(mediaPost.description);
+    const result = isPointWithinRadius(
+      {
+        latitude: desc.coords.latitude,
+        longitude: desc.coords.longitude,
+      },
+      currentUserLocation,
+      10000
+    );
+    if (result) {
+      newPostsInRange.push({
+        whole: mediaPost,
+        title: mediaPost.title,
+        thumbnails: mediaPost.thumbnails,
+        coordinates: {
           latitude: desc.coords.latitude,
           longitude: desc.coords.longitude,
         },
-        {
-          latitude: currentUserLocation.latitude,
-          longitude: currentUserLocation.longitude,
-        },
-        10000
-      );
-      const distance = getDistance(
-        {
-          latitude: currentUserLocation.latitude,
-          longitude: currentUserLocation.longitude,
-        },
-        {
-          latitude: desc.coords.latitude,
-          longitude: desc.coords.longitude,
-        },
-        100
-      );
-
-      // console.log(
-      //   'mediaPost title: ',
-      //   mediaPost.title,
-      //   'distance: ',
-      //   distance,
-      //   'is withing radius 10km ',
-      //   result
-      // );
-      if (result) {
-        setPostsInRange((oldPost) => [
-          ...oldPost,
-          {
-            whole: mediaPost,
-            title: mediaPost.title,
-            thumbnails: mediaPost.thumbnails,
-            coordinates: {
-              latitude: desc.coords.latitude,
-              longitude: desc.coords.longitude,
-            },
-          },
-        ]);
-      }
-    });
-  };
-
-  useEffect(async () => {
-    if (checkLocationPermission()) {
-      setCurrentUserLocation(await getUserLocation());
-      // console.log('USER LOCATION', currentUserLocation);
-    } else {
-      askPermission();
+      });
     }
-  }, []);
-
+  });
+  if (newPostsInRange.length > 0) {
+    await setPostsInRange(newPostsInRange);
+  }
+  // loadPostsInRange(mediaArray, currentUserLocation, setPostsInRange);
+  // console.log('loadPostsInRange succeeds');
+  console.log('posts loaded in range', postsInRange.length);
   // TODO figure out how to get mediaArray load first before rendering anything
-  useEffect(() => {
-    loadPostsInRange();
-    // console.log('posts loaded in range', postsInRange);
-  }, [currentUserLocation]);
+  // useEffect(() => {
+  //   loadPostsInRange(mediaArray, currentUserLocation, setPostsInRange);
+  //   console.log('posts loaded in range', postsInRange.length);
+  // }, [currentUserLocation]);
 
-  const renderItem = ({item, index}) => (
+  const itemToRender = ({item, index}) => (
     <Tile
       imageSrc={{uri: uploadsUrl + postsInRange[index].thumbnails.w640}}
       title={postsInRange[index].title}
@@ -114,7 +125,7 @@ const ListAroundYou = ({navigation, mediaArray}) => {
         <Carousel
           activeSlideAlignment="start"
           containerCustomStyle={{marginHorizontal: 20}}
-          renderItem={renderItem}
+          renderItem={itemToRender}
           data={postsInRange}
           ref={ref}
           sliderWidth={Dimensions.get('window').width}

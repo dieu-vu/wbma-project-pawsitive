@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import {Dimensions, View} from 'react-native';
 import {Avatar, FAB, Text, Button, Rating} from 'react-native-elements';
@@ -6,7 +6,7 @@ import {useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 
-const FullScreenMap = ({ navigation }) => {
+const FullScreenMap = ({navigation}) => {
   const [region, setRegion] = useState({
     latitude: 62.04164,
     longitude: 26.40757,
@@ -45,10 +45,14 @@ const FullScreenMap = ({ navigation }) => {
             mediaPost
           );
           console.log(
-            'title: ', mediaPost.title,
-            'thumbnails', mediaPost.thumbnails,
-            'coords: ', postOnMap.coords,
-            'whole: ', mediaPost
+            'title: ',
+            mediaPost.title,
+            'thumbnails',
+            mediaPost.thumbnails,
+            'coords: ',
+            postOnMap.coords,
+            'whole: ',
+            mediaPost
           );
         }
       });
@@ -58,8 +62,8 @@ const FullScreenMap = ({ navigation }) => {
   const initialRegion = {
     latitude: 62.04164,
     longitude: 26.40757,
-    latitudeDelta: 5,
-    longitudeDelta: 5.5,
+    latitudeDelta: 1,
+    longitudeDelta: 1,
   };
 
   // useEffect(() => {
