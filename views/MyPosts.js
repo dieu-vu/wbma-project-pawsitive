@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import List from '../components/List';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Button, Card} from 'react-native-elements';
-import {AirbnbRating} from 'react-native-ratings';
+import {MainContext} from '../contexts/MainContext';
 
 
 const MyPosts = ({navigation}) => {
