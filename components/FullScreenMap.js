@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import {Dimensions, View} from 'react-native';
 import {Avatar, FAB, Text, Button, Rating} from 'react-native-elements';
-import {useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import { MainContext } from "../contexts/MainContext";
@@ -17,15 +16,6 @@ const FullScreenMap = ({ navigation }) => {
     latitudeDelta: 5,
     longitudeDelta: 5.5,
   });
-  const {loadPostsOnMap, addMarker} = useMedia();
-  // useEffect(async () => {
-  //   if (checkLocationPermission()) {
-  //     setCurrentUserLocation(await getUserLocation());
-  //     // console.log('USER LOCATION', currentUserLocation);
-  //   } else {
-  //     askPermission();
-  //   }
-  // }, []);
   // TODO Rating based on average of all ratings
 
   const initialRegion = {
@@ -34,10 +24,6 @@ const FullScreenMap = ({ navigation }) => {
     latitudeDelta: 1,
     longitudeDelta: 1.5,
   };
-
-  useEffect(() => {
-    loadPostsOnMap();
-  }, [markers]);
 
   return (
     <>
@@ -52,10 +38,10 @@ const FullScreenMap = ({ navigation }) => {
         showsUserLocation={true}
         mapPadding={{top: 20, right: 20, bottom: 175, left: 20}}
         onRegionChangeComplete={(region) => {
-          setRegion(region);
+          // setRegion(region);
         }}
       >
-        {markers.map((marker, index) => (
+        {[...markers].map((marker, index) => (
           <Marker
             key={index}
             coordinate={marker.coordinates}
@@ -93,11 +79,11 @@ const FullScreenMap = ({ navigation }) => {
                       type="star"
                       fractions={1}
                       // TODO startingValue to be a rating state that is calculated from average of all ratings
-                      startingValue={3.6}
+                      startingValue={marker.ratingAverage}
                       readonly
                       imageSize={20}
                     />
-                    <Text style={{marginLeft: 10}}>250 ratings</Text>
+                    <Text style={{marginLeft: 10}}>{`${marker.ratingCount} ratings`}</Text>
                   </View>
                 </View>
                 <Button
@@ -139,7 +125,8 @@ const FullScreenMap = ({ navigation }) => {
           zIndex: 2,
         }}
         onPress={() => {
-          addMarker('testing', region, '', '');
+          // addMarker('testing', region, '', '');
+          console.log('added fake marker')
         }}
       />
       {/*<FAB*/}

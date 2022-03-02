@@ -1,8 +1,12 @@
 import {appId, baseUrl} from '../utils/Variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
-import { getDistance, isPointWithinRadius } from "geolib";
-import { askPermission, checkLocationPermission, getUserLocation } from "../utils/Utils";
+import {getDistance, isPointWithinRadius} from 'geolib';
+import {
+  askPermission,
+  checkLocationPermission,
+  getUserLocation,
+} from '../utils/Utils';
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -23,6 +27,7 @@ const doFetch = async (url, options = {}) => {
 
 const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
+  const [mediaArrayInRange, setMediaArrayInRange] = useState([]);
   const [loading, setLoading] = useState(false);
   const {
     update,
@@ -32,6 +37,7 @@ const useMedia = (myFilesOnly) => {
     setMarkers,
     currentUserLocation,
     setCurrentUserLocation,
+    postsInRange,
     setPostsInRange,
   } = useContext(MainContext);
   const {getFilesByTag} = useTag();
@@ -82,9 +88,11 @@ const useMedia = (myFilesOnly) => {
           })
         );
         setMediaArray(media);
+        return true;
       }
     } catch (e) {
       console.log('loading media error', e.message);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -96,33 +104,72 @@ const useMedia = (myFilesOnly) => {
     loadMedia(0, 20);
   }, [update, searchValue, selectedPetType]);
 
-  const addMarker = (title, coordinates, thumbnails, whole) => {
-    setMarkers((oldMarkers) => [
-      ...oldMarkers,
-      {
-        whole: whole,
-        title: title,
-        thumbnails: thumbnails,
-        coordinates: {
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-        },
-      },
-    ]);
+  const loadMediaSecond = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${baseUrl}tags/${appId}`);
+      if (!response.ok) {
+        throw Error(response.statusText);
+      } else {
+        const json = await response.json();
+
+        const media = await Promise.all(
+          json.map(async (item) => {
+            const responseMedia = await fetch(
+              baseUrl + 'media/' + item.file_id
+            );
+            return await responseMedia.json();
+          })
+        );
+        // console.log('MEDIA', media);
+        await loadPostsInRange(media);
+        // console.log('RESPONSEINRANGE', responsePostInRange);
+        return media;
+      }
+    } catch (e) {
+      console.log('loading media error', e.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const loadPostsOnMap = () => {
-    const loadingMedia = loadMedia(0, 20);
-    if (mediaArray !== undefined && loadingMedia) {
-      mediaArray.map((mediaPost) => {
+  useEffect(async () => {
+    await loadMediaSecond().then(
+      async (media) =>
+        await loadPostsOnMap(media).then((markers) => setMarkers(markers))
+    );
+  }, []);
+
+  const loadPostsOnMap = async (mediaArr) => {
+    const setOfMarkers = new Set();
+    if (mediaArr !== undefined) {
+      mediaArr.map((mediaPost) => {
         const postOnMap = JSON.parse(mediaPost.description);
+        const rating = postOnMap.rating;
+        const ratingCounter = rating ? postOnMap.rating.length : 0;
+        const sumOfRatings = rating
+          ? postOnMap.rating.reduce(
+              (previousValue, currentValue) => previousValue + currentValue,
+              0
+            )
+          : 0;
+        const averageRating = rating
+          ? ((sumOfRatings / ratingCounter) * 10) / 10
+          : 0;
+
         if (postOnMap.coords !== undefined) {
-          addMarker(
-            mediaPost.title,
-            postOnMap.coords,
-            mediaPost.thumbnails,
-            mediaPost
-          );
+          setOfMarkers.add({
+            whole: mediaPost,
+            title: mediaPost.title,
+            thumbnails: mediaPost.thumbnails,
+            ratingCount: ratingCounter.toString(),
+            ratingAverage: averageRating.toString(),
+            coordinates: {
+              latitude: postOnMap.coords.latitude,
+              longitude: postOnMap.coords.longitude,
+            },
+          });
           // console.log(
           //   'title: ', mediaPost.title,
           //   'thumbnails', mediaPost.thumbnails,
@@ -132,21 +179,23 @@ const useMedia = (myFilesOnly) => {
         }
       });
     }
+    return setOfMarkers;
   };
 
   useEffect(async () => {
-    if (checkLocationPermission()) {
-      setCurrentUserLocation(await getUserLocation());
-      // console.log('USER LOCATION', currentUserLocation);
-    } else {
-      askPermission();
-    }
+    await loadMediaSecond().then(
+      async (media) =>
+        await loadPostsInRange(media).then((inRange) =>
+          setPostsInRange(inRange)
+        )
+    );
   }, []);
 
-  const loadPostsInRange = () => {
-    const loadingMedia = loadMedia(0, 20);
-    if (mediaArray !== undefined && loadingMedia) {
-      mediaArray.map((mediaPost) => {
+  const loadPostsInRange = async (media) => {
+    const postThatInRange = [];
+    const userCoords = await getUserLocation();
+    if (media !== undefined && userCoords !== undefined) {
+      media.map((mediaPost) => {
         const desc = JSON.parse(mediaPost.description);
         const result = isPointWithinRadius(
           {
@@ -154,16 +203,15 @@ const useMedia = (myFilesOnly) => {
             longitude: desc.coords.longitude,
           },
           {
-            latitude: currentUserLocation.latitude,
-            longitude: currentUserLocation.longitude,
+            latitude: userCoords.latitude,
+            longitude: userCoords.longitude,
           },
           10000
         );
-        // TODO calculate distance and show it on listings around you tile
         const distance = getDistance(
           {
-            latitude: currentUserLocation.latitude,
-            longitude: currentUserLocation.longitude,
+            latitude: userCoords.latitude,
+            longitude: userCoords.longitude,
           },
           {
             latitude: desc.coords.latitude,
@@ -180,24 +228,25 @@ const useMedia = (myFilesOnly) => {
         //   'is withing radius 10km ',
         //   result
         // );
+        console.log('result', result);
         if (result) {
-          setPostsInRange((oldPost) => [
-            ...oldPost,
-            {
-              whole: mediaPost,
-              title: mediaPost.title,
-              thumbnails: mediaPost.thumbnails,
-              coordinates: {
-                latitude: desc.coords.latitude,
-                longitude: desc.coords.longitude,
-              },
+          console.log('in result before setPostsInRange');
+          postThatInRange.push({
+            whole: mediaPost,
+            title: mediaPost.title,
+            distanceFromCurrent: (distance / 1000).toString(),
+            thumbnails: mediaPost.thumbnails,
+            coordinates: {
+              latitude: desc.coords.latitude,
+              longitude: desc.coords.longitude,
             },
-          ]);
+          });
+          // console.log('posts in range', postThatInRange);
         }
       });
     }
+    return postThatInRange;
   };
-
 
   const postMedia = async (formData, token) => {
     setLoading(true);
@@ -258,7 +307,6 @@ const useMedia = (myFilesOnly) => {
     putMedia,
     getPostsByUserId,
     loadPostsOnMap,
-    addMarker,
     loadPostsInRange,
   };
 };
