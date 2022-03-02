@@ -13,10 +13,9 @@ import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import PlaceholderImage from './PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
-import {cos} from 'react-native-reanimated';
 
 const initialLoad = async (currentUserLocation, setCurrentUserLocation) => {
-  console.log('Load initialload');
+  // console.log('Load initialload');
   const hasPermission = await checkLocationPermission();
   // console.log('has Permission: ', hasPermission);
   if (!hasPermission) {
@@ -26,55 +25,21 @@ const initialLoad = async (currentUserLocation, setCurrentUserLocation) => {
   // console.log('user loc ', userLocation);
   setCurrentUserLocation(userLocation);
   // console.log('USER LOCATION', currentUserLocation);
-  console.log('Init succeeds');
+  // console.log('Init succeeds');
+  // console.log('Init LOCATION ', currentUserLocation);
 };
 
-const loadPostsInRange = (mediaArray, currentUserLocation, setPostsInRange) => {
-  mediaArray?.map((mediaPost) => {
-    const desc = JSON.parse(mediaPost.description);
-    const result = isPointWithinRadius(
-      {
-        latitude: desc.coords.latitude,
-        longitude: desc.coords.longitude,
-      },
-      currentUserLocation,
-      10000
-    );
-    if (result) {
-      setPostsInRange((oldPost) => [
-        ...oldPost,
-        {
-          whole: mediaPost,
-          title: mediaPost.title,
-          thumbnails: mediaPost.thumbnails,
-          coordinates: {
-            latitude: desc.coords.latitude,
-            longitude: desc.coords.longitude,
-          },
-        },
-      ]);
-    }
-  });
-};
-
-const ListAroundYou = async ({navigation, mediaArray}) => {
-  const [postsInRange, setPostsInRange] = useState([]);
-  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const ref = useRef(null);
-  console.log('Load listaroundyou');
-  // initialLoad(currentUserLocation, setCurrentUserLocation);
-  getFonts();
-  console.log('getFonts succeeds');
+const getPostsFromMediaArray = (mArray, userLocation) => {
+  // console.log('Media array: ', mArray);
   const newPostsInRange = [];
-  mediaArray?.map((mediaPost) => {
+  mArray?.map((mediaPost) => {
     const desc = JSON.parse(mediaPost.description);
     const result = isPointWithinRadius(
       {
         latitude: desc.coords.latitude,
         longitude: desc.coords.longitude,
       },
-      currentUserLocation,
+      userLocation,
       10000
     );
     if (result) {
@@ -89,22 +54,31 @@ const ListAroundYou = async ({navigation, mediaArray}) => {
       });
     }
   });
-  if (newPostsInRange.length > 0) {
-    await setPostsInRange(newPostsInRange);
-  }
-  // loadPostsInRange(mediaArray, currentUserLocation, setPostsInRange);
-  // console.log('loadPostsInRange succeeds');
-  console.log('posts loaded in range', postsInRange.length);
+  // console.log('newPostsInRange inside func: ', newPostsInRange.length);
+  return newPostsInRange;
+};
+
+const ListAroundYou = ({navigation, mediaArray}) => {
+  // const [postsInRange, setPostsInRange] = useState([]);
+  // console.log('Media Array in ListAroundYou: ', mediaArray.length);
+  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const ref = useRef(null);
+  // console.log('Load listaroundyou');
+  getFonts();
+  initialLoad(currentUserLocation, setCurrentUserLocation);
+  let newPostsInRange = getPostsFromMediaArray(mediaArray, currentUserLocation);
+  // console.log('newPostsInRange: ', newPostsInRange.length);
   // TODO figure out how to get mediaArray load first before rendering anything
-  // useEffect(() => {
-  //   loadPostsInRange(mediaArray, currentUserLocation, setPostsInRange);
-  //   console.log('posts loaded in range', postsInRange.length);
-  // }, [currentUserLocation]);
+  useEffect(() => {
+    newPostsInRange = getPostsFromMediaArray(mediaArray, currentUserLocation);
+    // console.log('posts loaded in range', newPostsInRange.length);
+  }, [currentUserLocation]);
 
   const itemToRender = ({item, index}) => (
     <Tile
-      imageSrc={{uri: uploadsUrl + postsInRange[index].thumbnails.w640}}
-      title={postsInRange[index].title}
+      imageSrc={{uri: uploadsUrl + newPostsInRange[index].thumbnails.w640}}
+      title={newPostsInRange[index].title}
       titleStyle={styles.title}
       imageContainerStyle={{borderRadius: 20}}
       featured
@@ -112,12 +86,12 @@ const ListAroundYou = async ({navigation, mediaArray}) => {
       width={300}
       height={250}
       onPress={() => {
-        navigation.navigate('Single', {file: postsInRange[index].whole});
+        navigation.navigate('Single', {file: newPostsInRange[index].whole});
       }}
     />
   );
 
-  if (postsInRange.length === 0) {
+  if (newPostsInRange.length === 0) {
     return <PlaceholderImage />;
   } else {
     return (
@@ -126,14 +100,14 @@ const ListAroundYou = async ({navigation, mediaArray}) => {
           activeSlideAlignment="start"
           containerCustomStyle={{marginHorizontal: 20}}
           renderItem={itemToRender}
-          data={postsInRange}
+          data={newPostsInRange}
           ref={ref}
           sliderWidth={Dimensions.get('window').width}
           itemWidth={300}
           onSnapToItem={(index) => setActiveIndex(index)}
         />
         <Pagination
-          dotsLength={postsInRange.length}
+          dotsLength={newPostsInRange.length}
           activeDotIndex={activeIndex}
           carouselRef={ref}
           dotStyle={{

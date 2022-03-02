@@ -21,8 +21,8 @@ const Single = ({navigation, route}) => {
   const {file} = route.params;
   // fileInfo contains extra info of the media
   const fileInfo = JSON.parse(file.description);
-  console.log('SINGLE FILE \n', file);
-  console.log('SINGLE FILE EXTRA \n', fileInfo);
+  // console.log('SINGLE FILE \n', file);
+  // console.log('SINGLE FILE EXTRA \n', fileInfo);
 
   const {getUserById} = useUser();
   const {addRating, getRatingsForFile} = useRating();

@@ -27,7 +27,6 @@ const useMedia = (myFilesOnly) => {
   const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
   let jsonFilter;
-
   const loadMedia = async (start = 0, limit = 10) => {
     setLoading(true);
     try {
@@ -36,6 +35,7 @@ const useMedia = (myFilesOnly) => {
         throw Error(response.statusText);
       } else {
         let json = await response.json();
+        console.log(json);
 
         if (myFilesOnly) {
           json = json.filter((file) => file.user_id === user.user_id);
@@ -71,6 +71,7 @@ const useMedia = (myFilesOnly) => {
             return mediaData;
           })
         );
+        // console.log('Media: ', media);
         setMediaArray(media);
       }
     } catch (e) {
@@ -79,6 +80,9 @@ const useMedia = (myFilesOnly) => {
       setLoading(false);
     }
   };
+  // useEffect(() => {
+  //   loadMedia(0, 20);
+  // }, []);
 
   // Call loadMedia() only once when the component is loaded
   // OR when the update state is changed in mainContext
