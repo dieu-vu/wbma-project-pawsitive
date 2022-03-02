@@ -351,7 +351,7 @@ const Single = ({navigation, route}) => {
                     onPress={() => {
                       navigation.navigate('Edit post', {file: file});
                     }}
-                  ></CustomButton>
+                  />
                   <CustomButton
                     title="Delete post"
                     fontSize={16}
@@ -360,6 +360,13 @@ const Single = ({navigation, route}) => {
                       navigation.navigate('Listing');
                     }}
                   ></CustomButton>
+                  <CustomButton
+                    title="Contact user"
+                    fontSize={16}
+                    onPress={() => {
+                      navigation.navigate('Comments', {file: file});
+                    }}
+                  />
                 </>
               ) : (
                 <></>

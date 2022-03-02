@@ -472,4 +472,30 @@ const useRating = () => {
   return {addRating, getRatingsForFile};
 };
 
-export {useMedia, useLogin, useUser, useTag, useFavourite, useRating};
+const useComments = () => {
+  const getComments = async (fileId) => {
+    return await doFetch(`${baseUrl}comments/file/${fileId}`);
+  };
+  const postComment = async (data, userToken) => {
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-access-token': userToken,
+      },
+      body: JSON.stringify(data),
+    };
+    return await doFetch(baseUrl + 'comments', options);
+  };
+  return {getComments, postComment};
+};
+
+export {
+  useMedia,
+  useLogin,
+  useUser,
+  useTag,
+  useFavourite,
+  useRating,
+  useComments,
+};

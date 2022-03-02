@@ -18,6 +18,7 @@ import CustomDrawer from '../components/CustomDrawer';
 import {TouchableOpacity} from 'react-native';
 import FullScreenMap from '../components/FullScreenMap';
 import EditPost from '../views/EditPost';
+import Comments from '../views/Comments';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -182,6 +183,23 @@ const HomeStackScreen = () => {
         component={EditPost}
         options={({route}) => ({
           title: 'Edit Post',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
+          },
+          headerBackTitle: 'Post',
+        })}
+      />
+      <HomeStack.Screen
+        name="Comments"
+        component={Comments}
+        options={({route}) => ({
+          title: 'Comments',
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
