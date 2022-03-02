@@ -1,6 +1,8 @@
 import {appId, baseUrl} from '../utils/Variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
+import { getDistance, isPointWithinRadius } from "geolib";
+import { askPermission, checkLocationPermission, getUserLocation } from "../utils/Utils";
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -22,8 +24,16 @@ const doFetch = async (url, options = {}) => {
 const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {update, selectedPetType, isSearching, searchValue} =
-    useContext(MainContext);
+  const {
+    update,
+    selectedPetType,
+    isSearching,
+    searchValue,
+    setMarkers,
+    currentUserLocation,
+    setCurrentUserLocation,
+    setPostsInRange,
+  } = useContext(MainContext);
   const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
   let jsonFilter;
@@ -86,6 +96,109 @@ const useMedia = (myFilesOnly) => {
     loadMedia(0, 20);
   }, [update, searchValue, selectedPetType]);
 
+  const addMarker = (title, coordinates, thumbnails, whole) => {
+    setMarkers((oldMarkers) => [
+      ...oldMarkers,
+      {
+        whole: whole,
+        title: title,
+        thumbnails: thumbnails,
+        coordinates: {
+          latitude: coordinates.latitude,
+          longitude: coordinates.longitude,
+        },
+      },
+    ]);
+  };
+
+  const loadPostsOnMap = () => {
+    const loadingMedia = loadMedia(0, 20);
+    if (mediaArray !== undefined && loadingMedia) {
+      mediaArray.map((mediaPost) => {
+        const postOnMap = JSON.parse(mediaPost.description);
+        if (postOnMap.coords !== undefined) {
+          addMarker(
+            mediaPost.title,
+            postOnMap.coords,
+            mediaPost.thumbnails,
+            mediaPost
+          );
+          // console.log(
+          //   'title: ', mediaPost.title,
+          //   'thumbnails', mediaPost.thumbnails,
+          //   'coords: ', postOnMap.coords,
+          //   'whole: ', mediaPost
+          // );
+        }
+      });
+    }
+  };
+
+  useEffect(async () => {
+    if (checkLocationPermission()) {
+      setCurrentUserLocation(await getUserLocation());
+      // console.log('USER LOCATION', currentUserLocation);
+    } else {
+      askPermission();
+    }
+  }, []);
+
+  const loadPostsInRange = () => {
+    const loadingMedia = loadMedia(0, 20);
+    if (mediaArray !== undefined && loadingMedia) {
+      mediaArray.map((mediaPost) => {
+        const desc = JSON.parse(mediaPost.description);
+        const result = isPointWithinRadius(
+          {
+            latitude: desc.coords.latitude,
+            longitude: desc.coords.longitude,
+          },
+          {
+            latitude: currentUserLocation.latitude,
+            longitude: currentUserLocation.longitude,
+          },
+          10000
+        );
+        // TODO calculate distance and show it on listings around you tile
+        const distance = getDistance(
+          {
+            latitude: currentUserLocation.latitude,
+            longitude: currentUserLocation.longitude,
+          },
+          {
+            latitude: desc.coords.latitude,
+            longitude: desc.coords.longitude,
+          },
+          100
+        );
+
+        // console.log(
+        //   'mediaPost title: ',
+        //   mediaPost.title,
+        //   'distance: ',
+        //   distance,
+        //   'is withing radius 10km ',
+        //   result
+        // );
+        if (result) {
+          setPostsInRange((oldPost) => [
+            ...oldPost,
+            {
+              whole: mediaPost,
+              title: mediaPost.title,
+              thumbnails: mediaPost.thumbnails,
+              coordinates: {
+                latitude: desc.coords.latitude,
+                longitude: desc.coords.longitude,
+              },
+            },
+          ]);
+        }
+      });
+    }
+  };
+
+
   const postMedia = async (formData, token) => {
     setLoading(true);
     const options = {
@@ -144,6 +257,9 @@ const useMedia = (myFilesOnly) => {
     deleteMedia,
     putMedia,
     getPostsByUserId,
+    loadPostsOnMap,
+    addMarker,
+    loadPostsInRange,
   };
 };
 

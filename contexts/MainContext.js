@@ -19,6 +19,8 @@ const MainProvider = (props) => {
   });
   const [postLocation, setPostLocation] = useState();
   const [previousUserType, setPreviousUserType] = useState();
+  const [markers, setMarkers] = useState([]);
+  const [postsInRange, setPostsInRange] = useState([]);
 
   return (
     <MainContext.Provider
@@ -47,6 +49,10 @@ const MainProvider = (props) => {
         setPostLocation,
         previousUserType,
         setPreviousUserType,
+        markers,
+        setMarkers,
+        postsInRange,
+        setPostsInRange,
       }}
     >
       {props.children}

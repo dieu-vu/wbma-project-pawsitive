@@ -1,72 +1,43 @@
-import React, { useState} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import {Dimensions, View} from 'react-native';
 import {Avatar, FAB, Text, Button, Rating} from 'react-native-elements';
 import {useMedia} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
+import { MainContext } from "../contexts/MainContext";
 
 const FullScreenMap = ({ navigation }) => {
+  const {markers, currentUserLocation} =
+    useContext(MainContext);
+  console.log('MARKERS', markers);
   const [region, setRegion] = useState({
-    latitude: 62.04164,
-    longitude: 26.40757,
+    latitude: currentUserLocation.latitude,
+    longitude: currentUserLocation.longitude,
     latitudeDelta: 5,
     longitudeDelta: 5.5,
   });
-  const [markers, setMarkers] = useState([]);
-  const {mediaArray} = useMedia();
+  const {loadPostsOnMap, addMarker} = useMedia();
+  // useEffect(async () => {
+  //   if (checkLocationPermission()) {
+  //     setCurrentUserLocation(await getUserLocation());
+  //     // console.log('USER LOCATION', currentUserLocation);
+  //   } else {
+  //     askPermission();
+  //   }
+  // }, []);
   // TODO Rating based on average of all ratings
 
-  const addMarker = (title, coordinates, thumbnails, whole) => {
-    setMarkers((oldMarkers) => [
-      ...oldMarkers,
-      {
-        whole: whole,
-        title: title,
-        thumbnails: thumbnails,
-        coordinates: {
-          latitude: coordinates.latitude,
-          longitude: coordinates.longitude,
-        },
-      },
-    ]);
-  };
-
-  // TODO Fix loadposts so it loads / keeps the posts always visible
-  const loadPostsOnMap = () => {
-    if (mediaArray !== undefined) {
-      mediaArray.map((mediaPost) => {
-        const postOnMap = JSON.parse(mediaPost.description);
-        if (postOnMap.coords !== undefined) {
-          addMarker(
-            mediaPost.title,
-            postOnMap.coords,
-            mediaPost.thumbnails,
-            mediaPost
-          );
-          console.log(
-            'title: ', mediaPost.title,
-            'thumbnails', mediaPost.thumbnails,
-            'coords: ', postOnMap.coords,
-            'whole: ', mediaPost
-          );
-        }
-      });
-    }
-  };
-
   const initialRegion = {
-    latitude: 62.04164,
-    longitude: 26.40757,
-    latitudeDelta: 5,
-    longitudeDelta: 5.5,
+    latitude: currentUserLocation.latitude,
+    longitude: currentUserLocation.longitude,
+    latitudeDelta: 1,
+    longitudeDelta: 1.5,
   };
 
-  // useEffect(() => {
-  //   loadPostsOnMap();
-  // }, []);
-
-  // console.log("region", region);
+  useEffect(() => {
+    loadPostsOnMap();
+  }, [markers]);
 
   return (
     <>
@@ -171,26 +142,26 @@ const FullScreenMap = ({ navigation }) => {
           addMarker('testing', region, '', '');
         }}
       />
-      <FAB
-        icon={{name: 'file-download', type: 'material-icons'}}
-        title="Load media"
-        style={{
-          position: 'absolute',
-          bottom: 150,
-          left: 0,
-          right: 0,
-          zIndex: 2,
-        }}
-        onPress={() => {
-          loadPostsOnMap();
-        }}
-      />
+      {/*<FAB*/}
+      {/*  icon={{name: 'file-download', type: 'material-icons'}}*/}
+      {/*  title="Load media"*/}
+      {/*  style={{*/}
+      {/*    position: 'absolute',*/}
+      {/*    bottom: 150,*/}
+      {/*    left: 0,*/}
+      {/*    right: 0,*/}
+      {/*    zIndex: 2,*/}
+      {/*  }}*/}
+      {/*  onPress={() => {*/}
+      {/*    loadPostsOnMap();*/}
+      {/*  }}*/}
+      {/*/>*/}
       {/* POSSIBLE RESET MARKERS */}
       {/* <FAB*/}
       {/*  icon={{name: 'cross', type: 'entypo'}}*/}
       {/*  style={{*/}
       {/*    position: 'absolute',*/}
-      {/*    bottom: 100,*/}
+      {/*    bottom: 150,*/}
       {/*    left: 0,*/}
       {/*    right: 0,*/}
       {/*    zIndex: 2,*/}

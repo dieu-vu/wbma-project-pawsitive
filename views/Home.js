@@ -100,7 +100,7 @@ const Home = ({navigation}) => {
             Listings around you
           </Text>
           {mediaArray.length > 0 ? (
-            <ListAroundYou navigation={navigation} mediaArray={mediaArray} />
+            <ListAroundYou navigation={navigation} />
           ) : (
             <Tile
               title="No posts around you"
