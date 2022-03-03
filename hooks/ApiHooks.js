@@ -410,7 +410,6 @@ const useTag = () => {
 };
 
 const useFavourite = () => {
-  const {update} = useContext(MainContext);
   const postFavourite = async (fileId, token) => {
     const options = {
       method: 'POST',

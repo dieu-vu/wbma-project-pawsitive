@@ -19,6 +19,7 @@ import {TouchableOpacity} from 'react-native';
 import FullScreenMap from '../components/FullScreenMap';
 import EditPost from '../views/EditPost';
 import Comments from '../views/Comments';
+import CommentsForAdmin from '../views/CommentsForAdmin';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -198,6 +199,23 @@ const HomeStackScreen = () => {
       <HomeStack.Screen
         name="Comments"
         component={Comments}
+        options={({route}) => ({
+          title: 'Comments',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
+          },
+          headerBackTitle: 'Post',
+        })}
+      />
+      <HomeStack.Screen
+        name="Comments admin"
+        component={CommentsForAdmin}
         options={({route}) => ({
           title: 'Comments',
           headerStyle: {

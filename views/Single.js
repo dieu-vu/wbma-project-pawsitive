@@ -369,7 +369,15 @@ const Single = ({navigation, route}) => {
                   />
                 </>
               ) : (
-                <></>
+                <>
+                  <CustomButton
+                    title="Contact user"
+                    fontSize={16}
+                    onPress={() => {
+                      navigation.navigate('Comments', {file: file});
+                    }}
+                  />
+                </>
               )}
             </View>
           </Card>

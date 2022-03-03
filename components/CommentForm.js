@@ -1,13 +1,17 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Input, Button} from 'react-native-elements';
-import {StyleSheet, View} from 'react-native';
+import {Alert, StyleSheet, View} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import MainButton from './MainButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComments} from '../hooks/ApiHooks';
+import {MainContext} from '../contexts/MainContext';
+import propTypes from 'prop-types';
+import CommentsContainer from '../views/Comments';
 
-const CommentForm = ({fileId}) => {
+const CommentForm = ({fileId, commentCreator}) => {
   const {postComment} = useComments();
+  const {update, setUpdate} = useContext(MainContext);
 
   const {
     control,
@@ -22,14 +26,20 @@ const CommentForm = ({fileId}) => {
   });
 
   const onSubmit = async (data) => {
-    // console.log(data);
+    const comment = {};
+    comment['comment'] = data.comment;
+    comment['creator'] = commentCreator;
+
+    const commentString=JSON.stringify(comment);
+
+    const jsonData = {};
+    jsonData['file_id'] = fileId;
+    jsonData['comment'] = commentString;
+
     try {
-      const formData = new FormData();
-      const comment=data.comment;
-
-      console.log(comment);
-
-
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await postComment(jsonData, token);
+      response && setUpdate(update + 1);
     } catch (error) {
       console.error('posting comment error', error);
     }
@@ -55,9 +65,18 @@ const CommentForm = ({fileId}) => {
         )}
         name="comment"
       />
-      <Button onPress={handleSubmit(onSubmit)} title="Save" />
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        title="Save"
+        containerStyle={{height: 80, width: 100}}
+      />
     </View>
   );
+};
+
+CommentForm.propTypes = {
+  fileId: propTypes.number,
+  commentCreator: propTypes.number,
 };
 
 const styles = StyleSheet.create({
