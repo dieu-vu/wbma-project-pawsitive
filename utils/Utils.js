@@ -3,7 +3,6 @@ import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
 import {useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const loginScreenImages = [
   require('../assets/dogSmiling1.jpg'),
@@ -71,9 +70,8 @@ const getUserLocation = async () => {
 
 const getMediaPreviousCategoryTag = async (file, category) => {
   try {
-    const token = await AsyncStorage.getItem('userToken');
     const {getTagsForFile} = useTag();
-    const listCurrentTags = await getTagsForFile(file.file_id, token);
+    const listCurrentTags = await getTagsForFile(file.file_id);
 
     if (!listCurrentTags) {
       return;

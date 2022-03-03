@@ -9,7 +9,12 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {uploadsUrl} from '../utils/Variables';
 import {colors} from '../utils/Variables';
 import {useFavourite, useMedia, useRating, useUser} from '../hooks/ApiHooks';
-import {fetchAvatar, formatDate, getFonts} from '../utils/Utils';
+import {
+  fetchAvatar,
+  formatDate,
+  getFonts,
+  getMediaPreviousCategoryTag,
+} from '../utils/Utils';
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 import CustomButton from '../components/CustomButton';
@@ -21,18 +26,17 @@ const Single = ({navigation, route}) => {
   const {file} = route.params;
   // fileInfo contains extra info of the media
   const fileInfo = JSON.parse(file.description);
-  console.log('SINGLE FILE \n', file);
-  console.log('SINGLE FILE EXTRA \n', fileInfo);
 
   const {getUserById} = useUser();
   const {addRating, getRatingsForFile} = useRating();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
-  const {putMedia, deleteMedia, getPostsByUserId} = useMedia();
+  const {deleteMedia, getPostsByUserId} = useMedia();
   const {update, setUpdate, user} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
+  const {previousUserType, setPreviousUserType} = useContext(MainContext);
 
   getFonts();
   // Function to save post
@@ -195,6 +199,12 @@ const Single = ({navigation, route}) => {
     fetchOwner();
   }, []);
 
+  useEffect(async () => {
+    const previousUserTypeApi = await getMediaPreviousCategoryTag(file, 'user');
+    setPreviousUserType(previousUserTypeApi);
+    console.log('previous user type', previousUserType);
+  }, [user]);
+
   return (
     <ScrollView style={styles.container}>
       <View style={{flex: 1, paddingBottom: insets.bottom}}>
@@ -342,33 +352,73 @@ const Single = ({navigation, route}) => {
                 />
               </View>
             </View>
-            <View style={styles.buttonContainer}>
+
+            {/* Option buttons */}
+            {/* If user is post owner, allow to edit and delete and open chat/comment */}
+            <View
+              style={
+                user.user_id === owner.user_id
+                  ? [styles.buttonContainer, {flexDirection: 'row'}]
+                  : [styles.buttonContainer, {flexDirection: 'column'}]
+              }
+            >
               {user.user_id === owner.user_id ? (
                 <>
-                  <CustomButton
-                    title="Edit post"
-                    fontSize={16}
+                  <Icon
+                    name="edit"
+                    type="feather"
+                    size={40}
+                    borderRadius={50}
+                    color={colors.darkestGreen}
+                    containerStyle={{
+                      borderColor: colors.darkestGreen,
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      alignSelf: 'center',
+                    }}
+                    iconStyle={{padding: 3}}
                     onPress={() => {
                       navigation.navigate('Edit post', {file: file});
                     }}
                   />
-                  <CustomButton
-                    title="Delete post"
-                    fontSize={16}
-                    onPress={() => {
-                      deletePost();
-                      navigation.navigate('Listing');
+                  <Icon
+                    name="message-circle"
+                    type="feather"
+                    size={40}
+                    borderRadius={50}
+                    color={colors.darkestGreen}
+                    containerStyle={{
+                      borderColor: colors.darkestGreen,
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      alignSelf: 'center',
                     }}
-                  ></CustomButton>
-                  <CustomButton
-                    title="Contact user"
-                    fontSize={16}
+                    iconStyle={{padding: 3}}
                     onPress={() => {
                       navigation.navigate('Comments', {file: file});
                     }}
                   />
+                  <Icon
+                    name="trash-outline"
+                    type="ionicon"
+                    size={40}
+                    borderRadius={50}
+                    color="red"
+                    containerStyle={{
+                      borderColor: 'red',
+                      borderRadius: 10,
+                      borderWidth: 2,
+                      alignSelf: 'center',
+                    }}
+                    iconStyle={{padding: 3}}
+                    onPress={() => {
+                      const deleteConfirm = deletePost();
+                      deleteConfirm && navigation.navigate('Listing');
+                    }}
+                  ></Icon>
                 </>
               ) : (
+                // If user is not post owner, allow to contact and Subscribe
                 <>
                   <CustomButton
                     title="Contact user"
@@ -376,6 +426,16 @@ const Single = ({navigation, route}) => {
                     onPress={() => {
                       navigation.navigate('Comments', {file: file});
                     }}
+                  />
+                  <CustomButton
+                    title={
+                      previousUserType === 'owner'
+                        ? 'Subscribe as pet sitter'
+                        : 'Subscribe as pet owner'
+                    }
+                    fontSize={16}
+                    buttonStyle={{width: '80%'}}
+                    onPress={() => {}}
                   />
                 </>
               )}
@@ -457,10 +517,13 @@ const styles = StyleSheet.create({
   // },
   buttonContainer: {
     flex: 1,
-    flexDirection: 'column',
     marginBottom: 20,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    width: '80%',
+    alignSelf: 'center',
+    paddingBottom: 20,
   },
+
   icon: {
     position: 'absolute',
     zIndex: 5,

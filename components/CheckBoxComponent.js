@@ -45,7 +45,7 @@ const CheckboxComponent = ({customText, file = null}) => {
         titleProps={{style: styles.checkBoxTitle}}
       />
       <CheckBox
-        centerx
+        center
         title="Pet sitter"
         checked={isSitter}
         checkedColor="#425E20"

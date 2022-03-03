@@ -2,11 +2,7 @@ import {appId, baseUrl} from '../utils/Variables';
 import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {getDistance, isPointWithinRadius} from 'geolib';
-import {
-  askPermission,
-  checkLocationPermission,
-  getUserLocation,
-} from '../utils/Utils';
+import {getUserLocation} from '../utils/Utils';
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -228,9 +224,9 @@ const useMedia = (myFilesOnly) => {
         //   'is withing radius 10km ',
         //   result
         // );
-        console.log('result', result);
+        // console.log('result', result);
         if (result) {
-          console.log('in result before setPostsInRange');
+          // console.log('in result before setPostsInRange');
           postThatInRange.push({
             whole: mediaPost,
             title: mediaPost.title,
@@ -396,11 +392,11 @@ const useTag = () => {
     return await doFetch(baseUrl + 'tags/' + tag);
   };
 
-  const getTagsForFile = async (fileId, token) => {
+  const getTagsForFile = async (fileId) => {
     const options = {
       method: 'GET',
       headers: {
-        'x-access-token': token,
+        // 'x-access-token': token,
       },
     };
     return await doFetch(`${baseUrl}tags/file/${fileId}`, options);

@@ -8,22 +8,21 @@ import CommentForm from '../components/CommentForm';
 
 const Comments = ({route, navigation}) => {
   const {user} = useContext(MainContext);
-  const userId=user.user_id;
+  const userId = user.user_id;
   const {file} = route.params;
-  const fileUserId=file.user_id;
+  const fileUserId = file.user_id;
 
-  const fileId=file.file_id;
+  const fileId = file.file_id;
   const [commentsArray, setCommentsArray] = useState([]);
   const [userArray, setUserArray] = useState([]);
   const {getComments} = useComments();
   const {update, setUpdate} = useContext(MainContext);
 
-
   const fetchComments = async () => {
     try {
       const commentList = await getComments(fileId);
       console.log('list for mapping', commentList);
-      const mappedCommentsList = commentList.filter((item) =>{
+      const mappedCommentsList = commentList.filter((item) => {
         const comment = JSON.parse(item.comment);
         console.log('chat starter', comment);
         const chatStarter = comment.creator;
@@ -36,27 +35,25 @@ const Comments = ({route, navigation}) => {
         }
       });
 
-      console.log('mapped list', mappedCommentsList)
+      console.log('mapped list', mappedCommentsList);
       setCommentsArray(mappedCommentsList);
 
       const userSet = new Set();
       commentList.map((item) => {
-        const itemUser=item.user_id;
+        const itemUser = item.user_id;
         if (userId !== itemUser) {
           userSet.add(itemUser);
         }
       });
       const userList = Array.from(userSet);
       setUserArray(userList);
-
     } catch (error) {
       console.error('get comments error', error);
     }
   };
 
   const CommentItem = ({item}) => (
-    <ListItem
-      style={styles.item}>
+    <ListItem style={styles.item}>
       <Text style={styles.text}>{JSON.parse(item.comment).comment}</Text>
     </ListItem>
   );
@@ -120,7 +117,6 @@ Comments.propTypes = {
   navigation: propTypes.object,
   route: propTypes.object,
   item: propTypes.object,
-
 };
 
 const styles = StyleSheet.create({
@@ -132,12 +128,8 @@ const styles = StyleSheet.create({
     padding: 20,
     width: Dimensions.get('window').width * 0.4,
   },
-  text: {
-
-  },
-  commentContainer: {
-
-  },
+  text: {},
+  commentContainer: {},
 });
 
 export default Comments;
