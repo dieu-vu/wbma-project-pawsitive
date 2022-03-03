@@ -8,8 +8,6 @@ import PropTypes from 'prop-types';
 import PlaceholderImage from './PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 
-// @SAM: in MainContext, we have userCurrentLocation and postLocation which maybe useful here
-
 const ListAroundYou = ({navigation}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
