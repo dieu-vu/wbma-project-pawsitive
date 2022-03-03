@@ -1,7 +1,7 @@
 import React from 'react';
 import AppLoading from 'expo-app-loading';
 import {useFonts} from '@expo-google-fonts/inter';
-import { useTag} from '../hooks/ApiHooks';
+import {useTag} from '../hooks/ApiHooks';
 import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
