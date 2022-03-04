@@ -4,6 +4,7 @@ import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
 import LottieView from 'lottie-react-native';
+import PlaceholderImage from './PlaceholderImage';
 
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
@@ -11,6 +12,8 @@ import {MainContext} from '../contexts/MainContext';
 
 const ListAroundYou = ({navigation}) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [inRangeLoading, setInRangeLoading] = useState(true);
+
   const ref = useRef(null);
   const {postsInRange} = useContext(MainContext);
   const animation = React.createRef();
@@ -18,6 +21,18 @@ const ListAroundYou = ({navigation}) => {
     animation.current?.play();
   }, [animation]);
   getFonts();
+
+  // Wait up to 20 seconds, if no posts around, show message
+  useEffect(() => {
+    if (postsInRange.length === 0) {
+      const timer = setTimeout(() => {
+        setInRangeLoading(false);
+        // console.log('IN RANGE LOADING', inRangeLoading);
+        // console.log('length in Range', postsInRange.length);
+      }, 20000);
+      return () => clearTimeout(timer);
+    }
+  }, [postsInRange]);
 
   const renderItem = ({item, index}) => (
     <Tile
@@ -38,7 +53,9 @@ const ListAroundYou = ({navigation}) => {
     />
   );
 
-  if (postsInRange.length === 0) {
+  if (inRangeLoading) {
+    return <PlaceholderImage />;
+  } else if (!inRangeLoading && postsInRange.length === 0) {
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
         <LottieView
@@ -64,7 +81,7 @@ const ListAroundYou = ({navigation}) => {
         </Text>
       </View>
     );
-  } else {
+  } else if (!inRangeLoading && postsInRange.length !== 0) {
     return (
       <>
         <Carousel
@@ -125,7 +142,6 @@ const styles = StyleSheet.create({
 
 ListAroundYou.propTypes = {
   navigation: PropTypes.object,
-  mediaArray: PropTypes.array,
 };
 
 export default ListAroundYou;
