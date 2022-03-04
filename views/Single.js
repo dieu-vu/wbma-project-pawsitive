@@ -46,6 +46,7 @@ const Single = ({navigation, route}) => {
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
+  const [subscribed, setSubcribed] = useState(false);
 
   let userInfo = {};
   if (user.full_name) {
@@ -214,17 +215,25 @@ const Single = ({navigation, route}) => {
     }
   };
 
+  // function to check subscription:
+  const checkSubscription = () => {
+    if (
+      userInfo &&
+      userInfo.subscribed_media &&
+      userInfo.subscribed_media.includes(file.file_id)
+    )
+      setSubcribed(true);
+  };
+
   // Function to add subscriber:
   const addSubscriber = async () => {
     const updatedUserData = user;
     const subscribedFileId = file.file_id;
-    let isAlreadySubscribed = false;
 
     if (userInfo.subscribed_media) {
       const currentSubscribingList = userInfo.subscribed_media;
       console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
-      isAlreadySubscribed = currentSubscribingList.includes(file.file_id);
-      if (isAlreadySubscribed) {
+      if (subscribed) {
         Alert.alert('You already subscribed this post');
         return;
       } else {
@@ -241,6 +250,7 @@ const Single = ({navigation, route}) => {
     updatedUserData.full_name = subscriptionData['full_name'];
     console.log('subscribing data json', subscriptionData);
     setUser(updatedUserData);
+    setSubcribed(true);
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await putUser(subscriptionData, token);
@@ -253,6 +263,10 @@ const Single = ({navigation, route}) => {
     }
   };
 
+  // Function to unsubscribe:
+
+  const unsubscribe = (async) => {};
+
   // Fetch owner and user type:
   useEffect(() => {
     fetchOwner();
@@ -262,6 +276,7 @@ const Single = ({navigation, route}) => {
     const previousUserTypeApi = await getMediaPreviousCategoryTag(file, 'user');
     setPreviousUserType(previousUserTypeApi);
     console.log('previous user type', previousUserType);
+    checkSubscription();
   }, [user]);
 
   return (
@@ -511,7 +526,9 @@ const Single = ({navigation, route}) => {
                   />
                   <CustomButton
                     title={
-                      previousUserType === 'owner'
+                      subscribed
+                        ? 'Unqueue'
+                        : previousUserType === 'owner'
                         ? 'Queue as pet sitter'
                         : 'Queue as pet owner'
                     }
