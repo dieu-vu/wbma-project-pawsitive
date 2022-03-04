@@ -22,14 +22,14 @@ const ListAroundYou = ({navigation}) => {
   }, [animation]);
   getFonts();
 
-  // Wait up to 20 seconds, if no posts around, show message
+  // Wait up to 15 seconds, if no posts around loaded, show message
   useEffect(() => {
     if (postsInRange.length === 0) {
       const timer = setTimeout(() => {
         setInRangeLoading(false);
         // console.log('IN RANGE LOADING', inRangeLoading);
         // console.log('length in Range', postsInRange.length);
-      }, 20000);
+      }, 15000);
       return () => clearTimeout(timer);
     }
   }, [postsInRange]);

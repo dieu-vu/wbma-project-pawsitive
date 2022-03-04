@@ -460,6 +460,15 @@ const Single = ({navigation, route}) => {
                 </>
               )}
             </View>
+
+            {/* Button to open subscriber list */}
+            <View style={[styles.postSection, {paddingBottom: 30}]}>
+              {user.user_id === owner.user_id ? (
+                <CustomButton title="See subscriber list" fontSize={16} />
+              ) : (
+                <></>
+              )}
+            </View>
           </Card>
         </LinearGradient>
       </View>

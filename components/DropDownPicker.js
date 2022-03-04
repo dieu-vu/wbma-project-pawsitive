@@ -33,7 +33,11 @@ const CustomDropDownPicker = (props) => {
           backgroundColor: 'white',
           zIndex: 1,
         }}
-        containerStyle={props.containerStyle || Platform.OS === 'ios' ? styles.dropdownContainerIos : styles.dropdownContainerAndroid}
+        containerStyle={
+          props.containerStyle || Platform.OS === 'ios'
+            ? styles.dropdownContainerIos
+            : styles.dropdownContainerAndroid
+        }
         dropDownDirection={props.dropDownDirection || 'TOP'}
         textStyle={styles.dropdownText}
         setOpen={setOpen}

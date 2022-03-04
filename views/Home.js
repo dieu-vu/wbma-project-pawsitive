@@ -103,29 +103,6 @@ const Home = ({navigation}) => {
             <ListAroundYou navigation={navigation} />
           ) : (
             <PlaceholderImage />
-            // <View style={{flex: 1, flexDirection: 'column'}}>
-            //   <LottieView
-            //     ref={animation}
-            //     source={require('../assets/cat-popping-animation.json')}
-            //     style={{
-            //       width: '80%',
-            //       aspectRatio: 1,
-            //       alignSelf: 'center',
-            //       backgroundColor: 'transparent',
-            //     }}
-            //     autoPlay={true}
-            //     loop={true}
-            //   ></LottieView>
-            //   <Text
-            //     style={{
-            //       fontFamily: 'Montserrat-Regular',
-            //       fontSize: 18,
-            //       alignSelf: 'center',
-            //     }}
-            //   >
-            //     No posts around you
-            //   </Text>
-            // </View>
           )}
 
           <Text style={styles.titles} h4>

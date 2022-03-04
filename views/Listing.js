@@ -117,8 +117,8 @@ const Listing = ({navigation}) => {
           <CustomDropDownPicker
             value={selectedPetType}
             dropdownTextStyle={{display: 'none'}}
-            componentContainerStyle={{width: '30%'}}
-            containerStyle={{alignSelf: 'center'}}
+            componentContainerStyle={{width: '40%', paddingRight: 10}}
+            containerStyle={{alignSelf: 'flex-start'}}
             dropdownPlaceholder="Filter By"
             items={items}
             setValue={setSelectedPetType}
@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width,
+    justifyContent: 'flex-start',
   },
 });
 
