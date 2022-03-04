@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, Dimensions, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Avatar, Card, Image, Text, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -20,7 +27,6 @@ import {
 import PlaceholderImage from '../components/PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 import CustomButton from '../components/CustomButton';
-import BookMarkLogo from '../assets/bookmark8.svg';
 import {AirbnbRating} from 'react-native-ratings';
 
 const Single = ({navigation, route}) => {
@@ -34,11 +40,17 @@ const Single = ({navigation, route}) => {
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
   const {deleteMedia, getPostsByUserId} = useMedia();
-  const {update, setUpdate, user} = useContext(MainContext);
+  const {putUser} = useUser();
+  const {update, setUpdate, user, setUser} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
+
+  let userInfo = {};
+  if (user.full_name) {
+    userInfo = JSON.parse(user.full_name);
+  }
 
   const animation = React.createRef();
   useEffect(() => {
@@ -202,6 +214,46 @@ const Single = ({navigation, route}) => {
     }
   };
 
+  // Function to add subscriber:
+  const addSubscriber = async () => {
+    const updatedUserData = user;
+    const subscribedFileId = file.file_id;
+    let isAlreadySubscribed = false;
+
+    if (userInfo.subscribed_media) {
+      const currentSubscribingList = userInfo.subscribed_media;
+      console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
+      isAlreadySubscribed = currentSubscribingList.includes(file.file_id);
+      if (isAlreadySubscribed) {
+        Alert.alert('You already subscribed this post');
+        return;
+      } else {
+        userInfo.subscribed_media.push(subscribedFileId);
+        console.log('UPDATED LIST', userInfo.subscribed_media);
+      }
+    } else {
+      userInfo['subscribed_media'] = [subscribedFileId];
+      console.log('ADDED NEW SUBSCRIBING LIST', userInfo.subscribed_media);
+    }
+
+    const subscriptionData = {};
+    subscriptionData['full_name'] = JSON.stringify(userInfo);
+    updatedUserData.full_name = subscriptionData['full_name'];
+    console.log('subscribing data json', subscriptionData);
+    setUser(updatedUserData);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await putUser(subscriptionData, token);
+      if (response) {
+        Alert.alert('Post', 'Subscribed');
+        setUpdate(update + 1);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  // Fetch owner and user type:
   useEffect(() => {
     fetchOwner();
   }, []);
@@ -260,18 +312,20 @@ const Single = ({navigation, route}) => {
 
               {/* Add post to favourites */}
               <View style={styles.bookMarkLogo}>
-                <LottieView
-                  ref={animation}
-                  source={require('../assets/bookmark-animation.json')}
-                  style={{
-                    width: '80%',
-                    aspectRatio: 1,
-                    alignSelf: 'center',
-                    backgroundColor: 'transparent',
-                  }}
-                  autoPlay={true}
-                  loop={false}
-                ></LottieView>
+                <Pressable onPress={savePost}>
+                  <LottieView
+                    ref={animation}
+                    source={require('../assets/bookmark-animation.json')}
+                    style={{
+                      width: '80%',
+                      aspectRatio: 1,
+                      alignSelf: 'center',
+                      backgroundColor: 'transparent',
+                    }}
+                    autoPlay={true}
+                    loop={false}
+                  ></LottieView>
+                </Pressable>
               </View>
             </View>
             <View style={styles.postSection}>
@@ -378,8 +432,16 @@ const Single = ({navigation, route}) => {
             <View
               style={
                 user.user_id === owner.user_id
-                  ? [styles.buttonContainer, {flexDirection: 'row'}]
-                  : [styles.buttonContainer, {flexDirection: 'column'}]
+                  ? [
+                      styles.postSection,
+                      styles.buttonContainer,
+                      {flexDirection: 'row'},
+                    ]
+                  : [
+                      styles.postSection,
+                      styles.buttonContainer,
+                      {flexDirection: 'column'},
+                    ]
               }
             >
               {user.user_id === owner.user_id ? (
@@ -450,12 +512,12 @@ const Single = ({navigation, route}) => {
                   <CustomButton
                     title={
                       previousUserType === 'owner'
-                        ? 'Subscribe as pet sitter'
-                        : 'Subscribe as pet owner'
+                        ? 'Queue as pet sitter'
+                        : 'Queue as pet owner'
                     }
                     fontSize={16}
                     buttonStyle={{width: '80%'}}
-                    onPress={() => {}}
+                    onPress={addSubscriber}
                   />
                 </>
               )}
@@ -528,22 +590,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 25,
   },
-  // buttonStyle: {
-  //   alignSelf: 'center',
-  //   width: Dimensions.get('window').width * 0.3,
-  //   height: 50,
-  //   backgroundColor: '#A9FC73',
-  //   borderRadius: 35,
-  //   marginBottom: 15,
-  //   shadowColor: '#000',
-  //   shadowOffset: {
-  //     width: 0,
-  //     height: 4,
-  //   },
-  //   shadowOpacity: 0.29,
-  //   shadowRadius: 4.65,
-  //   elevation: 7,
-  // },
   buttonContainer: {
     flex: 1,
     marginBottom: 20,

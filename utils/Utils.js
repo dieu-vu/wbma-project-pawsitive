@@ -42,7 +42,7 @@ const fetchAvatar = async (data) => {
       return;
     }
     const avatar = avatarArray.pop();
-    console.log('AVATAR FETCHED', avatar);
+    // console.log('AVATAR FETCHED', avatar);
     return avatar.filename;
   } catch (error) {
     console.error(error.message);

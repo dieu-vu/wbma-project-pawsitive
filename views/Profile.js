@@ -113,7 +113,7 @@ const Profile = ({navigation}) => {
               colors={['#fdfdfd', '#ffffff']}
             >
               <Text h2 style={styles.headLine}>
-                {user.full_name}
+                {user.username}
               </Text>
               <UpdateUserForm navigation={navigation} />
             </LinearGradient>
