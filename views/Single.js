@@ -6,6 +6,8 @@ import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import LottieView from 'lottie-react-native';
+
 import {uploadsUrl} from '../utils/Variables';
 import {colors} from '../utils/Variables';
 import {useFavourite, useMedia, useRating, useUser} from '../hooks/ApiHooks';
@@ -37,6 +39,11 @@ const Single = ({navigation, route}) => {
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
+
+  const animation = React.createRef();
+  useEffect(() => {
+    animation.current?.play();
+  }, [animation]);
 
   getFonts();
   // Function to save post
@@ -250,8 +257,21 @@ const Single = ({navigation, route}) => {
                   {addedTimeText(file.time_added)}
                 </Card.Title>
               </View>
+
+              {/* Add post to favourites */}
               <View style={styles.bookMarkLogo}>
-                <BookMarkLogo height="50%" width="50%" onPress={savePost} />
+                <LottieView
+                  ref={animation}
+                  source={require('../assets/bookmark-animation.json')}
+                  style={{
+                    width: '80%',
+                    aspectRatio: 1,
+                    alignSelf: 'center',
+                    backgroundColor: 'transparent',
+                  }}
+                  autoPlay={true}
+                  loop={false}
+                ></LottieView>
               </View>
             </View>
             <View style={styles.postSection}>
