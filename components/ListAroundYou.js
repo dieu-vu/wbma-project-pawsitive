@@ -1,18 +1,22 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useRef, useState, useEffect} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {Dimensions, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet, View, Text} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
+import LottieView from 'lottie-react-native';
+
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
-import PlaceholderImage from './PlaceholderImage';
 import {MainContext} from '../contexts/MainContext';
 
 const ListAroundYou = ({navigation}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const ref = useRef(null);
   const {postsInRange} = useContext(MainContext);
-
+  const animation = React.createRef();
+  useEffect(() => {
+    animation.current?.play();
+  }, [animation]);
   getFonts();
 
   const renderItem = ({item, index}) => (
@@ -35,7 +39,31 @@ const ListAroundYou = ({navigation}) => {
   );
 
   if (postsInRange.length === 0) {
-    return <PlaceholderImage />;
+    return (
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <LottieView
+          ref={animation}
+          source={require('../assets/cat-popping-animation.json')}
+          style={{
+            width: '80%',
+            aspectRatio: 1,
+            alignSelf: 'center',
+            backgroundColor: 'transparent',
+          }}
+          autoPlay={true}
+          loop={true}
+        ></LottieView>
+        <Text
+          style={{
+            fontFamily: 'Montserrat-Regular',
+            fontSize: 18,
+            alignSelf: 'center',
+          }}
+        >
+          No posts around you
+        </Text>
+      </View>
+    );
   } else {
     return (
       <>

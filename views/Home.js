@@ -1,5 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
-import PropTypes from 'prop-types';
+import React, {useContext, useEffect} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,7 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {Button, Text, Tile} from 'react-native-elements';
+import {Text} from 'react-native-elements';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 
@@ -16,6 +15,7 @@ import ListAroundYou from '../components/ListAroundYou';
 import ListByPetType from '../components/ListByPetType';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia} from '../hooks/ApiHooks';
+import PlaceholderImage from '../components/PlaceholderImage';
 
 const Home = ({navigation}) => {
   const {setSelectedPetType} = useContext(MainContext);
@@ -102,13 +102,30 @@ const Home = ({navigation}) => {
           {mediaArray.length > 0 ? (
             <ListAroundYou navigation={navigation} />
           ) : (
-            <Tile
-              title="No posts around you"
-              featured
-              activeOpacity={1}
-              width={300}
-              height={250}
-            />
+            <PlaceholderImage />
+            // <View style={{flex: 1, flexDirection: 'column'}}>
+            //   <LottieView
+            //     ref={animation}
+            //     source={require('../assets/cat-popping-animation.json')}
+            //     style={{
+            //       width: '80%',
+            //       aspectRatio: 1,
+            //       alignSelf: 'center',
+            //       backgroundColor: 'transparent',
+            //     }}
+            //     autoPlay={true}
+            //     loop={true}
+            //   ></LottieView>
+            //   <Text
+            //     style={{
+            //       fontFamily: 'Montserrat-Regular',
+            //       fontSize: 18,
+            //       alignSelf: 'center',
+            //     }}
+            //   >
+            //     No posts around you
+            //   </Text>
+            // </View>
           )}
 
           <Text style={styles.titles} h4>
