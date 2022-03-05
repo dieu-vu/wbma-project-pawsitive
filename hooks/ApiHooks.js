@@ -372,7 +372,39 @@ const useUser = () => {
     return result.available;
   };
 
-  return {getUserByToken, getUserById, postUser, checkUsername, putUser};
+  const getAllUserId = async (token) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    const result = await doFetch(baseUrl + 'users', options);
+    return result.map((user) => {
+      return user.user_id;
+    });
+  };
+
+  const getUserInfo = async (userId, token) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    const result = await doFetch(`${baseUrl}users/${userId}`, options);
+    return result;
+  };
+
+  return {
+    getUserByToken,
+    getUserById,
+    postUser,
+    checkUsername,
+    putUser,
+    getAllUserId,
+    getUserInfo,
+  };
 };
 
 const useTag = () => {
