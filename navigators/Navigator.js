@@ -20,6 +20,7 @@ import FullScreenMap from '../components/FullScreenMap';
 import EditPost from '../views/EditPost';
 import Comments from '../views/Comments';
 import CommentsForAdmin from '../views/CommentsForAdmin';
+import SubscriberList from '../views/SubscriberList';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -184,6 +185,23 @@ const HomeStackScreen = () => {
         component={EditPost}
         options={({route}) => ({
           title: 'Edit Post',
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+          headerBackTitleStyle: {
+            fontFamily: 'Montserrat-Regular',
+          },
+          headerBackTitle: 'Post',
+        })}
+      />
+      <HomeStack.Screen
+        name="Subscriber List"
+        component={SubscriberList}
+        options={({route}) => ({
+          title: 'Subscriber list',
           headerStyle: {
             backgroundColor: '#8DD35E',
           },

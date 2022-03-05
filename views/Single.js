@@ -315,6 +315,7 @@ const Single = ({navigation, route}) => {
   return (
     <ScrollView style={styles.container}>
       <View style={{flex: 1, paddingBottom: insets.bottom}}>
+        {/* Media image/Video */}
         <View>
           {file.media_type === 'image' ? (
             <Image
@@ -576,7 +577,13 @@ const Single = ({navigation, route}) => {
             {/* Button to open subscriber list */}
             <View style={[styles.postSection, {paddingBottom: 30}]}>
               {user.user_id === owner.user_id ? (
-                <CustomButton title="See subscriber list" fontSize={16} />
+                <CustomButton
+                  title="See subscriber list"
+                  fontSize={16}
+                  onPress={() => {
+                    navigation.navigate('Subscriber List', {file: file});
+                  }}
+                />
               ) : (
                 <></>
               )}
