@@ -234,7 +234,6 @@ const Single = ({navigation, route}) => {
       const currentSubscribingList = userInfo.subscribed_media;
       console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
       if (subscribed) {
-        Alert.alert('You already subscribed this post');
         return;
       } else {
         userInfo.subscribed_media.push(subscribedFileId);
@@ -264,8 +263,42 @@ const Single = ({navigation, route}) => {
   };
 
   // Function to unsubscribe:
+  const unsubscribe = async () => {
+    const updatedUserData = user;
+    const subscribedFileId = file.file_id;
 
-  const unsubscribe = (async) => {};
+    if (userInfo.subscribed_media) {
+      // const currentSubscribingList = userInfo.subscribed_media;
+      // console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
+      if (!subscribed) {
+        return;
+      } else {
+        const updatedSubscribeArray = userInfo.subscribed_media.filter(
+          (fileId) => {
+            return fileId != subscribedFileId;
+          }
+        );
+        userInfo.subscribed_media = updatedSubscribeArray;
+        // console.log('UPDATED LIST', userInfo.subscribed_media);
+      }
+    }
+    const subscriptionData = {};
+    subscriptionData['full_name'] = JSON.stringify(userInfo);
+    updatedUserData.full_name = subscriptionData['full_name'];
+    // console.log('subscribing data json', subscriptionData);
+    setUser(updatedUserData);
+    setSubcribed(false);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await putUser(subscriptionData, token);
+      if (response) {
+        Alert.alert('Post', 'Unsubscribed');
+        setUpdate(update + 1);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // Fetch owner and user type:
   useEffect(() => {
@@ -529,12 +562,12 @@ const Single = ({navigation, route}) => {
                       subscribed
                         ? 'Unqueue'
                         : previousUserType === 'owner'
-                        ? 'Queue as pet sitter'
-                        : 'Queue as pet owner'
+                        ? 'I can be pet sitter!'
+                        : 'I want this pet sitter!'
                     }
                     fontSize={16}
-                    buttonStyle={{width: '80%'}}
-                    onPress={addSubscriber}
+                    buttonStyle={{width: '100%'}}
+                    onPress={subscribed ? unsubscribe : addSubscriber}
                   />
                 </>
               )}
