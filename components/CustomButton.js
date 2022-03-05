@@ -15,13 +15,15 @@ const CustomButton = (props) => {
   if (!fontsLoaded) {
     return <AppLoading />;
   }
-
   return (
     <Button
       title={props.title}
       onPress={props.onPress}
       titleStyle={[styles.titleStyle, {fontSize: props.fontSize}]}
-      buttonStyle={styles.buttonStyle}
+      buttonStyle={[
+        styles.buttonStyle,
+        {width: props.customWidth ? props.customWidth : '60%'},
+      ]}
     />
   );
 };
@@ -32,7 +34,6 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   buttonStyle: {
-    width: '60%',
     height: undefined,
     backgroundColor: '#A9FC73',
     borderRadius: 15,
@@ -53,6 +54,7 @@ CustomButton.propTypes = {
   title: PropTypes.string,
   onPress: PropTypes.func,
   fontSize: PropTypes.number,
+  customWidth: PropTypes.string,
   buttonStyle: PropTypes.object,
   titleStyle: PropTypes.object,
 };

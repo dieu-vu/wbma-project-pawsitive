@@ -1,16 +1,14 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 import propTypes from 'prop-types';
-import SubscriberListItem from './SubcriberListItem';
+import SubscriberListItem from './UserListItem';
 
-const List = ({navigation, userArray}) => {
+const List = ({userArray}) => {
   return (
     <FlatList
       data={userArray}
-      keyExtractor={(item) => item.file_id.toString()}
-      renderItem={({item}) => (
-        <SubscriberListItem singleMedia={item} navigation={navigation} />
-      )}
+      keyExtractor={(item) => item.user_id.toString()}
+      renderItem={({item}) => <SubscriberListItem subscriber={item} />}
       ListFooterComponent={() => {
         return null;
       }}
@@ -19,8 +17,7 @@ const List = ({navigation, userArray}) => {
 };
 
 List.propTypes = {
-  navigation: propTypes.object,
-  userArray: propTypes.object,
+  userArray: propTypes.array,
 };
 
 export default List;

@@ -111,7 +111,7 @@ const SubscriberList = ({navigation, route}) => {
       >
         <UserList
           navigation={navigation}
-          userArray={{subscriberArray}}
+          userArray={subscriberArray}
           style={{flex: 1}}
         />
       </View>
