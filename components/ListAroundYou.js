@@ -15,24 +15,23 @@ const ListAroundYou = ({navigation}) => {
   const [inRangeLoading, setInRangeLoading] = useState(true);
 
   const ref = useRef(null);
-  const {postsInRange} = useContext(MainContext);
+  const {postsInRange, update} = useContext(MainContext);
   const animation = React.createRef();
   useEffect(() => {
     animation.current?.play();
   }, [animation]);
   getFonts();
 
-  // Wait up to 15 seconds, if no posts around loaded, show message
+  // Wait up to 3 seconds, if no posts around, show message
   useEffect(() => {
-    if (postsInRange.length === 0) {
-      const timer = setTimeout(() => {
-        setInRangeLoading(false);
-        // console.log('IN RANGE LOADING', inRangeLoading);
-        // console.log('length in Range', postsInRange.length);
-      }, 15000);
-      return () => clearTimeout(timer);
-    }
-  }, [postsInRange]);
+    setInRangeLoading(true);
+    const timer = setTimeout(() => {
+      setInRangeLoading(false);
+      // console.log('IN RANGE LOADING', inRangeLoading);
+      // console.log('length in Range', postsInRange.length);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [update, postsInRange]);
 
   const renderItem = ({item, index}) => (
     <Tile
@@ -54,69 +53,82 @@ const ListAroundYou = ({navigation}) => {
   );
 
   if (inRangeLoading) {
-    return <PlaceholderImage />;
-  } else if (!inRangeLoading && postsInRange.length === 0) {
     return (
-      <View style={{flex: 1, flexDirection: 'column'}}>
-        <LottieView
-          ref={animation}
-          source={require('../assets/cat-popping-animation.json')}
+      <View style={{marginLeft: 20}}>
+        <PlaceholderImage
           style={{
-            width: '80%',
-            aspectRatio: 1,
-            alignSelf: 'center',
-            backgroundColor: 'transparent',
+            width: 300,
+            height: undefined,
+            borderRadius: 20,
+            backgroundColor: 'white',
           }}
-          autoPlay={true}
-          loop={true}
-        ></LottieView>
-        <Text
-          style={{
-            fontFamily: 'Montserrat-Regular',
-            fontSize: 18,
-            alignSelf: 'center',
-          }}
-        >
-          No posts around you
-        </Text>
+        />
       </View>
     );
-  } else if (!inRangeLoading && postsInRange.length !== 0) {
-    return (
-      <>
-        <Carousel
-          activeSlideAlignment="start"
-          containerCustomStyle={{marginHorizontal: 20}}
-          renderItem={renderItem}
-          data={postsInRange}
-          ref={ref}
-          sliderWidth={Dimensions.get('window').width}
-          itemWidth={300}
-          onSnapToItem={(index) => setActiveIndex(index)}
-        />
-        <Pagination
-          dotsLength={postsInRange.length}
-          activeDotIndex={activeIndex}
-          carouselRef={ref}
-          dotStyle={{
-            width: 15,
-            height: 15,
-            borderRadius: 50,
-            marginHorizontal: 8,
-            backgroundColor: '#425E20',
-          }}
-          tappableDots={true}
-          inactiveDotStyle={{
-            borderColor: '#425E20',
-            borderWidth: 3,
-            backgroundColor: 'white',
-            // Define styles for inactive dots here
-          }}
-          inactiveDotOpacity={0.4}
-          inactiveDotScale={0.6}
-        />
-      </>
-    );
+  } else {
+    if (postsInRange.length === 0 && inRangeLoading === false) {
+      return (
+        <View style={{flex: 1, flexDirection: 'column'}}>
+          <LottieView
+            ref={animation}
+            source={require('../assets/cat-popping-animation.json')}
+            style={{
+              width: '80%',
+              aspectRatio: 1,
+              alignSelf: 'center',
+              backgroundColor: 'transparent',
+            }}
+            autoPlay={true}
+            loop={true}
+          />
+          <Text
+            style={{
+              fontFamily: 'Montserrat-Regular',
+              fontSize: 18,
+              alignSelf: 'center',
+            }}
+          >
+            No posts around you
+          </Text>
+        </View>
+      );
+    } else if (postsInRange.length > 0) {
+      return (
+        <>
+          <Carousel
+            activeSlideAlignment="start"
+            containerCustomStyle={{marginHorizontal: 20}}
+            renderItem={renderItem}
+            data={postsInRange}
+            ref={ref}
+            sliderWidth={Dimensions.get('window').width}
+            itemWidth={300}
+            onSnapToItem={(index) => setActiveIndex(index)}
+          />
+          <Pagination
+            dotsLength={postsInRange.length}
+            activeDotIndex={activeIndex}
+            carouselRef={ref}
+            dotStyle={{
+              width: 15,
+              height: 15,
+              borderRadius: 50,
+              marginHorizontal: 8,
+              backgroundColor: '#425E20',
+            }}
+            tappableDots={true}
+            inactiveDotStyle={{
+              borderColor: '#425E20',
+              borderWidth: 3,
+              backgroundColor: 'white',
+              // Define styles for inactive dots here
+            }}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+          />
+        </>
+      );
+    }
   }
 };
 
@@ -125,18 +137,19 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     fontFamily: 'Montserrat-Bold',
+    transform: [{translateY: 40}],
   },
   caption: {
     fontSize: 16,
     color: 'white',
     fontFamily: 'Montserrat-Bold',
+    transform: [{translateY: 40}],
   },
   overlayContainer: {
     alignItems: 'center',
     justifyContent: 'flex-end',
-    height: 150,
-    transform: [{translateY: 140}],
-    backgroundColor: 'rgba(0,0,0, 0.2)',
+    backgroundColor: 'rgba(0,0,0, 0.1)',
+    borderRadius: 20,
   },
 });
 

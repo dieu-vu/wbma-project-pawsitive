@@ -160,17 +160,12 @@ const useMedia = (myFilesOnly) => {
             thumbnails: mediaPost.thumbnails,
             ratingCount: ratingCounter.toString(),
             ratingAverage: averageRating.toString(),
+            price: postOnMap.price,
             coordinates: {
               latitude: postOnMap.coords.latitude,
               longitude: postOnMap.coords.longitude,
             },
           });
-          // console.log(
-          //   'title: ', mediaPost.title,
-          //   'thumbnails', mediaPost.thumbnails,
-          //   'coords: ', postOnMap.coords,
-          //   'whole: ', mediaPost
-          // );
         }
       });
     }
@@ -180,11 +175,16 @@ const useMedia = (myFilesOnly) => {
   useEffect(async () => {
     await loadMediaSecond().then(
       async (media) =>
-        await loadPostsInRange(media).then((inRange) =>
-          setPostsInRange(inRange)
-        )
+        await loadPostsInRange(media).then((inRange) => {
+          if (inRange === undefined) {
+            setPostsInRange([]);
+          } else {
+            setPostsInRange(inRange);
+          }
+
+        })
     );
-  }, []);
+  }, [update]);
 
   const loadPostsInRange = async (media) => {
     const postThatInRange = [];
@@ -214,16 +214,6 @@ const useMedia = (myFilesOnly) => {
           },
           100
         );
-
-        // console.log(
-        //   'mediaPost title: ',
-        //   mediaPost.title,
-        //   'distance: ',
-        //   distance,
-        //   'is withing radius 10km ',
-        //   result
-        // );
-        // console.log('result', result);
         if (result) {
           // console.log('in result before setPostsInRange');
           postThatInRange.push({
@@ -240,7 +230,20 @@ const useMedia = (myFilesOnly) => {
         }
       });
     }
-    return postThatInRange;
+    // show 6 closest ones if more than 6 in radius
+    if (postThatInRange.length > 6) {
+      return postThatInRange.slice(0, 6).sort((a, b) => {
+        return a.distanceFromCurrent - b.distanceFromCurrent;
+      });
+      // sort by closest to farthest
+    } else if (postThatInRange.length >= 2 && postThatInRange.length <= 6) {
+      return postThatInRange.sort((a, b) => {
+        return a.distanceFromCurrent - b.distanceFromCurrent;
+      });
+      // if length is one just return the only one
+    } else if (postThatInRange.length === 1) {
+      return postThatInRange;
+    }
   };
 
   const postMedia = async (formData, token) => {
