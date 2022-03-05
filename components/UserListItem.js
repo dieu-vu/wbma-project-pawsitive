@@ -9,11 +9,17 @@ import {useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
+import UserInfoModal from './UserInfoModal';
 
 // TODO: change description for all file in listing
 const UserListItem = ({subscriber}) => {
   const userInfo = JSON.parse(subscriber.full_name);
-  const {update, setUpdate} = useContext(MainContext);
+  const {
+    setUserInfoModalVisible,
+    userInfoModalVisible,
+    setViewedSubscriber,
+    viewedSubscriber,
+  } = useContext(MainContext);
   const [avatar, setAvatar] = useState('../assets/user.svg');
 
   useEffect(async () => {
@@ -55,6 +61,10 @@ const UserListItem = ({subscriber}) => {
               fontSize={14}
               customWidth={'90%'}
               // TODO: onPress open UserInfoModal
+              onPress={() => {
+                setUserInfoModalVisible(true);
+                setViewedSubscriber(subscriber);
+              }}
             ></CustomButton>
             <CustomButton
               title="Select"

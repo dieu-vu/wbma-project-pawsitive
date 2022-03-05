@@ -7,12 +7,13 @@ import UserList from '../components/UserList';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
+import UserInfoModal from '../components/UserInfoModal';
 
 const SubscriberList = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
   const fileId = route.params.file.file_id;
   console.log('FILE ID', fileId);
-  const {user} = useContext(MainContext);
+  const {userInfoModalVisible, viewedSubscriber} = useContext(MainContext);
   const {getAllUserId, getUserInfo} = useUser();
   const [subscriberArray, setSubscriberArray] = useState();
   const [allUserLoaded, setAllUserLoaded] = useState(false);
@@ -114,6 +115,11 @@ const SubscriberList = ({navigation, route}) => {
           userArray={subscriberArray}
           style={{flex: 1}}
         />
+        {userInfoModalVisible ? (
+          <UserInfoModal subscriber={viewedSubscriber} />
+        ) : (
+          <></>
+        )}
       </View>
     </SafeAreaView>
   );
