@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
-// TODO: change description for all file in listing
 const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
   const fileInfo = JSON.parse(singleMedia.description);
   const {deleteMedia} = useMedia();
@@ -81,12 +80,12 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
       />
       <ListItem.Content style={styles.itemContent}>
         <View style={{flex: 1, flexDirection: 'column'}}>
-          <ListItem.Title numberOfLines={1} h4 style={styles.title}>
+          <ListItem.Title numberOfLines={2} h4 style={styles.title}>
             {singleMedia.title}
           </ListItem.Title>
           <ListItem.Subtitle style={styles.subTitle}>
-            {fileInfo.description.length > 100
-              ? `${fileInfo.description.substring(0, 100)} ...`
+            {fileInfo.description.length > 70
+              ? `${fileInfo.description.substring(0, 70)} ...`
               : fileInfo.description}
           </ListItem.Subtitle>
         </View>

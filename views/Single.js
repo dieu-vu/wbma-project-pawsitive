@@ -49,7 +49,7 @@ const Single = ({navigation, route}) => {
   const [subscribed, setSubcribed] = useState(false);
 
   let userInfo = {};
-  if (user.full_name) {
+  if (user.full_name && user.full_name.includes('subscribed_media')) {
     userInfo = JSON.parse(user.full_name);
   }
 

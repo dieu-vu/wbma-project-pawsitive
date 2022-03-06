@@ -53,8 +53,6 @@ const useMedia = (myFilesOnly) => {
           json = json.filter((file) => file.user_id === user.user_id);
         }
 
-        // TODO: JsonFilter below is for json data test, correct to json when done
-        // const jsonFilter = json.filter((item) => item.user_id === 13);
         if (selectedPetType === 'all') {
           jsonFilter = json;
         } else {

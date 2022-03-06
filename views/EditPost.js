@@ -51,7 +51,8 @@ const EditPost = ({navigation, route}) => {
   const {petType, setPetType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
   const {postLocation} = useContext(MainContext);
-  const {previousUserType, setPreviousUserType} = useContext(MainContext);
+  const {previousUserType, setPreviousUserType, currentUserLocation} =
+    useContext(MainContext);
 
   const {
     control,
@@ -79,6 +80,7 @@ const EditPost = ({navigation, route}) => {
     console.log('pet type', petType);
   }, [petType, userType]);
 
+  //  Check the latest user type in case the user changed user type many times
   useEffect(async () => {
     const previousUserTypeApi = await getMediaPreviousCategoryTag(file, 'user');
     setPreviousUserType(previousUserTypeApi);
@@ -89,10 +91,15 @@ const EditPost = ({navigation, route}) => {
     const json = {};
     json['description'] = data.description;
     json['start_time'] = data.startTime;
-
     json['end_time'] = data.endTime;
-    json['coords'] = postLocation;
-    // TODO: to add more field here for subsribers, etc
+    if (data.startTime > data.endTime) {
+      Alert.alert('End time must be after Start time');
+      return;
+    }
+    postLocation
+      ? (json['coords'] = fileInfo.coords)
+      : (json['coords'] = currentUserLocation);
+    json['price'] = data.price;
     return JSON.stringify(json);
   };
 
@@ -104,6 +111,10 @@ const EditPost = ({navigation, route}) => {
 
     console.log(data);
     const fileInfoJson = createJsonString(data);
+    if (!fileInfoJson) {
+      return;
+    }
+
     const currentPetType = await getMediaPreviousCategoryTag(file, 'pet');
 
     const putData = {};
@@ -232,8 +243,20 @@ const EditPost = ({navigation, route}) => {
               ) : (
                 <></>
               )}
+              {postLocation ? (
+                <Text style={styles.addressText}>
+                  Selected address: {postLocation.address}
+                </Text>
+              ) : fileInfo.coords.address ? (
+                <Text style={styles.addressText}>
+                  Selected address: {fileInfo.coords.address}
+                </Text>
+              ) : (
+                <Text style={styles.addressText}>
+                  Address text not yet provided
+                </Text>
+              )}
             </View>
-
             <View
               style={{
                 width: '100%',
@@ -365,6 +388,13 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 15,
+  },
+  addressText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 15,
+    alignSelf: 'center',
+    marginBottom: 15,
+    textAlign: 'center',
   },
   image: {
     flex: 1,

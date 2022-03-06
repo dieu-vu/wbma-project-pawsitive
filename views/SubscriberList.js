@@ -8,6 +8,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
 import {useUser} from '../hooks/ApiHooks';
 import UserInfoModal from '../components/UserInfoModal';
+import PlaceholderImage from '../components/PlaceholderImage';
 
 const SubscriberList = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
@@ -110,13 +111,20 @@ const SubscriberList = ({navigation, route}) => {
           flex: 1,
         }}
       >
-        <UserList
-          navigation={navigation}
-          userArray={subscriberArray}
-          style={{flex: 1}}
-        />
+        {!allUserLoaded ? (
+          <PlaceholderImage />
+        ) : (
+          <UserList
+            navigation={navigation}
+            userArray={subscriberArray}
+            style={{flex: 1}}
+          />
+        )}
         {userInfoModalVisible ? (
-          <UserInfoModal subscriber={viewedSubscriber} />
+          <UserInfoModal
+            subscriber={viewedSubscriber}
+            navigation={navigation}
+          />
         ) : (
           <></>
         )}

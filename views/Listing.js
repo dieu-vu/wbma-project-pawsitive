@@ -14,8 +14,6 @@ import {
 } from '../utils/Utils';
 
 const Listing = ({navigation}) => {
-  // TODO: Move map permission to a common file.
-  // TODO: Add google API to Hooks for searching
   const insets = useSafeAreaInsets();
   const [isFullMap, setIsFullMap] = useState(false);
   const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);

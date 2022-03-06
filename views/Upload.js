@@ -53,7 +53,7 @@ const Upload = ({navigation}) => {
   const {userType} = useContext(MainContext);
   const {petType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
-  const {postLocation} = useContext(MainContext);
+  const {postLocation, currentUserLocation} = useContext(MainContext);
 
   const {
     control,
@@ -84,7 +84,6 @@ const Upload = ({navigation}) => {
     }
   };
 
-  // TODO: if possible, get camera permission to film a video constantly
   const resetForm = () => {
     setImageSelected(false);
     setValue('title', '');
@@ -120,16 +119,26 @@ const Upload = ({navigation}) => {
     // console.log('end time from form', data.endTime);
     json['price'] = data.price;
     json['end_time'] = data.endTime;
-    json['coords'] = postLocation;
-    json['price'] = data.price;
+    if (data.startTime > data.endTime) {
+      Alert.alert('End time must be after Start time');
+      return;
+    }
 
-    // TODO: to add more field here for location, subsribers, etc
+    postLocation
+      ? (json['coords'] = postLocation)
+      : (json['coords'] = currentUserLocation);
+    json['price'] = data.price.trim();
+
     return JSON.stringify(json);
   };
 
   const onSubmit = async (data) => {
     if (!petType) {
       Alert.alert('Please select a pet type');
+      return;
+    }
+    if (!postLocation) {
+      Alert.alert('Please provide location');
       return;
     }
 
@@ -139,8 +148,13 @@ const Upload = ({navigation}) => {
     }
     const formData = new FormData();
     formData.append('title', data.title);
-    // TODO: datepicker doesn't add date if not scrolling and picking date. To check
+
     const fileInfoJson = createJsonString(data);
+
+    if (!fileInfoJson) {
+      return;
+    }
+
     console.log('file Info json ', fileInfoJson);
     formData.append('description', fileInfoJson);
 
@@ -152,6 +166,7 @@ const Upload = ({navigation}) => {
       name: filename,
       type: type + '/' + fileExtension,
     });
+    console.log('POSTED media', formData);
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postMedia(formData, token);
@@ -289,7 +304,7 @@ const Upload = ({navigation}) => {
               rules={{
                 pattern: {
                   value: /^(0|[1-9]\d*)(\.\d+)?$/g,
-                  message: 'Min 8, Uppercase, Number',
+                  message: 'Must be a number',
                 },
               }}
               render={({field: {onChange, onBlur, value}}) => (
@@ -304,7 +319,6 @@ const Upload = ({navigation}) => {
               )}
               name="price"
             ></Controller>
-
 
             <View keyboardShouldPersistTaps="handled">
               <FAB
@@ -324,6 +338,20 @@ const Upload = ({navigation}) => {
                 <MapOverlayComponent isVisible={onChange} />
               ) : (
                 <></>
+              )}
+              {postLocation ? (
+                <Text style={styles.text}>{postLocation.address}</Text>
+              ) : (
+                <></>
+              )}
+              {postLocation ? (
+                <Text style={styles.addressText}>
+                  Selected address: {postLocation.address}
+                </Text>
+              ) : (
+                <Text style={styles.addressText}>
+                  Address text not yet provided
+                </Text>
               )}
             </View>
 
@@ -354,7 +382,6 @@ const Upload = ({navigation}) => {
                         flexGrow: 1,
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
-
                       }}
                     >
                       <Text style={[styles.text, {marginRight: 2, width: 50}]}>
@@ -464,6 +491,13 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Montserrat-Regular',
     fontSize: 15,
+  },
+  addressText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 15,
+    alignSelf: 'center',
+    marginBottom: 15,
+    textAlign: 'center',
   },
   image: {
     flex: 1,

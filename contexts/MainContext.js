@@ -14,6 +14,7 @@ const MainProvider = (props) => {
   const [searchValue, setSearchValue] = useState('');
   const [mapOverlayVisible, setMapOverlayVisible] = useState(false);
   const [currentUserLocation, setCurrentUserLocation] = useState({
+    address: 'Default location',
     latitude: 60.168415993,
     longitude: 24.9333962664,
   });
