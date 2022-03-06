@@ -265,13 +265,13 @@ const EditPost = ({navigation, route}) => {
               ) : (
                 <></>
               )}
-              {postLocation ? (
-                <Text style={styles.addressText}>
-                  Selected address: {postLocation.address}
-                </Text>
-              ) : fileInfo.coords.address ? (
+              {fileInfo.coords.address ? (
                 <Text style={styles.addressText}>
                   Selected address: {fileInfo.coords.address}
+                </Text>
+              ) : postLocation ? (
+                <Text style={styles.addressText}>
+                  Selected address: {postLocation.address}
                 </Text>
               ) : (
                 <Text style={styles.addressText}>
