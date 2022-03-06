@@ -7,9 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import propTypes from 'prop-types';
-import CommentsContainer from '../views/Comments';
 
-const CommentForm = ({fileId, commentCreator}) => {
+const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
+  const {user} = useContext(MainContext);
+  const userId = user.user_id;
   const {postComment} = useComments();
   const {update, setUpdate} = useContext(MainContext);
 
@@ -28,9 +29,10 @@ const CommentForm = ({fileId, commentCreator}) => {
   const onSubmit = async (data) => {
     const comment = {};
     comment['comment'] = data.comment;
-    comment['creator'] = commentCreator;
+    comment['chat_starter_id'] = chatStarterId;
+    comment['chat_responser_id'] = chatResponserId;
 
-    const commentString=JSON.stringify(comment);
+    const commentString = JSON.stringify(comment);
 
     const jsonData = {};
     jsonData['file_id'] = fileId;
@@ -76,7 +78,8 @@ const CommentForm = ({fileId, commentCreator}) => {
 
 CommentForm.propTypes = {
   fileId: propTypes.number,
-  commentCreator: propTypes.number,
+  chatStarterId: propTypes.number,
+  chatResponserId: propTypes.number,
 };
 
 const styles = StyleSheet.create({

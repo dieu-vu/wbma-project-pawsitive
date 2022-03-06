@@ -18,9 +18,9 @@ import CustomDrawer from '../components/CustomDrawer';
 import {TouchableOpacity} from 'react-native';
 import FullScreenMap from '../components/FullScreenMap';
 import EditPost from '../views/EditPost';
-import Comments from '../views/Comments';
-import CommentsForAdmin from '../views/CommentsForAdmin';
 import SubscriberList from '../views/SubscriberList';
+import Chat from '../views/Chat';
+import ChatMenu from '../views/ChatMenu';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -215,27 +215,10 @@ const HomeStackScreen = () => {
         })}
       />
       <HomeStack.Screen
-        name="Comments"
-        component={Comments}
+        name="Chat"
+        component={Chat}
         options={({route}) => ({
-          title: 'Comments',
-          headerStyle: {
-            backgroundColor: '#8DD35E',
-          },
-          headerTitleStyle: {
-            fontFamily: 'Montserrat-SemiBold',
-          },
-          headerBackTitleStyle: {
-            fontFamily: 'Montserrat-Regular',
-          },
-          headerBackTitle: 'Post',
-        })}
-      />
-      <HomeStack.Screen
-        name="Comments admin"
-        component={CommentsForAdmin}
-        options={({route}) => ({
-          title: 'Comments',
+          title: 'Chat',
           headerStyle: {
             backgroundColor: '#8DD35E',
           },
@@ -349,6 +332,26 @@ const DrawerNavigator = () => {
         options={{
           drawerIcon: () => (
             <Icon name="archive" type="feather" size={20} color={'#425E20'} />
+          ),
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+        }}
+      />
+      <Drawer.Screen
+        name="Your chats"
+        component={ChatMenu}
+        options={{
+          drawerIcon: () => (
+            <Icon
+              name="message-circle"
+              type="feather"
+              size={20}
+              color={'#425E20'}
+            />
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',

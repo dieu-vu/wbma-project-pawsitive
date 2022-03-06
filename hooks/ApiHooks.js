@@ -288,7 +288,6 @@ const useMedia = (myFilesOnly) => {
 
   const getPostsByUserId = async (userId) => {
     const json = await useTag().getFilesByTag(appId);
-
     return json.filter((item) => item.user_id === userId);
   };
 
@@ -498,8 +497,17 @@ const useRating = () => {
 };
 
 const useComments = () => {
-  const getComments = async (fileId) => {
-    return await doFetch(`${baseUrl}comments/file/${fileId}`);
+  const getCommentsForUser = async (userToken) => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'x-access-token': userToken,
+      },
+    };
+    return await doFetch(`${baseUrl}comments`, options);
+  };
+  const getCommentsForFile = async (userId) => {
+    return await doFetch(`${baseUrl}comments/file/${userId}`);
   };
   const postComment = async (data, userToken) => {
     const options = {
@@ -512,7 +520,10 @@ const useComments = () => {
     };
     return await doFetch(baseUrl + 'comments', options);
   };
-  return {getComments, postComment};
+
+
+
+  return {getCommentsForFile, postComment, getCommentsForUser};
 };
 
 export {

@@ -526,7 +526,7 @@ const Single = ({navigation, route}) => {
                     }}
                     iconStyle={{padding: 3}}
                     onPress={() => {
-                      navigation.navigate('Comments', {file: file});
+                      navigation.navigate('ChatMenu');
                     }}
                   />
                   <Icon
@@ -555,7 +555,12 @@ const Single = ({navigation, route}) => {
                     title="Contact user"
                     fontSize={16}
                     onPress={() => {
-                      navigation.navigate('Comments', {file: file});
+                      navigation.navigate('Chat', {
+                        fileId: file.file_id,
+                        chatStarterId: user.user_id,
+                        chatResponserId: file.user_id,
+                        single: true,
+                      });
                     }}
                   />
                   <CustomButton

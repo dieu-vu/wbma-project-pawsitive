@@ -6,45 +6,43 @@ import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import CommentForm from '../components/CommentForm';
 
-const CommentsForAdmin = ({route, navigation}) => {
+const Chat = ({route, navigation}) => {
   const {user} = useContext(MainContext);
-  const {update, setUpdate} = useContext(MainContext);
-  const [commentsArray, setCommentsArray] = useState([]);
-  const {getComments} = useComments();
-  const fileId = route.params.fileId.fileId;
-  const fileUserId = route.params.fileUserId.item;
+  const userId = user.user_id;
+  const fileId = route.params.fileId;
+  const chatStarterId = route.params.chatStarterId;
+  console.log('starter', chatStarterId);
+  const chatResponserId = route.params.chatResponserId;
+  console.log('response', chatResponserId);
+
+  console.log('fileId', fileId);
   console.log('route', route);
+  const single = route.params.single;
+
+  const [commentsArray, setCommentsArray] = useState([]);
+  const {getCommentsForFile} = useComments();
+  const {update, setUpdate} = useContext(MainContext);
 
   const fetchComments = async () => {
     try {
-      console.log('file user', fileUserId);
-      const commentList = await getComments(fileId);
-
-      console.log(commentList);
-
-      const mappedCommentsList = commentList.filter((item) =>{
+      const commentList = await getCommentsForFile(fileId);
+      const mappedCommentsList = commentList.filter((item) => {
         const comment = JSON.parse(item.comment);
-        const chatStarter = comment.creator;
-        if (item.user_id === fileUserId) {
-          return item;
-        } else if (chatStarter === fileUserId) {
+        const starter = comment.chat_starter_id;
+        const responser = comment.chat_responser_id;
+
+        if (responser === chatResponserId && starter === chatStarterId) {
           return item;
         }
       });
-      console.log(mappedCommentsList);
       setCommentsArray(mappedCommentsList);
     } catch (error) {
       console.error('get comments error', error);
     }
   };
+
   const CommentItem = ({item}) => (
-    <ListItem
-      containerStyle={
-        JSON.parse(item.comment).creator === 0
-          ? styles.commentContainerLeft
-          : styles.commentContainerRight
-      }
-    >
+    <ListItem style={styles.item}>
       <Text style={styles.text}>{JSON.parse(item.comment).comment}</Text>
     </ListItem>
   );
@@ -58,7 +56,7 @@ const CommentsForAdmin = ({route, navigation}) => {
       <View>
         <FlatList
           data={commentsArray}
-          keyExtractor={(item) => item.comment_id.toString}
+          keyExtractor={(item) => item.comment_id}
           renderItem={({item}) => <CommentItem item={item} />}
           ListFooterComponent={() => {
             return null;
@@ -67,7 +65,8 @@ const CommentsForAdmin = ({route, navigation}) => {
         <View style={{bottom: 0}}>
           <CommentForm
             fileId={fileId}
-            commentCreator={fileUserId}
+            chatStarterId={chatStarterId}
+            chatResponserId={chatResponserId}
             style={{height: 200}}
           />
         </View>
@@ -76,7 +75,7 @@ const CommentsForAdmin = ({route, navigation}) => {
   );
 };
 
-CommentsForAdmin.propTypes = {
+Chat.propTypes = {
   navigation: propTypes.object,
   route: propTypes.object,
   item: propTypes.object,
@@ -87,26 +86,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     height: '100%',
   },
-  commentContainerLeft: {
+  item: {
+    padding: 20,
     width: Dimensions.get('window').width * 0.4,
-    backgroundColor: '#8DD35E',
-    marginTop: 20,
-    borderRadius: 10,
-    left: 10,
-    marginLeft: 10,
   },
-  commentContainerRight: {
-    width: Dimensions.get('window').width * 0.4,
-    backgroundColor: '#8DD35E',
-    alignSelf: 'center',
-    marginTop: 20,
-    borderRadius: 10,
-  },
-  text: {
-    fontFamily: 'Montserrat-Regular',
-    color: 'black',
-    fontSize: 15,
-  },
+  text: {},
+  commentContainer: {},
 });
 
-export default CommentsForAdmin;
+export default Chat;
