@@ -37,7 +37,7 @@ const EditPost = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
   const animation = React.createRef();
 
-  const {putMedia, loading} = useMedia();
+  const {putMedia, loading, getSingleMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
   const {postTag} = useTag();
   const [isFromDatePickerVisible, setFromDatePickerVisibility] =
@@ -64,6 +64,7 @@ const EditPost = ({navigation, route}) => {
       description: fileInfo.description,
       startTime: fileInfo.start_time,
       endTime: fileInfo.end_time,
+      price: fileInfo.price ? fileInfo.price : '',
     },
     mode: 'onBlur',
   });
@@ -161,9 +162,10 @@ const EditPost = ({navigation, route}) => {
         Alert.alert('Post', 'Succesfully updated', [
           {
             text: 'OK',
-            onPress: () => {
+            onPress: async () => {
               setUpdate(update + 1);
-              navigation.navigate('Single', {file: file});
+              const updatedFile = await getSingleMedia(file.file_id, token);
+              navigation.navigate('Single', {file: updatedFile});
             },
           },
         ]);
@@ -222,6 +224,26 @@ const EditPost = ({navigation, route}) => {
                 ></Input>
               )}
               name="description"
+            ></Controller>
+            <Controller
+              control={control}
+              rules={{
+                pattern: {
+                  value: /^(0|[1-9]\d*)(\.\d+)?$/g,
+                  message: 'Must be a number',
+                },
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <Input
+                  onBlur={onBlur}
+                  onChangeText={onChange}
+                  value={value}
+                  autoCapitalize="none"
+                  placeholder="Price in EUR"
+                  style={[styles.input]}
+                ></Input>
+              )}
+              name="price"
             ></Controller>
 
             <View keyboardShouldPersistTaps="handled">
