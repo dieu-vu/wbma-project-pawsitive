@@ -55,13 +55,13 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
-            leftIcon={{type: 'evilicon', name: 'user', size: 40}}
+            leftIcon={{type: 'evilicon', name: 'comment', size: 35}}
             inputContainerStyle={styles.inputField}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
             autoCapitalize="none"
-            placeholder="Message..."
+            placeholder="..."
             errorMessage={errors.comment && errors.comment.message}
           />
         )}
@@ -69,8 +69,14 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
       />
       <Button
         onPress={handleSubmit(onSubmit)}
-        title="Save"
-        containerStyle={{height: 80, width: 100}}
+        title="Chat"
+        containerStyle={{height: 100, width: 85, right: 9}}
+        titleStyle={{
+          fontFamily: 'Montserrat-SemiBold',
+          color: 'black',
+          fontSize: 15,
+        }}
+        buttonStyle={styles.buttonStyle}
       />
     </View>
   );
@@ -84,19 +90,34 @@ CommentForm.propTypes = {
 
 const styles = StyleSheet.create({
   inputField: {
-    alignSelf: 'center',
-    borderWidth: 2,
-    borderBottomWidth: 2,
+    borderWidth: 1,
+    borderBottomWidth: 1,
     borderColor: 'black',
-    borderRadius: 10,
     backgroundColor: 'white',
-    paddingLeft: 10,
     height: 50,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderTopRightRadius: 3,
+    borderBottomRightRadius: 3,
   },
   formContainer: {
     flex: 1,
     flexDirection: 'row',
-    width: '80%',
+    width: '78%',
+  },
+  text: {
+    fontFamily: 'Montserrat-Regular',
+  },
+  buttonStyle: {
+    height: 50,
+    width: '100%',
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    backgroundColor: '#A9FC73',
+    borderWidth: 1,
+    borderColor: 'black',
   },
 });
 

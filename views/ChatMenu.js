@@ -1,12 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {Avatar, ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
 import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {uploadsUrl} from '../utils/Variables';
-import {fetchAvatar} from '../utils/Utils';
 import ChatMenuItem from '../components/ChatMenuItem';
 
 const ChatMenu = ({navigation}) => {
@@ -23,51 +20,61 @@ const ChatMenu = ({navigation}) => {
       const userToken = await AsyncStorage.getItem('userToken');
       // user´s all comments
       const commentArrayForUser = await getCommentsForUser(userToken);
-      // user´s posts to link media
-      const usersPosts = await getPostsByUserId(userId);
 
-      const setOfUsers = new Set();
+      const arrayOfPosts = [];
       // get chats to other user´s posts
       const chatsToOtherUsersFiles = commentArrayForUser.filter((item) => {
         const messageJson = JSON.parse(item.comment);
         if (messageJson.chat_starter_id === userId) {
-          if (setOfUsers.has(item.user_id)) {
-          } else {
-            setOfUsers.add(item.user_id);
+          if (!arrayOfPosts.includes(item.file_id)) {
+            arrayOfPosts.push(item.file_id);
             return item;
           }
-          return item;
         }
       });
       console.log('to others', chatsToOtherUsersFiles);
 
+      // user´s posts to link media
+      const usersPosts = await getPostsByUserId(userId);
+
       // get chats to own posts
       const chatsToUser = await Promise.all(
         usersPosts.map(async (post) => {
-          const commentsForFile = await getCommentsForFile(post.file_id);
-          commentsForFile.filter((comment) => {
-            const messageJson = JSON.parse(comment.comment);
-            if (messageJson.chat_responser_id === userId) {
-              return comment;
-            }
-          });
-          return commentsForFile;
+          return await getCommentsForFile(post.file_id);
         })
       );
 
-      const chatsToUserWithoutOwn=chatsToUser.filter(comment=>comment.user_id===userId);
+      // need a function to clear duplicate users from a list of comments
 
-      console.log('testetsttest', chatsToUserWithoutOwn);
+      const chatsToUserWithoutDuplicates = chatsToUser.map((item) => {
+        const userIdArray = [];
+        return item.filter((item) => {
+          console.log(typeof item.user_id);
+          if (!userIdArray.includes(item.user_id)){
+            userIdArray.push(item.user_id);
+            return item;
+          }
+        });
+      });
 
-      const concatenatedArray = chatsToUser.concat(chatsToOtherUsersFiles);
+      console.log(chatsToUserWithoutDuplicates);
+
+      const flatChatsToUser = chatsToUserWithoutDuplicates.flat();
+
+      const chatsToUserWithoutOwn = flatChatsToUser.filter(
+        (comment) => comment.user_id !== userId
+      );
+
+      const concatenatedArray = chatsToUserWithoutOwn.concat(
+        chatsToOtherUsersFiles
+      );
 
       const sortedArray = concatenatedArray.sort(
         (a, b) => b.comment_id - a.comment_id
       );
-      const flatArray = sortedArray.flat();
 
       const commentArrayWithMedia = await Promise.all(
-        flatArray.map(async (item) => {
+        sortedArray.map(async (item) => {
           try {
             const mediaFile = await getSingleMedia(item.file_id, userToken);
 

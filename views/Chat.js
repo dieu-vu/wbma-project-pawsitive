@@ -1,5 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Dimensions, FlatList, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Dimensions,
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
 import {useComments} from '../hooks/ApiHooks';
@@ -35,6 +42,8 @@ const Chat = ({route, navigation}) => {
           return item;
         }
       });
+
+      console.log(mappedCommentsList);
       setCommentsArray(mappedCommentsList);
     } catch (error) {
       console.error('get comments error', error);
@@ -42,7 +51,14 @@ const Chat = ({route, navigation}) => {
   };
 
   const CommentItem = ({item}) => (
-    <ListItem style={styles.item}>
+    <ListItem
+      style={styles.item}
+      containerStyle={
+        item.user_id === userId
+          ? styles.commentContainerLeft
+          : styles.commentContainerRight
+      }
+    >
       <Text style={styles.text}>{JSON.parse(item.comment).comment}</Text>
     </ListItem>
   );
@@ -52,26 +68,27 @@ const Chat = ({route, navigation}) => {
   }, [update]);
 
   return (
-    <View style={styles.container}>
-      <View>
+    <SafeAreaView>
+      <View style={styles.container}>
         <FlatList
+          style={styles.flatList}
           data={commentsArray}
           keyExtractor={(item) => item.comment_id}
           renderItem={({item}) => <CommentItem item={item} />}
-          ListFooterComponent={() => {
-            return null;
+          ListFooterComponent={(style) => {
+            return (
+              <CommentForm
+                fileId={fileId}
+                chatStarterId={chatStarterId}
+                chatResponserId={chatResponserId}
+                style={{}}
+              />
+            );
           }}
         />
-        <View style={{bottom: 0}}>
-          <CommentForm
-            fileId={fileId}
-            chatStarterId={chatStarterId}
-            chatResponserId={chatResponserId}
-            style={{height: 200}}
-          />
-        </View>
       </View>
-    </View>
+      <View style={{bottom: 0}}></View>
+    </SafeAreaView>
   );
 };
 
@@ -84,14 +101,33 @@ Chat.propTypes = {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    height: '100%',
+    height: Dimensions.get('window').height,
   },
   item: {
     padding: 20,
     width: Dimensions.get('window').width * 0.4,
   },
   text: {},
-  commentContainer: {},
+  commentContainer: {
+
+  },
+  flatList: {
+
+  },
+  commentContainerLeft: {
+    width: Dimensions.get('window').width * 0.4,
+    backgroundColor: '#8DD35E',
+    marginTop: 10,
+    borderRadius: 10,
+  },
+  commentContainerRight: {
+    width: Dimensions.get('window').width * 0.4,
+    backgroundColor: '#8DD35E',
+    marginTop: 10,
+    borderRadius: 10,
+    left: 120,
+    paddingLeft: 20,
+  },
 });
 
 export default Chat;

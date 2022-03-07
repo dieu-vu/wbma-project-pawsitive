@@ -131,6 +131,15 @@ const HomeStackScreen = () => {
               />
             </TouchableOpacity>
           ),
+          headerRight: () => (
+            <Icon
+              name="message-circle"
+              type="feather"
+              size={24}
+              color={'black'}
+              onPress={() => navigation.navigate(ChatMenu)}
+            />
+          ),
         })}
       />
       <HomeStack.Screen
@@ -342,7 +351,7 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="Your chats"
+        name="Chats"
         component={ChatMenu}
         options={{
           drawerIcon: () => (
