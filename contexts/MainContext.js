@@ -6,6 +6,8 @@ const MainContext = React.createContext({});
 const MainProvider = (props) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState({});
+  const [selectedRegister, setSelectedRegister] = useState(false);
+  const [selectedLogin, setSelectedLogin] = useState(false);
   const [update, setUpdate] = useState(0);
   const [userType, setUserType] = useState();
   const [petType, setPetType] = useState(null);
@@ -34,6 +36,10 @@ const MainProvider = (props) => {
         setIsLoggedIn,
         user,
         setUser,
+        selectedLogin,
+        setSelectedLogin,
+        selectedRegister,
+        setSelectedRegister,
         update,
         setUpdate,
         userType,

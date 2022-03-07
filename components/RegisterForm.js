@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {useContext} from "react";
 import {Alert, View, StyleSheet} from 'react-native';
 import {Input} from 'react-native-elements';
 import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import MainButton from './MainButton';
+import PropTypes from 'prop-types';
+import { MainContext } from "../contexts/MainContext";
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
+  const {setSelectedLogin, setSelectedRegister} = useContext(MainContext);
 
   const {
     control,
@@ -31,7 +34,15 @@ const RegisterForm = () => {
       const userData = await postUser(data);
       console.log('register onSubmit', userData);
       if (userData) {
-        Alert.alert('Success', 'User created successfully.');
+        Alert.alert('Success', 'User created successfully.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              setSelectedRegister(false);
+              setSelectedLogin(true);
+            },
+          },
+        ]);
       }
     } catch (error) {
       console.error(error);
@@ -183,6 +194,10 @@ const RegisterForm = () => {
     </View>
   );
 };
+
+RegisterForm.propTypes = {
+  navigation: PropTypes.object
+}
 
 const styles = StyleSheet.create({
   inputField: {

@@ -22,9 +22,14 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {pickRandomImage} from '../utils/Utils';
 
 const Login = () => {
-  const {setUser, setIsLoggedIn} = useContext(MainContext);
-  const [selectedRegister, setSelectedRegister] = useState(false);
-  const [selectedLogin, setSelectedLogin] = useState(false);
+  const {
+    setUser,
+    setIsLoggedIn,
+    selectedLogin,
+    selectedRegister,
+    setSelectedLogin,
+    setSelectedRegister,
+  } = useContext(MainContext);
   const {getUserByToken} = useUser();
   const animation = React.createRef();
 
