@@ -3,23 +3,17 @@ import {StyleSheet, Dimensions, View, SafeAreaView} from 'react-native';
 import PropTypes from 'prop-types';
 import {FAB, SearchBar} from 'react-native-elements';
 import List from '../components/List';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
 import CustomDropDownPicker from '../components/DropDownPicker';
-import {
-  checkLocationPermission,
-  askPermission,
-  getUserLocation,
-} from '../utils/Utils';
+import FullScreenMap from "../components/FullScreenMap";
 
 const Listing = ({navigation}) => {
   const insets = useSafeAreaInsets();
   const [isFullMap, setIsFullMap] = useState(false);
-  const {currentUserLocation, setCurrentUserLocation} = useContext(MainContext);
+  const [showBtnGroup, setShowBtnGroup] = useState(false);
 
   const {
-    isSearching,
     setIsSearching,
     searchValue,
     setSearchValue,
@@ -40,43 +34,25 @@ const Listing = ({navigation}) => {
     setIsSearching(true);
   };
 
-  /* make current latitude and longitude to be current location if user gives permission sharing their location
-   otherwise, ask for permission*/
-
   const mapState = isFullMap
     ? Dimensions.get('window').height
     : Dimensions.get('window').height * 0.4;
   const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
 
-  useEffect(() => {
-    console.log('selectedPetType', selectedPetType);
-  }, [selectedPetType]);
-
-  useEffect(async () => {
-    if (checkLocationPermission()) {
-      setCurrentUserLocation(await getUserLocation());
-      console.log('USER LOCATION', currentUserLocation);
-    } else {
-      askPermission();
-    }
-  }, []);
-
   return (
     <SafeAreaView style={styles.container}>
-      <MapView
-        initialRegion={{
-          latitude: currentUserLocation.latitude,
-          longitude: currentUserLocation.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        }}
+      <FullScreenMap
         style={{
           width: Dimensions.get('window').width,
           height: mapState,
         }}
-        provider={PROVIDER_GOOGLE}
-        showsMyLocationButton={true}
-        showsUserLocation={true}
+        showBtnGroup={showBtnGroup}
+        navigation={navigation}
+        mapPadding={
+          isFullMap
+            ? {top: 20, right: 20, bottom: 250, left: 20}
+            : {top: 20, right: 20, bottom: 20, left: 20}
+        }
       />
       <FAB
         size="small"
@@ -84,11 +60,12 @@ const Listing = ({navigation}) => {
         color="white"
         style={{
           position: 'absolute',
-          top: 20,
+          top: showBtnGroup ? 80 : 20,
           right: 20,
         }}
         onPress={() => {
           setIsFullMap(!isFullMap);
+          setShowBtnGroup(!showBtnGroup);
         }}
       />
       <View

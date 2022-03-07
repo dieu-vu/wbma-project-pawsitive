@@ -1,17 +1,21 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useEffect, useState } from "react";
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
-import {Dimensions, View} from 'react-native';
+import {Dimensions, View, StyleSheet} from 'react-native';
 import {Avatar, Text, Rating, ButtonGroup} from 'react-native-elements';
 import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import {colors} from '../utils/Variables';
 
-const FullScreenMap = ({navigation}) => {
+const FullScreenMap = ({
+  navigation,
+  style,
+  showBtnGroup = true,
+  mapPadding,
+}) => {
   const {markers, petOwnerMarkers, petSitterMarkers, currentUserLocation} =
     useContext(MainContext);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  // TODO Rating based on average of all ratings
 
   const initialRegion = {
     latitude: currentUserLocation.latitude,
@@ -52,7 +56,6 @@ const FullScreenMap = ({navigation}) => {
                 <Rating
                   type="star"
                   fractions={1}
-                  // TODO startingValue to be a rating state that is calculated from average of all ratings
                   startingValue={marker.ratingAverage}
                   readonly
                   imageSize={20}
@@ -90,48 +93,56 @@ const FullScreenMap = ({navigation}) => {
   const showCorrectMarkers = () => {
     switch (selectedIndex) {
       case 1: {
-        console.log('selected index', selectedIndex);
+        // console.log('selected index', selectedIndex);
         return allMarkers(allPetSitters);
       }
       case 2: {
-        console.log('selected index', selectedIndex);
+        // console.log('selected index', selectedIndex);
         return allMarkers(allPetOwners);
       }
       default: {
-        console.log('selected index', selectedIndex);
+        // console.log('selected index', selectedIndex);
         return allMarkers(markers);
       }
     }
   };
 
+  const [correctMarkers, setCorrectMarkers] = useState();
+
+  useEffect(() => {
+    setCorrectMarkers(showCorrectMarkers());
+  }, [selectedIndex]);
+
   return (
     <>
-      <ButtonGroup
-        buttons={['All', 'Pet Sitters', 'Pet Owners']}
-        selectedIndex={selectedIndex}
-        onPress={(value) => {
-          setSelectedIndex(value);
-        }}
-        containerStyle={{height: 50}}
-        textStyle={{
-          fontFamily: 'Montserrat-SemiBold',
-        }}
-        selectedButtonStyle={{
-          backgroundColor: colors.darkestGreen,
-        }}
-      />
+      {showBtnGroup ? (
+        <ButtonGroup
+          buttons={['All', 'Pet Sitters', 'Pet Owners']}
+          selectedIndex={selectedIndex}
+          onPress={(value) => {
+            setSelectedIndex(value);
+          }}
+          containerStyle={{height: 50}}
+          textStyle={{
+            fontFamily: 'Montserrat-SemiBold',
+          }}
+          selectedButtonStyle={{
+            backgroundColor: colors.darkestGreen,
+          }}
+        />
+      ) : (
+        <></>
+      )}
+
       <MapView
         initialRegion={initialRegion}
-        style={{
-          width: Dimensions.get('window').width,
-          height: '100%',
-        }}
+        style={style || styles.mapStyle}
         provider={PROVIDER_GOOGLE}
         showsMyLocationButton={true}
         showsUserLocation={true}
-        mapPadding={{top: 20, right: 20, bottom: 145, left: 20}}
+        mapPadding={mapPadding || {top: 20, right: 20, bottom: 145, left: 20}}
       >
-        {showCorrectMarkers()}
+        {correctMarkers}
       </MapView>
     </>
   );
@@ -139,6 +150,15 @@ const FullScreenMap = ({navigation}) => {
 
 FullScreenMap.propTypes = {
   navigation: PropTypes.object.isRequired,
+  style: PropTypes.object,
+  showBtnGroup: PropTypes.bool,
+  mapPadding: PropTypes.object,
 };
 
+const styles = StyleSheet.create({
+  mapStyle: {
+    width: Dimensions.get('window').width,
+    height: '100%',
+  },
+});
 export default FullScreenMap;
