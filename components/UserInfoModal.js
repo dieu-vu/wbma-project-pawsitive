@@ -26,8 +26,6 @@ const UserInfoModal = (props) => {
 
   const [userFilesLoaded, setUserFilesLoaded] = useState(false);
 
-  getFonts();
-
   console.log('USER INFO MODAL', props.subscriber);
   console.log('USER ID MODAL', props.subscriber.user_id);
 
@@ -67,8 +65,9 @@ const UserInfoModal = (props) => {
 
   useEffect(async () => {
     await getUserFileDetails();
-    // console.log('SUBSCRIBER POSTS', userFiles);
-  }, []);
+    console.log('SUBSCRIBER POSTS', userFiles);
+    console.log('SUBSCRIBER POSTS READY', userFilesLoaded);
+  }, [userFilesLoaded]);
 
   return (
     <Overlay
@@ -110,17 +109,19 @@ const UserInfoModal = (props) => {
           <Image
             source={{uri: avatar}}
             style={styles.avatarImage}
-            resizeMode="contain"
+            resizeMode="cover"
           ></Image>
         </View>
         <View>
           <Text h4 style={[styles.text, styles.username]}>
             User's posts
           </Text>
-          {/* TODO: Have a list of posts with rating info here */}
+          {/* Show a list of posts with rating info here */}
         </View>
         <View>
-          {userFilesLoaded && userFiles.length > 0 ? (
+          {!userFilesLoaded ? (
+            <PlaceholderImage />
+          ) : userFilesLoaded && userFiles.length > 0 ? (
             // <Text>{userFiles.length} files found</Text>
             <FlatList
               data={userFiles}
@@ -130,12 +131,14 @@ const UserInfoModal = (props) => {
                 return null;
               }}
             />
-          ) : userFilesLoaded && userFiles.length == 0 ? (
+          ) : userFilesLoaded && userFiles.length === 0 ? (
             <Text style={[styles.text, {alignSelf: 'center'}]}>No media</Text>
           ) : (
             <PlaceholderImage />
           )}
         </View>
+      </ScrollView>
+      <View style={{position: 'sticky', paddingTop: 10}}>
         <CustomButton
           title="Close"
           fontSize={16}
@@ -143,7 +146,7 @@ const UserInfoModal = (props) => {
             setUserInfoModalVisible(!userInfoModalVisible);
           }}
         />
-      </ScrollView>
+      </View>
     </Overlay>
   );
 };

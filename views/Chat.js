@@ -108,12 +108,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.4,
   },
   text: {},
-  commentContainer: {
-
-  },
-  flatList: {
-
-  },
+  commentContainer: {},
+  flatList: {},
   commentContainerLeft: {
     width: Dimensions.get('window').width * 0.4,
     backgroundColor: '#8DD35E',
