@@ -122,7 +122,7 @@ How to reload after a while?
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const mediaFiles = await getPostsByUserId(userId);
-      console.log('media files', mediaFiles);
+      // console.log('media files', mediaFiles);
       let sum = 0;
       let count = 0;
       const response = await Promise.all(
@@ -130,7 +130,7 @@ How to reload after a while?
           const ratings = await getRatingsForFile(item.file_id, userToken);
           ratings.forEach((item) => {
             const rating = item.rating;
-            console.log(rating);
+            // console.log('USER RATING', rating);
             sum += rating;
             count++;
           });
@@ -138,8 +138,8 @@ How to reload after a while?
       );
       if (response) {
         const average = sum / count;
-        console.log('average', Math.round(average));
-        return average;
+        // console.log('average', Math.round(average));
+        return Math.round((average + Number.EPSILON) * 100) / 100;
       } else {
         return 0;
       }

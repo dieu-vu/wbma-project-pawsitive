@@ -43,7 +43,7 @@ const UserInfoModal = (props) => {
     const fileIdList = await fileList.map((file) => {
       return file.file_id;
     });
-    console.log('FILE ID LIST', fileIdList);
+    // console.log('FILE ID LIST', fileIdList);
     // Use the file Id list to get needed file from mediaArray
     const subscriberFilesOnly = await Promise.all(
       mediaArray.filter((file) => {
@@ -90,7 +90,7 @@ const UserInfoModal = (props) => {
           average = sum / count;
           console.log('average rating', Math.round(average));
         });
-        return average;
+        return Math.round((average + Number.EPSILON) * 100) / 100;
       } else {
         return 0;
       }

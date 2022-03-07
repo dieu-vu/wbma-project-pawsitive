@@ -145,7 +145,7 @@ const Single = ({navigation, route}) => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const mediaFiles = await getPostsByUserId(userId);
-      console.log('media files', mediaFiles);
+      // console.log('media files', mediaFiles);
       let sum = 0;
       let count = 0;
       const response = await Promise.all(
