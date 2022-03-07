@@ -98,6 +98,7 @@ const Upload = ({navigation}) => {
     setImage();
     setStartTime();
     setEndTime();
+    setPostLocation('');
     animation.current?.play();
   };
 

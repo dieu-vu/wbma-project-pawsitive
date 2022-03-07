@@ -10,19 +10,21 @@ const PlaceholderImage = (props) => {
   }, [animation]);
 
   return (
-    <LottieView
-      source={require('../assets/loading-animation.json')}
-      ref={animation}
-      autoPlay={true}
-      loop={true}
-      style={props.style || styles.lottie}
-    />
+    <>
+      <LottieView
+        source={require('../assets/loading-animation.json')}
+        ref={animation}
+        autoPlay={true}
+        loop={true}
+        style={props.style || styles.lottie}
+      />
+    </>
   );
 };
 
 PlaceholderImage.propTypes = {
   style: PropTypes.object,
-}
+};
 
 const styles = StyleSheet.create({
   lottie: {
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignSelf: 'center',
     backgroundColor: 'white',
-  }
-})
+  },
+});
 
 export default PlaceholderImage;
