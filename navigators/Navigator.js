@@ -244,58 +244,6 @@ const HomeStackScreen = () => {
   );
 };
 
-// const SubscriberListStack = createNativeStackNavigator();
-// const SubscriberListStackScreen = () => {
-//   return (
-//     <SubscriberListStack.Navigator
-//       screenOptions={{
-//         headerStyle: {
-//           backgroundColor: '#8DD35E',
-//           fontFamily: 'Montserrat-Bold',
-//         },
-//         headerTintColor: 'black',
-//       }}
-//     >
-//       <SubscriberListStack.Screen
-//         name="Subscriber List"
-//         component={SubscriberList}
-//         options={({route}) => ({
-//           title: 'Subscriber list',
-//           headerStyle: {
-//             backgroundColor: '#8DD35E',
-//           },
-//           headerTitleStyle: {
-//             fontFamily: 'Montserrat-SemiBold',
-//           },
-//           headerBackTitleStyle: {
-//             fontFamily: 'Montserrat-Regular',
-//           },
-//           headerBackTitle: 'Post',
-//         })}
-//       />
-//       <SubscriberListStack.Screen
-//         name="Single"
-//         component={Single}
-//         headerLeft
-//         options={({route}) => ({
-//           title: route.params.file.title,
-//           headerStyle: {
-//             fontSize: 20,
-//             backgroundColor: '#8DD35E',
-//             color: 'black',
-//           },
-//           headerTitleStyle: {
-//             fontFamily: 'Montserrat-SemiBold',
-//           },
-//           headerBackTitleStyle: {
-//             fontFamily: 'Montserrat-Regular',
-//           },
-//         })}
-//       />
-//     </SubscriberListStack.Navigator>
-//   );
-// };
-
 const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
