@@ -13,14 +13,15 @@ import {MainContext} from '../contexts/MainContext';
 import {getFonts, fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
 import {uploadsUrl, colors} from '../utils/Variables';
-import {useMedia} from '../hooks/ApiHooks';
+import {useMedia, mediaArray} from '../hooks/ApiHooks';
 import UserHistoryListItem from './UserHistoryListItem';
+import PlaceholderImage from './PlaceholderImage';
 
 const UserInfoModal = (props) => {
   const {userInfoModalVisible, setUserInfoModalVisible} =
     useContext(MainContext);
   const [avatar, setAvatar] = useState('../assets/user.png');
-  const {getPostsByUserIdExceptAvatar} = useMedia();
+  const {getPostsByUserIdExceptAvatar, mediaArray} = useMedia();
   const [userFiles, setUserFiles] = useState([]);
 
   const [userFilesLoaded, setUserFilesLoaded] = useState(false);
@@ -35,14 +36,30 @@ const UserInfoModal = (props) => {
     setAvatar(uploadsUrl + avatarFile);
   }, []);
 
-  useEffect(async () => {
+  const getUserFileDetails = async () => {
     const fileList = await getPostsByUserIdExceptAvatar(
       props.subscriber.user_id
     );
-    console.log('FILE LIST', fileList);
-    setUserFiles(fileList);
+    const fileIdList = await fileList.map((file) => {
+      return file.file_id;
+    });
+    console.log('FILE ID LIST', fileIdList);
+    // Use the file Id list to get needed file from mediaArray
+    const subscriberFilesOnly = await Promise.all(
+      mediaArray.filter((file) => {
+        if (fileIdList.includes(file.file_id)) {
+          return file;
+        }
+      })
+    );
+    console.log('FILE LIST', subscriberFilesOnly);
+    setUserFiles(subscriberFilesOnly);
     setUserFilesLoaded(true);
-    console.log('SUBSCRIBER POSTS', userFiles);
+  };
+
+  useEffect(async () => {
+    await getUserFileDetails();
+    // console.log('SUBSCRIBER POSTS', userFiles);
   }, []);
 
   return (
@@ -90,17 +107,19 @@ const UserInfoModal = (props) => {
         </View>
         <View>
           {userFilesLoaded && userFiles.length > 0 ? (
-            <Text>{userFiles.length} files found</Text>
-          ) : (
-            // <FlatList
-            //   data={userFiles}
-            //   keyExtractor={(item) => item.file_id.toString()}
-            //   renderItem={({item}) => <UserHistoryListItem file={item} />}
-            //   ListFooterComponent={() => {
-            //     return null;
-            //   }}
-            // />
+            // <Text>{userFiles.length} files found</Text>
+            <FlatList
+              data={userFiles}
+              keyExtractor={(item) => item.file_id.toString()}
+              renderItem={({item}) => <UserHistoryListItem file={item} />}
+              ListFooterComponent={() => {
+                return null;
+              }}
+            />
+          ) : userFilesLoaded && userFiles.length == 0 ? (
             <Text style={[styles.text, {alignSelf: 'center'}]}>No media</Text>
+          ) : (
+            <PlaceholderImage />
           )}
         </View>
         <CustomButton

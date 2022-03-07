@@ -96,6 +96,7 @@ const useMedia = (myFilesOnly) => {
   // OR when the update state is changed in mainContext
   useEffect(() => {
     loadMedia(0, 20);
+    // console.log(mediaArray);
   }, [update, searchValue, selectedPetType]);
 
   const loadMediaSecond = async () => {
@@ -527,8 +528,6 @@ const useComments = () => {
     };
     return await doFetch(baseUrl + 'comments', options);
   };
-
-
 
   return {getCommentsForFile, postComment, getCommentsForUser};
 };
