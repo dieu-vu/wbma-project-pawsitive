@@ -56,6 +56,9 @@ const UserListItem = ({subscriber}) => {
           <ListItem.Title numberOfLines={1} style={styles.title}>
             {subscriber.username}
           </ListItem.Title>
+          <ListItem.Title numberOfLines={1} style={styles.rating}>
+            Average rating: {subscriber.average_rating}
+          </ListItem.Title>
           <View style={{flex: 1, flexDirection: 'row', width: '90%'}}>
             <CustomButton
               title="View"
@@ -89,8 +92,15 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 20,
-    padding: 20,
+    padding: 10,
   },
+  rating: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 16,
+    paddingBottom: 20,
+    paddingLeft: 10,
+  },
+
   itemContent: {
     flex: 1,
     flexDirection: 'row',

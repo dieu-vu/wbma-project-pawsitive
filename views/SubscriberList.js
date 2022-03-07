@@ -77,7 +77,15 @@ How to reload after a while?
         })
       );
     }
-    setSubscriberArray(updatedSubscriberArray);
+    const subscriberArrayWithRatings = await Promise.all(
+      updatedSubscriberArray.map(async (user) => {
+        const averageRating = await calculateRatingForUser(user.user_id);
+        user['average_rating'] = averageRating;
+        // console.log('updated file', file);
+        return user;
+      })
+    );
+    setSubscriberArray(subscriberArrayWithRatings);
     console.log('SUBSCRIBER ARRAY', subscriberArray);
   };
 

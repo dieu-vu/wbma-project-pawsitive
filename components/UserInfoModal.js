@@ -31,14 +31,6 @@ const UserInfoModal = (props) => {
   console.log('USER INFO MODAL', props.subscriber);
   console.log('USER ID MODAL', props.subscriber.user_id);
 
-  let subscriberInfo = {};
-  if (
-    props.subscriber.full_name &&
-    props.subscriber.full_name.includes('average_rating')
-  ) {
-    subscriberInfo = JSON.parse(props.subscriber.full_name);
-  }
-
   useEffect(async () => {
     const avatarFile = await fetchAvatar(props.subscriber);
     setAvatar(uploadsUrl + avatarFile);
@@ -139,10 +131,16 @@ const UserInfoModal = (props) => {
           <Text style={[styles.text, styles.username]}>
             {props.subscriber.email}
           </Text>
-          <Text style={[styles.text, {alignSelf: 'center', paddingBottom: 20}]}>
+          <Text
+            style={[
+              styles.text,
+              styles.username,
+              {alignSelf: 'center', paddingBottom: 20, textAlign: 'center'},
+            ]}
+          >
             User's average rating:{'\n '}
-            {subscriberInfo.average_rating
-              ? subscriberInfo.average_rating
+            {props.subscriber.average_rating != 0
+              ? props.subscriber.average_rating
               : 'Not yet available'}
           </Text>
           <Image
@@ -215,8 +213,8 @@ const styles = StyleSheet.create({
   username: {
     textAlign: 'center',
     fontFamily: 'Montserrat-SemiBold',
-    paddingBottom: 25,
-    paddingTop: 25,
+    paddingBottom: 15,
+    paddingTop: 15,
   },
 });
 
