@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Dimensions, View, SafeAreaView} from 'react-native';
+import {StyleSheet, Dimensions, View, SafeAreaView, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -112,7 +112,12 @@ const SubscriberList = ({navigation, route}) => {
         }}
       >
         {!allUserLoaded ? (
-          <PlaceholderImage />
+          <View>
+            <PlaceholderImage />
+            <Text style={styles.text}>
+              Be patient, we are getting the subscriber list
+            </Text>
+          </View>
         ) : (
           <UserList
             navigation={navigation}
@@ -143,11 +148,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  SbAndDropContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: Dimensions.get('window').width,
-    justifyContent: 'flex-start',
+  text: {
+    textAlign: 'center',
+    fontFamily: 'Montserrat-Regular',
+    color: 'black',
+    zIndex: 1,
+    fontSize: 16,
   },
 });
 

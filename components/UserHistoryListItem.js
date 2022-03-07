@@ -4,29 +4,9 @@ import {Avatar, ListItem, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl, colors} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useMedia} from '../hooks/ApiHooks';
-import {MainContext} from '../contexts/MainContext';
-import {fetchAvatar} from '../utils/Utils';
-import CustomButton from './CustomButton';
-import UserInfoModal from './UserInfoModal';
 
 // TODO: change description for all file in listing
-const UserListItem = ({subscriber}) => {
-  const userInfo = JSON.parse(subscriber.full_name);
-  const {
-    setUserInfoModalVisible,
-    userInfoModalVisible,
-    setViewedSubscriber,
-    viewedSubscriber,
-  } = useContext(MainContext);
-  const [avatar, setAvatar] = useState('../assets/user.svg');
-
-  useEffect(async () => {
-    const avatarFile = await fetchAvatar(subscriber);
-    setAvatar(uploadsUrl + avatarFile);
-  }, []);
-
+const UserHistoryListItem = ({file}) => {
   return (
     <ListItem
       bottomDivider
@@ -39,40 +19,21 @@ const UserListItem = ({subscriber}) => {
       }}
       containerStyle={{borderColor: colors.darkestGreen, borderWidth: 0.5}}
       ViewComponent={LinearGradient}
-      onPress={() => {
-        setUserInfoModalVisible(true);
-        setViewedSubscriber(subscriber);
-      }}
     >
       <Avatar
         size="large"
         rounded={true}
         source={{
-          uri: avatar,
+          uri: uploadsUrl + file.thumbnails.w160,
         }}
       />
       <ListItem.Content style={styles.itemContent}>
         <View style={{flex: 1, flexDirection: 'column'}}>
           <ListItem.Title numberOfLines={1} style={styles.title}>
-            {subscriber.username}
+            {file.title}
           </ListItem.Title>
           <View style={{flex: 1, flexDirection: 'row', width: '90%'}}>
-            <CustomButton
-              title="View"
-              fontSize={14}
-              customWidth={'90%'}
-              // TODO: onPress open UserInfoModal
-              onPress={() => {
-                setUserInfoModalVisible(true);
-                setViewedSubscriber(subscriber);
-              }}
-            ></CustomButton>
-            <CustomButton
-              title="Select"
-              fontSize={14}
-              customWidth={'90%'}
-              // TODO: onPress save userid to selected_subscriber in media and send message
-            ></CustomButton>
+            {/* Rating info here */}
           </View>
         </View>
       </ListItem.Content>
@@ -99,8 +60,8 @@ const styles = StyleSheet.create({
   },
 });
 
-UserListItem.propTypes = {
-  subscriber: PropTypes.object.isRequired,
+UserHistoryListItem.propTypes = {
+  file: PropTypes.object.isRequired,
 };
 
-export default UserListItem;
+export default UserHistoryListItem;

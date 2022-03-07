@@ -291,6 +291,12 @@ const useMedia = (myFilesOnly) => {
     return json.filter((item) => item.user_id === userId);
   };
 
+  const getPostsByUserIdExceptAvatar = async (userId) => {
+    const response = await doFetch(`${baseUrl}media/user/${userId}`);
+    console.log('GET USER POSTS', response.length);
+    return response.filter((item) => item.title !== 'avatar');
+  };
+
   return {
     mediaArray,
     postMedia,
@@ -301,6 +307,7 @@ const useMedia = (myFilesOnly) => {
     getPostsByUserId,
     loadPostsOnMap,
     loadPostsInRange,
+    getPostsByUserIdExceptAvatar,
   };
 };
 
