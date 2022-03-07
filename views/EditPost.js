@@ -98,7 +98,7 @@ const EditPost = ({navigation, route}) => {
       return;
     }
     postLocation
-      ? (json['coords'] = fileInfo.coords)
+      ? (json['coords'] = postLocation)
       : (json['coords'] = currentUserLocation);
     json['price'] = data.price;
     return JSON.stringify(json);
