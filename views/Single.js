@@ -41,7 +41,14 @@ const Single = ({navigation, route}) => {
   const {postFavourite} = useFavourite();
   const {deleteMedia, getPostsByUserId} = useMedia();
   const {putUser} = useUser();
-  const {update, setUpdate, user, setUser} = useContext(MainContext);
+  const {
+    update,
+    setUpdate,
+    user,
+    setUser,
+    setCurrentViewedFile,
+    currentViewedFile,
+  } = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
@@ -316,6 +323,8 @@ const Single = ({navigation, route}) => {
   // Fetch owner and user type:
   useEffect(() => {
     fetchOwner();
+    setCurrentViewedFile(file.file_id);
+    console.log('CURRENT VIEWED FILE', currentViewedFile);
   }, []);
 
   useEffect(async () => {

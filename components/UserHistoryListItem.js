@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Alert, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
-import {Avatar, ListItem, Button} from 'react-native-elements';
+import React from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Avatar, ListItem} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl, colors} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';

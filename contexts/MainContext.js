@@ -28,6 +28,7 @@ const MainProvider = (props) => {
   const [postsInRange, setPostsInRange] = useState([]);
   const [userInfoModalVisible, setUserInfoModalVisible] = useState(false);
   const [viewedSubscriber, setViewedSubscriber] = useState();
+  const [currentViewedFile, setCurrentViewedFile] = useState();
 
   return (
     <MainContext.Provider
@@ -72,6 +73,8 @@ const MainProvider = (props) => {
         setUserInfoModalVisible,
         viewedSubscriber,
         setViewedSubscriber,
+        currentViewedFile,
+        setCurrentViewedFile,
       }}
     >
       {props.children}

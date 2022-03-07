@@ -1,30 +1,29 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
-import {Avatar, ListItem, Button} from 'react-native-elements';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Avatar, ListItem} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl, colors} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
-import UserInfoModal from './UserInfoModal';
 
 // TODO: change description for all file in listing
-const UserListItem = ({subscriber}) => {
-  const userInfo = JSON.parse(subscriber.full_name);
+const UserListItem = ({navigation, subscriber}) => {
   const {
     setUserInfoModalVisible,
     userInfoModalVisible,
     setViewedSubscriber,
     viewedSubscriber,
+    user,
+    currentViewedFile,
   } = useContext(MainContext);
   const [avatar, setAvatar] = useState('../assets/user.svg');
 
   useEffect(async () => {
     const avatarFile = await fetchAvatar(subscriber);
     setAvatar(uploadsUrl + avatarFile);
+    console.log('CURRENT VIEWED FILE IN LIST', currentViewedFile);
   }, []);
 
   return (
@@ -64,17 +63,25 @@ const UserListItem = ({subscriber}) => {
               title="View"
               fontSize={14}
               customWidth={'90%'}
-              // TODO: onPress open UserInfoModal
+              // onPress open UserInfoModal
               onPress={() => {
                 setUserInfoModalVisible(true);
                 setViewedSubscriber(subscriber);
               }}
             ></CustomButton>
             <CustomButton
-              title="Select"
+              title="Chat"
               fontSize={14}
               customWidth={'90%'}
-              // TODO: onPress save userid to selected_subscriber in media and send message
+              //  onPress open chat with subscriber
+              onPress={() => {
+                navigation.navigate('Chat', {
+                  fileId: currentViewedFile,
+                  chatStarterId: user.user_id,
+                  chatResponserId: subscriber.user_id,
+                  single: true,
+                });
+              }}
             ></CustomButton>
           </View>
         </View>
@@ -111,6 +118,7 @@ const styles = StyleSheet.create({
 
 UserListItem.propTypes = {
   subscriber: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default UserListItem;
