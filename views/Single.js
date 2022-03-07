@@ -210,36 +210,38 @@ const Single = ({navigation, route}) => {
     if (rated) {
       updatedAveRatingsForPost = calculateRatingForPost(ratedFileId);
       updateAveRatingsForOwner = calculateRatingForUser(owner.user_id);
-    }
 
-    // Set new value for owner ave rating
-    ownerInfo['average_rating'] = updateAveRatingsForOwner;
-    console.log('CURRENT USER AVE RATING', ownerInfo.average_rating);
+      // Set new value for owner ave rating
 
-    const updatedUserRatingData = {};
-    updatedUserRatingData['full_name'] = JSON.stringify(ownerInfo);
-    console.log('update user rating data json', updatedUserRatingData);
-    try {
-      const response = await putUser(updatedUserRatingData, token);
-      if (response) {
-        console.log('USER AVERAGE RATING UPDATED');
+      ownerInfo['average_rating'] = updateAveRatingsForOwner;
+      console.log('CURRENT USER AVE RATING', ownerInfo.average_rating);
+
+      const updatedUserRatingData = {};
+      updatedUserRatingData['full_name'] = JSON.stringify(ownerInfo);
+      console.log('update user rating data json', updatedUserRatingData);
+
+      try {
+        const response = await putUser(updatedUserRatingData, token);
+        if (response) {
+          console.log('USER AVERAGE RATING UPDATED');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
 
-    // Set new value for post ave rating
-    ratedFileInfo['average_rating'] = updatedAveRatingsForPost;
-    const updatedPostRatingData = {};
-    updatedPostRatingData['description'] = JSON.stringify(ratedFileInfo);
-    console.log('update post rating data json', updatedPostRatingData);
-    try {
-      const response = await putMedia(updatedPostRatingData, token);
-      if (response) {
-        console.log('POST AVERAGE RATING UPDATED');
+      // Set new value for post ave rating
+      ratedFileInfo['average_rating'] = updatedAveRatingsForPost;
+      const updatedPostRatingData = {};
+      updatedPostRatingData['description'] = JSON.stringify(ratedFileInfo);
+      console.log('update post rating data json', updatedPostRatingData);
+      try {
+        const response = await putMedia(updatedPostRatingData, token);
+        if (response) {
+          console.log('POST AVERAGE RATING UPDATED');
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
     }
   };
 
