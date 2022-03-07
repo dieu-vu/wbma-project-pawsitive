@@ -53,7 +53,8 @@ const Upload = ({navigation}) => {
   const {userType} = useContext(MainContext);
   const {petType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
-  const {postLocation, currentUserLocation} = useContext(MainContext);
+  const {postLocation, currentUserLocation, setPostLocation} =
+    useContext(MainContext);
 
   const {
     control,
@@ -66,6 +67,7 @@ const Upload = ({navigation}) => {
       description: '',
       startTime: '',
       endTime: '',
+      price: '',
     },
     mode: 'onBlur',
   });
@@ -90,6 +92,8 @@ const Upload = ({navigation}) => {
     setValue('description', '');
     setValue('startTime', '');
     setValue('endTime', '');
+    setValue('price', '');
+
     setType('image');
     setImage();
     setStartTime();
@@ -171,6 +175,7 @@ const Upload = ({navigation}) => {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postMedia(formData, token);
       console.log('Upload response', response);
+      setPostLocation('');
 
       const tagResponse = await postTag(
         {file_id: response.file_id, tag: appId},
@@ -336,11 +341,6 @@ const Upload = ({navigation}) => {
               />
               {mapOverlayVisible ? (
                 <MapOverlayComponent isVisible={onChange} />
-              ) : (
-                <></>
-              )}
-              {postLocation ? (
-                <Text style={styles.text}>{postLocation.address}</Text>
               ) : (
                 <></>
               )}

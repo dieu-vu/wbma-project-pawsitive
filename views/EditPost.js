@@ -51,8 +51,13 @@ const EditPost = ({navigation, route}) => {
   const {petType, setPetType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
   const {postLocation} = useContext(MainContext);
-  const {previousUserType, setPreviousUserType, currentUserLocation} =
-    useContext(MainContext);
+  const {
+    previousUserType,
+    setPreviousUserType,
+    currentUserLocation,
+    setPostLocation,
+  } = useContext(MainContext);
+  const [addressText, setAddressText] = useState('');
 
   const {
     control,
@@ -98,11 +103,17 @@ const EditPost = ({navigation, route}) => {
       return;
     }
     postLocation
-      ? (json['coords'] = fileInfo.coords)
+      ? (json['coords'] = postLocation)
       : (json['coords'] = currentUserLocation);
     json['price'] = data.price;
     return JSON.stringify(json);
   };
+
+  useEffect(() => {
+    postLocation
+      ? setAddressText(`Selected address: ${postLocation.address}`)
+      : setAddressText(`Selected address: ${fileInfo.coords.address}`);
+  }, [postLocation]);
 
   const onSubmit = async (data) => {
     if (!petType) {
@@ -166,6 +177,7 @@ const EditPost = ({navigation, route}) => {
               setUpdate(update + 1);
               const updatedFile = await getSingleMedia(file.file_id, token);
               navigation.navigate('Single', {file: updatedFile});
+              setPostLocation('');
             },
           },
         ]);
@@ -265,14 +277,8 @@ const EditPost = ({navigation, route}) => {
               ) : (
                 <></>
               )}
-              {fileInfo.coords.address ? (
-                <Text style={styles.addressText}>
-                  Selected address: {fileInfo.coords.address}
-                </Text>
-              ) : postLocation ? (
-                <Text style={styles.addressText}>
-                  Selected address: {postLocation.address}
-                </Text>
+              {addressText !== '' ? (
+                <Text style={styles.addressText}>{addressText}</Text>
               ) : (
                 <Text style={styles.addressText}>
                   Address text not yet provided
