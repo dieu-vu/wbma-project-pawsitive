@@ -175,6 +175,7 @@ const Upload = ({navigation}) => {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postMedia(formData, token);
       console.log('Upload response', response);
+      setPostLocation('');
 
       const tagResponse = await postTag(
         {file_id: response.file_id, tag: appId},
@@ -200,7 +201,6 @@ const Upload = ({navigation}) => {
             onPress: () => {
               setUpdate(update + 1);
               navigation.navigate('Listing');
-              setPostLocation('');
             },
           },
         ]);
