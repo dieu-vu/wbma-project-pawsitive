@@ -3,6 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {getDistance, isPointWithinRadius} from 'geolib';
 import {getUserLocation} from '../utils/Utils';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -35,6 +36,7 @@ const useMedia = (myFilesOnly) => {
     setPostsInRange,
   } = useContext(MainContext);
   const {getFilesByTag} = useTag();
+  const {getRatingsForFile} = useRating();
   const {user} = useContext(MainContext);
   let jsonFilter;
 
@@ -189,18 +191,20 @@ const useMedia = (myFilesOnly) => {
 
   const loadPostsOnMap = async (mediaArr) => {
     const setOfMarkers = new Set();
+    const token = await AsyncStorage.getItem('userToken');
     if (mediaArr !== undefined) {
-      mediaArr.map((mediaPost) => {
+      mediaArr.map(async (mediaPost) => {
         const postOnMap = JSON.parse(mediaPost.description);
-        const rating = postOnMap.rating;
-        const ratingCounter = rating ? postOnMap.rating.length : 0;
-        const sumOfRatings = rating
-          ? postOnMap.rating.reduce(
-              (previousValue, currentValue) => previousValue + currentValue,
-              0
-            )
+        const getRatings = await getRatingsForFile(mediaPost.file_id, token);
+
+        const ratings = getRatings.map((rating) => (
+          rating.rating
+        ))
+        const sumOfRatings = ratings
+          ? ratings.reduce((prev, current) => prev + current, 0)
           : 0;
-        const averageRating = rating
+        const ratingCounter = ratings ? ratings.length : 0
+        const ratingsAverage = ratings
           ? ((sumOfRatings / ratingCounter) * 10) / 10
           : 0;
 
@@ -210,7 +214,7 @@ const useMedia = (myFilesOnly) => {
             title: mediaPost.title,
             thumbnails: mediaPost.thumbnails,
             ratingCount: ratingCounter.toString(),
-            ratingAverage: averageRating.toString(),
+            ratingAverage: ratingsAverage.toString(),
             price: postOnMap.price,
             coordinates: {
               latitude: postOnMap.coords.latitude,
