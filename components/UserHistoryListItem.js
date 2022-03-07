@@ -29,11 +29,11 @@ const UserHistoryListItem = ({file}) => {
       />
       <ListItem.Content style={styles.itemContent}>
         <View style={{flex: 1, flexDirection: 'column'}}>
-          <ListItem.Title numberOfLines={2} style={styles.title}>
+          <ListItem.Title numberOfLines={2} style={[styles.title]}>
             {file.title}
           </ListItem.Title>
-          <ListItem.Title numberOfLines={1} style={styles.title}>
-            Average ratings:
+          <ListItem.Title numberOfLines={2} style={styles.rating}>
+            Average ratings:{' '}
             {file.average_rating ? file.average_rating : 'Unavailable'}
           </ListItem.Title>
         </View>
@@ -51,8 +51,9 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'Montserrat-SemiBold',
     fontSize: 18,
-    padding: 20,
+    padding: 10,
   },
+  rating: {fontFamily: 'Montserrat-Regular', fontSize: 16, padding: 10},
   itemContent: {
     flex: 1,
     flexDirection: 'row',
