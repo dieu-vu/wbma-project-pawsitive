@@ -1,17 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, StyleSheet, TouchableOpacity, Text, View} from 'react-native';
-import {Avatar, ListItem, Button} from 'react-native-elements';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Avatar, ListItem} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {uploadsUrl, colors} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import {fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
 
 // TODO: change description for all file in listing
 const UserListItem = ({navigation, subscriber}) => {
-  const userInfo = JSON.parse(subscriber.full_name);
   const {
     setUserInfoModalVisible,
     userInfoModalVisible,
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
 
 UserListItem.propTypes = {
   subscriber: PropTypes.object.isRequired,
-  navigation: PropTypes.object,
+  navigation: PropTypes.object.isRequired,
 };
 
 export default UserListItem;
