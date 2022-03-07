@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserList from '../components/UserList';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
-import {useUser} from '../hooks/ApiHooks';
+import {useMedia, useRating, useUser} from '../hooks/ApiHooks';
 import UserInfoModal from '../components/UserInfoModal';
 import PlaceholderImage from '../components/PlaceholderImage';
 
@@ -16,6 +16,8 @@ const SubscriberList = ({navigation, route}) => {
   console.log('FILE ID', fileId);
   const {userInfoModalVisible, viewedSubscriber} = useContext(MainContext);
   const {getAllUserId, getUserInfo} = useUser();
+  const {getPostsByUserId} = useMedia();
+  const {getRatingsForFile} = useRating();
   const [subscriberArray, setSubscriberArray] = useState();
   const [allUserLoaded, setAllUserLoaded] = useState(false);
 
@@ -107,6 +109,36 @@ How to reload after a while?
     getSubscriberList(fileId);
     console.log('LIST SUBSCRIBER', subscriberArray);
   }, [allUserLoaded]);
+
+  const calculateRatingForUser = async (userId) => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const mediaFiles = await getPostsByUserId(userId);
+      console.log('media files', mediaFiles);
+      let sum = 0;
+      let count = 0;
+      const response = await Promise.all(
+        mediaFiles.map(async (item) => {
+          const ratings = await getRatingsForFile(item.file_id, userToken);
+          ratings.forEach((item) => {
+            const rating = item.rating;
+            console.log(rating);
+            sum += rating;
+            count++;
+          });
+        })
+      );
+      if (response) {
+        const average = sum / count;
+        console.log('average', Math.round(average));
+        return average;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error('getting post for user error', error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>

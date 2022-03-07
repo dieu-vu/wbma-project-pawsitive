@@ -10,18 +10,20 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
-import {getFonts, fetchAvatar} from '../utils/Utils';
+import {fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
 import {uploadsUrl, colors} from '../utils/Variables';
-import {useMedia, mediaArray} from '../hooks/ApiHooks';
+import {useMedia, useRating} from '../hooks/ApiHooks';
 import UserHistoryListItem from './UserHistoryListItem';
 import PlaceholderImage from './PlaceholderImage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserInfoModal = (props) => {
   const {userInfoModalVisible, setUserInfoModalVisible} =
     useContext(MainContext);
   const [avatar, setAvatar] = useState('../assets/user.png');
   const {getPostsByUserIdExceptAvatar, mediaArray} = useMedia();
+  const {getRatingsForFile} = useRating();
   const [userFiles, setUserFiles] = useState([]);
 
   const [userFilesLoaded, setUserFilesLoaded] = useState(false);
@@ -58,8 +60,18 @@ const UserInfoModal = (props) => {
         }
       })
     );
-    console.log('FILE LIST', subscriberFilesOnly);
-    setUserFiles(subscriberFilesOnly);
+
+    // Update subscriberArray to add the average ratings per post and call this on subscriberArray changes:
+    const updatedsubscriberFilesOnly = await Promise.all(
+      subscriberFilesOnly.map(async (file) => {
+        const averageRating = await calculateRatingForPost(file.file_id);
+        file['average_rating'] = averageRating;
+        // console.log('updated file', file);
+        return file;
+      })
+    );
+    console.log('FILE LIST', updatedsubscriberFilesOnly);
+    setUserFiles(updatedsubscriberFilesOnly);
     setUserFilesLoaded(true);
   };
 
@@ -68,6 +80,32 @@ const UserInfoModal = (props) => {
     console.log('SUBSCRIBER POSTS', userFiles);
     console.log('SUBSCRIBER POSTS READY', userFilesLoaded);
   }, [userFilesLoaded]);
+
+  // CALCULATE RATINGS FOR POST
+  const calculateRatingForPost = async (fileId) => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const ratings = await getRatingsForFile(fileId, userToken);
+      let average = 0;
+      if (ratings) {
+        let sum = 0;
+        let count = 0;
+        ratings.forEach((item) => {
+          const rating = item.rating;
+          // console.log(rating);
+          sum += rating;
+          count++;
+          average = sum / count;
+          console.log('average rating', Math.round(average));
+        });
+        return average;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   /* TODO:  Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first. */
   return (

@@ -8,14 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {
-  Avatar,
-  Card,
-  Image,
-  Text,
-  Icon,
-  registerCustomIconType,
-} from 'react-native-elements';
+import {Avatar, Card, Image, Text, Icon} from 'react-native-elements';
 import {Video} from 'expo-av';
 import {LinearGradient} from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -46,7 +39,7 @@ const Single = ({navigation, route}) => {
   const {addRating, getRatingsForFile} = useRating();
   const [status, setStatus] = useState({});
   const {postFavourite} = useFavourite();
-  const {deleteMedia, getPostsByUserId, putMedia} = useMedia();
+  const {deleteMedia, getPostsByUserId} = useMedia();
   const {putUser} = useUser();
   const {update, setUpdate, user, setUser} = useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
@@ -54,7 +47,6 @@ const Single = ({navigation, route}) => {
   const [rating, setRating] = useState(3);
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
   const [subscribed, setSubcribed] = useState(false);
-  const [rated, setRated] = useState(false);
 
   let userInfo = {};
   if (user.full_name && user.full_name.includes('subscribed_media')) {
@@ -136,7 +128,6 @@ const Single = ({navigation, route}) => {
               text: 'ok',
               onPress: () => {
                 setUpdate(update + 1);
-                setRated(true);
                 calculateRatingForUser(file.user_id);
                 calculateRatingForPost(file.file_id);
               },
@@ -171,83 +162,39 @@ const Single = ({navigation, route}) => {
       if (response) {
         const average = sum / count;
         console.log('average', Math.round(average));
+        return average;
+      } else {
+        return 0;
       }
     } catch (error) {
       console.error('getting post for user error', error);
     }
   };
 
-  const calculateRatingForPost = async (file_id) => {
-    const userToken = await AsyncStorage.getItem('userToken');
-    const ratings = await getRatingsForFile(file_id, userToken);
-    let sum = 0;
-    let count = 0;
-    ratings.forEach((item) => {
-      const rating = item.rating;
-      console.log(rating);
-      sum += rating;
-      count++;
-      const average = sum / count;
-      console.log('average', Math.round(average));
-    });
-  };
-
-  // Function to post average ratings for user:
-  const updateAverageRatings = async () => {
-    const token = await AsyncStorage.getItem('userToken');
-    const ratedFileId = file.file_id;
-
-    let ownerInfo = {};
-    if (owner.full_name && owner.full_name.includes('average_rating')) {
-      ownerInfo = JSON.parse(owner.full_name);
-    }
-
-    const ratedFileInfo = fileInfo;
-
-    // After rating saved, update the average info for the owner of the post and the post
-    let updatedAveRatingsForPost = 0;
-    let updateAveRatingsForOwner = 0;
-    if (rated) {
-      updatedAveRatingsForPost = calculateRatingForPost(ratedFileId);
-      updateAveRatingsForOwner = calculateRatingForUser(owner.user_id);
-
-      // Set new value for owner ave rating
-
-      ownerInfo['average_rating'] = updateAveRatingsForOwner;
-      console.log('CURRENT USER AVE RATING', ownerInfo.average_rating);
-
-      const updatedUserRatingData = {};
-      updatedUserRatingData['full_name'] = JSON.stringify(ownerInfo);
-      console.log('update user rating data json', updatedUserRatingData);
-
-      try {
-        const response = await putUser(updatedUserRatingData, token);
-        if (response) {
-          console.log('USER AVERAGE RATING UPDATED');
-        }
-      } catch (error) {
-        console.error(error);
+  const calculateRatingForPost = async (fileId) => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      const ratings = await getRatingsForFile(fileId, userToken);
+      let average = 0;
+      if (ratings) {
+        let sum = 0;
+        let count = 0;
+        ratings.forEach((item) => {
+          const rating = item.rating;
+          // console.log(rating);
+          sum += rating;
+          count++;
+          average = sum / count;
+          console.log('average rating', Math.round(average));
+        });
+        return average;
+      } else {
+        return 0;
       }
-
-      // Set new value for post ave rating
-      ratedFileInfo['average_rating'] = updatedAveRatingsForPost;
-      const updatedPostRatingData = {};
-      updatedPostRatingData['description'] = JSON.stringify(ratedFileInfo);
-      console.log('update post rating data json', updatedPostRatingData);
-      try {
-        const response = await putMedia(updatedPostRatingData, token);
-        if (response) {
-          console.log('POST AVERAGE RATING UPDATED');
-        }
-      } catch (error) {
-        console.error(error);
-      }
+    } catch (error) {
+      console.error(error);
     }
   };
-
-  useEffect(async () => {
-    await updateAverageRatings();
-  }, [rated]);
 
   // Function to format added time:
   const addedTimeText = (timeData) => {

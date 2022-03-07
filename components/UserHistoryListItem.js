@@ -34,7 +34,9 @@ const UserHistoryListItem = ({file}) => {
           </ListItem.Title>
           <ListItem.Title numberOfLines={2} style={styles.rating}>
             Average ratings:{' '}
-            {file.average_rating ? file.average_rating : 'Unavailable'}
+            {file.average_rating
+              ? file.average_rating.toString()
+              : 'Unavailable'}
           </ListItem.Title>
         </View>
       </ListItem.Content>
