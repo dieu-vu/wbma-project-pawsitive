@@ -40,7 +40,11 @@ const ChatMenu = ({navigation}) => {
       // get chats to own posts
       const chatsToUser = await Promise.all(
         usersPosts.map(async (post) => {
-          return await getCommentsForFile(post.file_id);
+          try {
+            return await getCommentsForFile(post.file_id);
+          } catch (error) {
+            console.log('get comment error', error);
+          }
         })
       );
 

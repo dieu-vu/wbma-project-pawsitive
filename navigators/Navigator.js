@@ -135,9 +135,9 @@ const HomeStackScreen = () => {
             <Icon
               name="message-circle"
               type="feather"
-              size={24}
+              size={25}
               color={'black'}
-              onPress={() => navigation.navigate(ChatMenu)}
+              onPress={() => navigation.navigate('Drawer', {screen: 'Chats'})}
             />
           ),
         })}
