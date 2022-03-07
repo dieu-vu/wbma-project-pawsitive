@@ -26,6 +26,10 @@ const SubscriberList = ({navigation, route}) => {
 - if user has full_name.subscribed_media == file_id, then save that user_id object to an array
 - use array above to build list
 */
+
+    /* TODO: Error : "Please report: Excessive number of pending callbacks: 501. Some pending callbacks that might have leaked by never being called from native code".
+How to reload after a while?
+*/
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await getAllUserId(token);
@@ -99,6 +103,7 @@ const SubscriberList = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    // TODO: Add timeout here to try again?
     getSubscriberList(fileId);
     console.log('LIST SUBSCRIBER', subscriberArray);
   }, [allUserLoaded]);

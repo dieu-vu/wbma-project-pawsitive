@@ -69,6 +69,7 @@ const UserInfoModal = (props) => {
     console.log('SUBSCRIBER POSTS READY', userFilesLoaded);
   }, [userFilesLoaded]);
 
+  /* TODO:  Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first. */
   return (
     <Overlay
       isVisible={userInfoModalVisible}
