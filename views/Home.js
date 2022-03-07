@@ -18,10 +18,11 @@ import {useMedia} from '../hooks/ApiHooks';
 import PlaceholderImage from '../components/PlaceholderImage';
 
 const Home = ({navigation}) => {
-  const {setSelectedPetType} = useContext(MainContext);
+  const {setSelectedPetType, postsInRange} = useContext(MainContext);
   const {mediaArray} = useMedia();
   const insets = useSafeAreaInsets();
   const animation = React.createRef();
+
   useEffect(() => {
     animation.current?.play();
   }, [animation]);
@@ -95,14 +96,13 @@ const Home = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-
-          <Text style={styles.titles} h4>
-            Listings around you
-          </Text>
-          {mediaArray.length > 0 ? (
+          {postsInRange.length > 0 ? (
             <ListAroundYou navigation={navigation} />
           ) : (
-            <PlaceholderImage />
+            <>
+              <PlaceholderImage />
+            </>
+
           )}
 
           <Text style={styles.titles} h4>
