@@ -23,7 +23,6 @@ const doFetch = async (url, options = {}) => {
 
 const useMedia = (myFilesOnly) => {
   const [mediaArray, setMediaArray] = useState([]);
-  const [mediaArrayInRange, setMediaArrayInRange] = useState([]);
   const [loading, setLoading] = useState(false);
   const {
     update,
@@ -31,9 +30,8 @@ const useMedia = (myFilesOnly) => {
     isSearching,
     searchValue,
     setMarkers,
-    currentUserLocation,
-    setCurrentUserLocation,
-    postsInRange,
+    setPetSitterMarkers,
+    setPetOwnerMarkers,
     setPostsInRange,
   } = useContext(MainContext);
   const {getFilesByTag} = useTag();
@@ -107,7 +105,6 @@ const useMedia = (myFilesOnly) => {
         throw Error(response.statusText);
       } else {
         const json = await response.json();
-
         const media = await Promise.all(
           json.map(async (item) => {
             const responseMedia = await fetch(
@@ -135,6 +132,60 @@ const useMedia = (myFilesOnly) => {
         await loadPostsOnMap(media).then((markers) => setMarkers(markers))
     );
   }, []);
+
+  useEffect(async () => {
+    await loadPetOwnersAndSitters().then((marker) => {
+      if (marker !== undefined) {
+        setPetOwnerMarkers(marker.petOwnersPosts);
+        setPetSitterMarkers(marker.petSittersPosts);
+      }
+    });
+  }, []);
+
+  const loadPetOwnersAndSitters = async () => {
+    const petOwnersPosts = new Set();
+    const petSittersPosts = new Set();
+    try {
+      const getPetOwnersPosts = await getFilesByTag('pawsitive_user_owner');
+      if (getPetOwnersPosts !== undefined) {
+        getPetOwnersPosts.map((mediaPost) => {
+          const postOnMap = JSON.parse(mediaPost.description);
+          petOwnersPosts.add({
+            postTitle: mediaPost.title,
+            postFileId: mediaPost.file_id,
+            postFilename: mediaPost.filename,
+            coordinates: {
+              latitude: postOnMap.coords.latitude,
+              longitude: postOnMap.coords.longitude,
+            },
+          });
+        });
+      }
+      const getPetSittersPosts = await getFilesByTag('pawsitive_user_sitter');
+
+      if (getPetSittersPosts !== undefined) {
+        getPetSittersPosts.map((mediaPost) => {
+          const postOnMap = JSON.parse(mediaPost.description);
+          petSittersPosts.add({
+            postTitle: mediaPost.title,
+            postFileId: mediaPost.file_id,
+            postFilename: mediaPost.filename,
+            coordinates: {
+              latitude: postOnMap.coords.latitude,
+              longitude: postOnMap.coords.longitude,
+            },
+          });
+        });
+      }
+      // console.log('getPetOwnersPosts', petOwnersPosts);
+      // console.log('getPetSittersPosts', petSittersPosts);
+
+      return {petOwnersPosts, petSittersPosts};
+    } catch (e) {
+      console.log('loadPetOwnersAndSitters error');
+      console.error(e.message);
+    }
+  };
 
   const loadPostsOnMap = async (mediaArr) => {
     const setOfMarkers = new Set();
@@ -181,7 +232,6 @@ const useMedia = (myFilesOnly) => {
           } else {
             setPostsInRange(inRange);
           }
-
         })
     );
   }, [update]);

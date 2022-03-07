@@ -21,6 +21,8 @@ const MainProvider = (props) => {
   const [postLocation, setPostLocation] = useState();
   const [previousUserType, setPreviousUserType] = useState();
   const [markers, setMarkers] = useState([]);
+  const [petSitterMarkers, setPetSitterMarkers] = useState([]);
+  const [petOwnerMarkers, setPetOwnerMarkers] = useState([]);
   const [postsInRange, setPostsInRange] = useState([]);
   const [userInfoModalVisible, setUserInfoModalVisible] = useState(false);
   const [viewedSubscriber, setViewedSubscriber] = useState();
@@ -54,6 +56,10 @@ const MainProvider = (props) => {
         setPreviousUserType,
         markers,
         setMarkers,
+        petSitterMarkers,
+        setPetSitterMarkers,
+        petOwnerMarkers,
+        setPetOwnerMarkers,
         postsInRange,
         setPostsInRange,
         userInfoModalVisible,
