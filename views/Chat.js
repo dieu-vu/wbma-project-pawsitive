@@ -73,30 +73,29 @@ const Chat = ({route, navigation}) => {
 
   return (
     <SafeAreaView styles={styles.container}>
-
-        <FlatList
-          style={styles.flatList}
-          data={commentsArray}
-          keyExtractor={(item) => item.comment_id}
-          renderItem={({item}) => <CommentItem item={item} />}
-          ListFooterComponent={() => {
-            return null;
-          }}
-        />
-        <KeyboardAvoidingView
-          behavior='position'
-          keyboardVerticalOffset={0}
-          style={{flex: 2}}
-        >
-          <View style={styles.formContainer}>
-            <CommentForm
-              fileId={fileId}
-              chatStarterId={chatStarterId}
-              chatResponserId={chatResponserId}
-              style={{}}
-            />
-          </View>
-        </KeyboardAvoidingView>
+      <FlatList
+        style={styles.flatList}
+        data={commentsArray}
+        keyExtractor={(item) => item.comment_id}
+        renderItem={({item}) => <CommentItem item={item} />}
+        ListFooterComponent={() => {
+          return null;
+        }}
+      />
+      <KeyboardAvoidingView
+        behavior="position"
+        keyboardVerticalOffset={0}
+        style={{flex: 2}}
+      >
+        <View style={styles.formContainer}>
+          <CommentForm
+            fileId={fileId}
+            chatStarterId={chatStarterId}
+            chatResponserId={chatResponserId}
+            style={{}}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height - 165,
   },
   formContainer: {
-    height: 50,
+    height: undefined,
     alignSelf: 'flex-end',
   },
   commentContainerLeft: {
