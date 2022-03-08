@@ -16,13 +16,14 @@ const ChatMenuItem = ({navigation, item}) => {
 
   return (
     <ListItem
+      bottomDivider
       ViewComponent={LinearGradient}
       linearGradientProps={{
         colors: ['#8DD35E', '#425E20'],
         start: {x: 0.1, y: 0.3},
         end: {x: 0, y: 0.2},
       }}
-      containerStyle={styles.container}
+      style={styles.container}
       onPress={() => {
         navigation.navigate('Chat', {
           fileId: item.file_id,
@@ -62,13 +63,12 @@ ChatMenuItem.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: colors.darkestGreen,
     borderRadius: 15,
-    marginBottom: 20,
+    backgroundColor: '#8DD35E',
+    marginBottom: 5,
+    marginTop: 5,
   },
   text: {
     fontFamily: 'Montserrat-SemiBold',

@@ -14,6 +14,7 @@ import propTypes from 'prop-types';
 import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import CommentForm from '../components/CommentForm';
+import {getFonts} from '../utils/Utils';
 import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 const Chat = ({route, navigation}) => {
@@ -25,6 +26,7 @@ const Chat = ({route, navigation}) => {
   const chatResponserId = route.params.chatResponserId;
   console.log('response', chatResponserId);
 
+  getFonts();
   console.log('fileId', fileId);
   console.log('route', route);
   const single = route.params.single;
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
     padding: 10,
     width: Dimensions.get('window').width * 0.4,
   },
-  text: {},
+  text: {fontFamily: 'Montserrat-Regular', fontSize: 14},
   flatList: {
     height: Dimensions.get('window').height - 165,
   },
