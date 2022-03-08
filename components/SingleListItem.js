@@ -92,7 +92,9 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
         {!myFilesOnly && !savedPosts ? (
           <View style={{marginLeft: 5, marginRight: 5}}>
             <Text style={{fontSize: 20, fontFamily: 'Montserrat-SemiBold'}}>
-              {!fileInfo.price ? '' : `${fileInfo.price}€`}
+              {!fileInfo.price || fileInfo.price === '0'
+                ? 'FREE'
+                : `${fileInfo.price}€`}
             </Text>
           </View>
         ) : (

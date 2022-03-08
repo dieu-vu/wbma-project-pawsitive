@@ -425,6 +425,8 @@ const Single = ({navigation, route}) => {
                 <Text style={[styles.text, {marginLeft: 10}]}>
                   {!fileInfo.price
                     ? 'Price not provided'
+                    : fileInfo.price === '0'
+                    ? 'FREE'
                     : `${fileInfo.price} €`}
                 </Text>
               </View>
