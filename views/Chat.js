@@ -2,10 +2,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
+  KeyboardAvoidingView, Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View,
+  View
 } from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
@@ -25,6 +26,7 @@ const Chat = ({route, navigation}) => {
   console.log('fileId', fileId);
   console.log('route', route);
   const single = route.params.single;
+  let listViewRef;
 
   const [commentsArray, setCommentsArray] = useState([]);
   const {getCommentsForFile} = useComments();
@@ -69,25 +71,27 @@ const Chat = ({route, navigation}) => {
 
   return (
     <SafeAreaView>
-      <View style={styles.container}>
+      <View
+        styles={styles.container}
+      >
         <FlatList
           style={styles.flatList}
           data={commentsArray}
           keyExtractor={(item) => item.comment_id}
           renderItem={({item}) => <CommentItem item={item} />}
-          ListFooterComponent={(style) => {
-            return (
-              <CommentForm
-                fileId={fileId}
-                chatStarterId={chatStarterId}
-                chatResponserId={chatResponserId}
-                style={{}}
-              />
-            );
+          ListFooterComponent={() => {
+            return null;
           }}
         />
+        <View style={styles.formContainer}>
+          <CommentForm
+            fileId={fileId}
+            chatStarterId={chatStarterId}
+            chatResponserId={chatResponserId}
+            style={{}}
+          />
+        </View>
       </View>
-      <View style={{bottom: 0}}></View>
     </SafeAreaView>
   );
 };
@@ -101,15 +105,20 @@ Chat.propTypes = {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    height: Dimensions.get('window').height,
+    height: '100%',
   },
   item: {
     padding: 20,
     width: Dimensions.get('window').width * 0.4,
   },
   text: {},
-  commentContainer: {},
-  flatList: {},
+  flatList: {
+    height: 500,
+  },
+  formContainer: {
+    height: 100,
+    bottom: 0,
+  },
   commentContainerLeft: {
     width: Dimensions.get('window').width * 0.4,
     backgroundColor: '#8DD35E',

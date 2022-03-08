@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {Input, Button} from 'react-native-elements';
-import {Alert, StyleSheet, View} from 'react-native';
+import {Alert, KeyboardAvoidingView, Platform, StyleSheet, View} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import MainButton from './MainButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -47,7 +47,11 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     }
   };
   return (
-    <View style={styles.formContainer}>
+    <KeyboardAvoidingView
+      style={styles.formContainer}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      styles={styles.container}
+      keyboardShouldPersistTaps="handled">
       <Controller
         control={control}
         rules={{
@@ -78,7 +82,7 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
         }}
         buttonStyle={styles.buttonStyle}
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -113,8 +117,8 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopRightRadius: 10,
     borderBottomRightRadius: 10,
-    borderTopLeftRadius: 0,
-    borderBottomLeftRadius: 0,
+    borderTopLeftRadius: 3,
+    borderBottomLeftRadius: 3,
     backgroundColor: '#A9FC73',
     borderWidth: 1,
     borderColor: 'black',
