@@ -22,6 +22,8 @@ const ChatMenuItem = ({navigation, item}) => {
         colors: ['#8DD35E', '#425E20'],
         start: {x: 0.1, y: 0.3},
         end: {x: 0, y: 0.2},
+        borderRadius: 15,
+        overflow: 'hidden',
       }}
       style={styles.container}
       onPress={() => {
@@ -65,10 +67,11 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 2,
     borderColor: colors.darkestGreen,
-    borderRadius: 15,
+    borderRadius: 5,
     backgroundColor: '#8DD35E',
     marginBottom: 5,
     marginTop: 5,
+    overflow: 'hidden',
   },
   text: {
     fontFamily: 'Montserrat-SemiBold',
