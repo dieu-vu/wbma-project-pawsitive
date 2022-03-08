@@ -4,7 +4,9 @@ import {Dimensions, StyleSheet} from 'react-native';
 import {getFonts} from '../utils/Utils';
 import {Tile} from 'react-native-elements';
 import {MainContext} from '../contexts/MainContext';
+import PropTypes from 'prop-types';
 
+// Array that shows in carousel as different pet types
 const PetTypesArray = [
   {
     title: 'Dog',
@@ -43,7 +45,6 @@ const ListByPetType = (props) => {
         width={175}
         height={200}
         onPress={() => {
-          console.log('pressed: ', item, ' index of: ', index);
           setSelectedPetType(item.title.toLowerCase());
           props.navigation.navigate('Listing');
         }}
@@ -98,5 +99,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
   },
 });
+
+ListByPetType.propTypes = {
+  navigation: PropTypes.object.isRequired,
+}
 
 export default ListByPetType;

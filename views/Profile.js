@@ -16,8 +16,6 @@ import {Text} from 'react-native-elements';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useMedia, useTag} from '../hooks/ApiHooks';
 import {uploadsUrl} from '../utils/Variables';
-import {useFonts} from '@expo-google-fonts/inter';
-import AppLoading from 'expo-app-loading';
 import UpdateUserForm from '../components/UpdateUserForm';
 import ImageLogo from '../assets/pictures.svg';
 import * as ImagePicker from 'expo-image-picker';

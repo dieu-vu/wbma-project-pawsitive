@@ -1,53 +1,53 @@
 import React, {useContext, useRef, useState, useEffect} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Dimensions, StyleSheet, View} from 'react-native';
-import {getFonts} from '../utils/Utils';
 import {Tile, Text} from 'react-native-elements';
+import {getFonts} from '../utils/Utils';
+import {uploadsUrl} from '../utils/Variables';
 import LottieView from 'lottie-react-native';
 import PlaceholderImage from './PlaceholderImage';
-
-import {uploadsUrl} from '../utils/Variables';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
 const ListAroundYou = ({navigation}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [inRangeLoading, setInRangeLoading] = useState(true);
-
   const refOwner = useRef(null);
   const refSitter = useRef(null);
-  const {postsInRange, update, petOwnerMarkers, petSitterMarkers} =
-    useContext(MainContext);
+  const {
+    postsInRange,
+    update,
+    petOwnerMarkers,
+    petSitterMarkers
+  } = useContext(MainContext);
   const animation = React.createRef();
   useEffect(() => {
     animation.current?.play();
   }, [animation]);
   getFonts();
 
+  // Getting only the file_id of posts that are tagged as pet owner
   const getFileIdsOwner = [...petOwnerMarkers].map(
     (post, index) => [...petOwnerMarkers][index].postFileId
   );
+  // Getting only the file_id of posts that are tagged as pet sitter
   const getFileIdsSitter = [...petSitterMarkers].map(
     (post, index) => [...petSitterMarkers][index].postFileId
   );
-
+  // Filter all the pet sitters from the posts in range based on file_id
   const allPetSitters = [...postsInRange].filter((item) =>
     getFileIdsSitter.includes(item.whole.file_id)
   );
+  // Filter all the pet owners from the posts in range based on file_id
   const allPetOwners = [...postsInRange].filter((item) =>
     getFileIdsOwner.includes(item.whole.file_id)
   );
-  //
-  // console.log('pet sitters in range', allPetSitters);
-  // console.log('pet owners in range', allPetOwners);
 
   // Wait up to 3 seconds, if no posts around, show message
   useEffect(() => {
     setInRangeLoading(true);
     const timer = setTimeout(() => {
       setInRangeLoading(false);
-      // console.log('IN RANGE LOADING', inRangeLoading);
-      // console.log('length in Range', postsInRange.length);
     }, 3000);
     return () => clearTimeout(timer);
   }, [update, postsInRange]);

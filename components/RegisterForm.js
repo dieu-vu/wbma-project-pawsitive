@@ -1,11 +1,11 @@
-import React, {useContext} from "react";
+import React, {useContext} from 'react';
 import {Alert, View, StyleSheet} from 'react-native';
 import {Input} from 'react-native-elements';
 import {useForm, Controller} from 'react-hook-form';
 import {useUser} from '../hooks/ApiHooks';
 import MainButton from './MainButton';
 import PropTypes from 'prop-types';
-import { MainContext } from "../contexts/MainContext";
+import {MainContext} from '../contexts/MainContext';
 
 const RegisterForm = () => {
   const {postUser, checkUsername} = useUser();
@@ -187,17 +187,14 @@ const RegisterForm = () => {
         name="email"
       />
 
-      <MainButton
-        onPress={handleSubmit(onSubmit)}
-        title={'Register'}
-      ></MainButton>
+      <MainButton onPress={handleSubmit(onSubmit)} title={'Register'} />
     </View>
   );
 };
 
 RegisterForm.propTypes = {
-  navigation: PropTypes.object
-}
+  navigation: PropTypes.object,
+};
 
 const styles = StyleSheet.create({
   inputField: {

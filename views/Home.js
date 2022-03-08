@@ -9,13 +9,12 @@ import {
 import {Text} from 'react-native-elements';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
-
+import PropTypes from 'prop-types';
 import {getFonts} from '../utils/Utils';
 import ListAroundYou from '../components/ListAroundYou';
 import ListByPetType from '../components/ListByPetType';
-import {MainContext} from '../contexts/MainContext';
-import {useMedia} from '../hooks/ApiHooks';
 import PlaceholderImage from '../components/PlaceholderImage';
+import {MainContext} from '../contexts/MainContext';
 
 const Home = ({navigation}) => {
   const {setSelectedPetType, postsInRange, update} = useContext(MainContext);
@@ -28,16 +27,19 @@ const Home = ({navigation}) => {
   }, [animation]);
   getFonts();
 
+  // Set 10-second timer for the elements to load into postsInRange
   useEffect(() => {
     setInRangeLoading(true);
     const timer = setTimeout(() => {
       setInRangeLoading(false);
-    }, 3000);
+    }, 10000);
     return () => clearTimeout(timer);
   }, [update, postsInRange]);
 
+  // When loading show "Loading posts",
+  // if postsInRange is still empty then show "no posts around
+  // and finally if it has atleast one element show it
   const listsAroundYou = () => {
-    // console.log('POSTS IN RANGE', mediaArray);
     if (inRangeLoading) {
       return (
         <View style={{marginLeft: 20}}>
@@ -87,10 +89,6 @@ const Home = ({navigation}) => {
     }
   };
 
-  // console.log('listsAroundYou', listsAroundYou());
-
-  // console.log('mediaArray', mediaArray.length);
-
   return (
     <SafeAreaView>
       <ScrollView>
@@ -120,7 +118,7 @@ const Home = ({navigation}) => {
                 }}
                 autoPlay={true}
                 loop={true}
-              ></LottieView>
+              />
               <Text
                 style={[styles.titles, {fontSize: 18, alignSelf: 'center'}]}
               >
@@ -149,7 +147,7 @@ const Home = ({navigation}) => {
                 }}
                 autoPlay={true}
                 loop={true}
-              ></LottieView>
+              />
               <Text
                 style={[styles.titles, {fontSize: 18, alignSelf: 'center'}]}
               >
@@ -186,6 +184,8 @@ const styles = StyleSheet.create({
   },
 });
 
-Home.propTypes = {};
+Home.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 export default Home;

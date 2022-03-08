@@ -2,19 +2,10 @@ import React from 'react';
 import {Button} from 'react-native-elements';
 import {Dimensions, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
-import {useFonts} from '@expo-google-fonts/inter';
-import AppLoading from 'expo-app-loading';
+import {getFonts} from '../utils/Utils';
 
 const MainButton = (props) => {
-  const [fontsLoaded] = useFonts({
-    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
-    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
-    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
-  });
-
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  }
+  getFonts();
 
   return (
     <Button
