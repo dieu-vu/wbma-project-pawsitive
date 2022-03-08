@@ -39,7 +39,6 @@ const Chat = ({route, navigation}) => {
   const {getUserById} = useUser();
   const {update, setUpdate} = useContext(MainContext);
 
-
   const fetchComments = async () => {
     try {
       const commentList = await getCommentsForFile(fileId);
@@ -86,12 +85,14 @@ const Chat = ({route, navigation}) => {
           : styles.commentContainerRight
       }
     >
-      {item.user_id === JSON.parse(item.comment).chat_starter_id ? (
-        <Text style={styles.name}>{chatStarterName}</Text>
-      ) : (
-        <Text style={styles.name}>{chatResponserName}</Text>
-      )}
-      <Text style={styles.text}>{JSON.parse(item.comment).comment}</Text>
+      <View style={{display: 'flex', flexDirection: 'column'}}>
+        {item.user_id === JSON.parse(item.comment).chat_starter_id ? (
+          <Text style={styles.name}>{chatStarterName}</Text>
+        ) : (
+          <Text style={styles.name}>{chatResponserName}</Text>
+        )}
+        <Text style={styles.text}>{JSON.parse(item.comment).comment}</Text>
+      </View>
     </ListItem>
   );
 
@@ -142,7 +143,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * 0.4,
   },
   text: {
-    fontFamily: 'Montserrat-Regular', fontSize: 14
+    fontFamily: 'Montserrat-Regular',
+    fontSize: 14,
   },
   flatList: {
     height: Dimensions.get('window').height - 165,
@@ -164,12 +166,9 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 10,
     left: Dimensions.get('window').width * 0.45,
-    paddingLeft: 20,
   },
   name: {
     fontFamily: 'Montserrat-SemiBold',
-    bottom: 35,
-    right: 10,
   },
 });
 
