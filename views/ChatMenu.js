@@ -94,6 +94,7 @@ const ChatMenu = ({navigation}) => {
           }
         })
       );
+      console.log(commentArrayWithMedia);
       setMediaArray(commentArrayWithMedia);
     } catch (error) {
       console.error(' get comments error', error);
