@@ -39,6 +39,7 @@ const Chat = ({route, navigation}) => {
   const {getUserById} = useUser();
   const {update, setUpdate} = useContext(MainContext);
 
+
   const fetchComments = async () => {
     try {
       const commentList = await getCommentsForFile(fileId);
@@ -140,7 +141,9 @@ const styles = StyleSheet.create({
     padding: 10,
     width: Dimensions.get('window').width * 0.4,
   },
-  text: {fontFamily: 'Montserrat-Regular', fontSize: 14},
+  text: {
+    fontFamily: 'Montserrat-Regular', fontSize: 14
+  },
   flatList: {
     height: Dimensions.get('window').height - 165,
     paddingTop: 20,
