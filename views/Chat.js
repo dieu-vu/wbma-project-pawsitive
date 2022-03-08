@@ -94,10 +94,6 @@ const Chat = ({route, navigation}) => {
             fileId={fileId}
             chatStarterId={chatStarterId}
             chatResponserId={chatResponserId}
-<<<<<<< HEAD
-            style={{}}
-=======
->>>>>>> 71758e5 (chat menu)
           />
         </View>
       </KeyboardAvoidingView>
