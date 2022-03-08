@@ -24,7 +24,7 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     control,
     handleSubmit,
     formState: {errors},
-    getValues,
+    setValue,
   } = useForm({
     defaultValues: {
       comment: '',
@@ -51,6 +51,7 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     } catch (error) {
       console.error('posting comment error', error);
     }
+    setValue('comment', '');
   };
   return (
     <KeyboardAvoidingView

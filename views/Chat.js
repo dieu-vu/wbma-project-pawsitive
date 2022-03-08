@@ -84,7 +84,7 @@ const Chat = ({route, navigation}) => {
       />
       <KeyboardAvoidingView
         behavior="position"
-        keyboardVerticalOffset={0}
+        keyboardVerticalOffset={90}
         style={{flex: 2}}
       >
         <View style={styles.formContainer}>
