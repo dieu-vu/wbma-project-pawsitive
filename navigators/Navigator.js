@@ -271,6 +271,27 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
+        name="Map"
+        component={Map}
+        options={{
+          drawerIcon: () => (
+            <Icon
+              name="map"
+              type="feather"
+              size={20}
+              color={'#425E20'}
+            />
+          ),
+          headerStyle: {
+            backgroundColor: '#8DD35E',
+          },
+          headerTitleStyle: {
+            fontFamily: 'Montserrat-SemiBold',
+          },
+          headerTintColor: 'black',
+        }}
+      />
+      <Drawer.Screen
         name="Favourites"
         component={SavedPosts}
         options={{
