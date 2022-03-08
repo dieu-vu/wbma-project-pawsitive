@@ -266,6 +266,8 @@ const DrawerNavigator = () => {
           drawerIcon: () => (
             <Icon name="home" type="feather" size={20} color={'#425E20'} />
           ),
+
+          headerTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -277,10 +279,13 @@ const DrawerNavigator = () => {
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',
+            color: 'black',
           },
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
+            color: 'black',
           },
+          headerTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -296,6 +301,7 @@ const DrawerNavigator = () => {
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
           },
+          headerTintColor: 'black',
         }}
       />
       <Drawer.Screen
@@ -316,6 +322,7 @@ const DrawerNavigator = () => {
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
           },
+          headerTintColor: 'black',
         }}
       />
     </Drawer.Navigator>
