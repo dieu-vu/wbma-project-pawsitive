@@ -36,7 +36,7 @@ const Listing = ({navigation}) => {
 
   const mapState = isFullMap
     ? Dimensions.get('window').height
-    : Dimensions.get('window').height * 0.4;
+    : Dimensions.get('window').height * 0.33;
   const fabIcon = isFullMap ? 'arrow-collapse-all' : 'arrow-expand-all';
 
   return (
