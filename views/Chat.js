@@ -72,8 +72,8 @@ const Chat = ({route, navigation}) => {
   }, [update]);
 
   return (
-    <SafeAreaView>
-      <View styles={styles.container}>
+    <SafeAreaView styles={styles.container}>
+
         <FlatList
           style={styles.flatList}
           data={commentsArray}
@@ -84,7 +84,9 @@ const Chat = ({route, navigation}) => {
           }}
         />
         <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior='position'
+          keyboardVerticalOffset={0}
+          style={{flex: 2}}
         >
           <View style={styles.formContainer}>
             <CommentForm
@@ -95,7 +97,6 @@ const Chat = ({route, navigation}) => {
             />
           </View>
         </KeyboardAvoidingView>
-      </View>
     </SafeAreaView>
   );
 };

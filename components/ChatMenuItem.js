@@ -5,8 +5,9 @@ import propTypes from 'prop-types';
 import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {uploadsUrl} from '../utils/Variables';
+import {colors, uploadsUrl} from '../utils/Variables';
 import {fetchAvatar} from '../utils/Utils';
+import {LinearGradient} from 'expo-linear-gradient';
 
 const ChatMenuItem = ({navigation, item}) => {
   const {user} = useContext(MainContext);
@@ -15,6 +16,12 @@ const ChatMenuItem = ({navigation, item}) => {
 
   return (
     <ListItem
+      ViewComponent={LinearGradient}
+      linearGradientProps={{
+        colors: ['#8DD35E', '#425E20'],
+        start: {x: 0.1, y: 0.3},
+        end: {x: 0, y: 0.2},
+      }}
       containerStyle={styles.container}
       onPress={() => {
         navigation.navigate('Chat', {
@@ -26,19 +33,24 @@ const ChatMenuItem = ({navigation, item}) => {
       }}
     >
       <View style={styles.postContainer}>
-        <Icon name="user" type="feather" style={styles.icon}/>
-        <Text style={styles.text}>{item.username}</Text>
-        <Icon name="mail" type="feather" style={styles.icon}/>
-        <Text style={styles.text}>{item.media_title}</Text>
+        <Avatar
+          size="large"
+          rounded={true}
+          source={{
+            uri: uploadsUrl + item.media_thumbnails.w160,
+          }}
+        />
+        <View style={styles.textContainer}>
+          <View style={styles.textItem}>
+            <Icon name="mail" type="feather" style={styles.icon} />
+            <Text style={styles.text}>{item.media_title}</Text>
+          </View>
+          <View style={styles.textItem}>
+            <Icon name="user" type="feather" style={styles.icon} />
+            <Text style={styles.text}>{item.username}</Text>
+          </View>
+        </View>
       </View>
-      <Avatar
-        containerStyle={{alignSelf: 'flex-end'}}
-        size={50}
-        rounded={true}
-        source={{
-          uri: uploadsUrl + item.media_thumbnails.w160,
-        }}
-      />
     </ListItem>
   );
 };
@@ -52,10 +64,9 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    width: '90%',
-    margin: 20,
-    borderWidth: 3,
-    borderColor: '#8DD35E',
+    width: '100%',
+    borderWidth: 4,
+    borderColor: colors.darkestGreen,
     borderRadius: 15,
   },
   text: {
@@ -65,12 +76,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   postContainer: {
-    alignItems: 'stretch',
     flexDirection: 'row',
     width: Dimensions.get('window').width * 0.55,
   },
   icon: {
     paddingLeft: 10,
+  },
+  textItem: {
+    flexDirection: 'row',
+    padding: 7,
   },
 });
 

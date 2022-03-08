@@ -122,7 +122,7 @@ const Single = ({navigation, route}) => {
     const fileId = file.file_id;
 
     if (file.user_id === user.user_id) {
-      Alert.alert('You can not rate you own post');
+      Alert.alert('You can not rate your own post');
     } else {
       try {
         const response = await addRating(

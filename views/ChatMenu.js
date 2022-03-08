@@ -109,6 +109,7 @@ const ChatMenu = ({navigation}) => {
   return (
     <View style={styles.container}>
       <FlatList
+        style={{paddingHorizontal: 10, paddingTop: 5}}
         data={mediaArray}
         keyExtractor={(item) => item.comment_id}
         renderItem={({item}) => (
