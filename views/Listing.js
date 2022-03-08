@@ -92,7 +92,7 @@ const Listing = ({navigation}) => {
           <CustomDropDownPicker
             value={selectedPetType}
             dropdownTextStyle={{display: 'none'}}
-            componentContainerStyle={{width: '40%', paddingRight: 10}}
+            componentContainerStyle={{width: '45%', paddingRight: 25}}
             containerStyle={{alignSelf: 'flex-start'}}
             dropdownPlaceholder="Filter By"
             items={items}
