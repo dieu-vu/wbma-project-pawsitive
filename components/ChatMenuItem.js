@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: colors.darkestGreen,
     borderRadius: 15,
+    marginBottom: 20,
   },
   text: {
     fontFamily: 'Montserrat-SemiBold',
