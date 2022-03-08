@@ -68,7 +68,7 @@ const FullScreenMap = ({
               </View>
             </View>
             {marker.price === undefined ? (
-              <Text style={{marginLeft: 20}} h4>{`0 €`}</Text>
+              <Text style={{marginLeft: 20}} h4>{`FREE`}</Text>
             ) : (
               <Text style={{marginLeft: 20}} h4>{`${marker.price} €`}</Text>
             )}
