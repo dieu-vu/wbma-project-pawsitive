@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  View
+  View,
 } from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
@@ -73,7 +73,7 @@ const Chat = ({route, navigation}) => {
 
   return (
     <SafeAreaView>
-      <KeyboardAvoidingView styles={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <View styles={styles.container}>
         <FlatList
           style={styles.flatList}
           data={commentsArray}
@@ -83,16 +83,19 @@ const Chat = ({route, navigation}) => {
             return null;
           }}
         />
-        <View style={styles.formContainer}>
-          <CommentForm
-            fileId={fileId}
-            chatStarterId={chatStarterId}
-            chatResponserId={chatResponserId}
-            style={{}}
-          />
-        </View>
-
-      </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+          <View style={styles.formContainer}>
+            <CommentForm
+              fileId={fileId}
+              chatStarterId={chatStarterId}
+              chatResponserId={chatResponserId}
+              style={{}}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 };
@@ -105,8 +108,7 @@ Chat.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    height: '100%',
+    flex: 1,
   },
   item: {
     padding: 20,
@@ -114,11 +116,11 @@ const styles = StyleSheet.create({
   },
   text: {},
   flatList: {
-    height: 500,
+    height: Dimensions.get('window').height - 165,
   },
   formContainer: {
-    height: 100,
-
+    height: 50,
+    alignSelf: 'flex-end',
   },
   commentContainerLeft: {
     width: Dimensions.get('window').width * 0.4,
