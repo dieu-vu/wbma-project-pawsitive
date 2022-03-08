@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -18,7 +18,9 @@ import {useMedia} from '../hooks/ApiHooks';
 import PlaceholderImage from '../components/PlaceholderImage';
 
 const Home = ({navigation}) => {
-  const {setSelectedPetType, postsInRange} = useContext(MainContext);
+  const {setSelectedPetType, postsInRange, update} = useContext(MainContext);
+  const [inRangeLoading, setInRangeLoading] = useState(true);
+  const {mediaArray} = useMedia();
   const insets = useSafeAreaInsets();
   const animation = React.createRef();
 
@@ -26,6 +28,67 @@ const Home = ({navigation}) => {
     animation.current?.play();
   }, [animation]);
   getFonts();
+
+  useEffect(() => {
+    setInRangeLoading(true);
+    const timer = setTimeout(() => {
+      setInRangeLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [update, postsInRange]);
+
+  const listsAroundYou = () => {
+    console.log('POSTS IN RANGE', mediaArray);
+    if (inRangeLoading) {
+      return (
+        <View style={{marginLeft: 20}}>
+          <Text style={styles.loadingTitle} h4>
+            Loading posts around you
+          </Text>
+          <PlaceholderImage
+            style={{
+              width: 300,
+              height: undefined,
+              borderRadius: 20,
+              backgroundColor: 'white',
+            }}
+          />
+        </View>
+      );
+    } else {
+      if (postsInRange.length === 0 && inRangeLoading === false) {
+        return (
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <LottieView
+              ref={animation}
+              source={require('../assets/cat-popping-animation.json')}
+              style={{
+                width: '80%',
+                aspectRatio: 1,
+                alignSelf: 'center',
+                backgroundColor: 'transparent',
+              }}
+              autoPlay={true}
+              loop={true}
+            />
+            <Text
+              style={{
+                fontFamily: 'Montserrat-Regular',
+                fontSize: 18,
+                alignSelf: 'center',
+              }}
+            >
+              No posts around you
+            </Text>
+          </View>
+        );
+      } else if (postsInRange.length > 0) {
+        return <ListAroundYou navigation={navigation} />;
+      }
+    }
+  };
+
+  // console.log('listsAroundYou', listsAroundYou());
 
   // console.log('mediaArray', mediaArray.length);
 
@@ -95,33 +158,7 @@ const Home = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          {postsInRange.length > 0 ? (
-            <ListAroundYou navigation={navigation} />
-          ) : (
-            <View style={{flex: 1, flexDirection: 'column'}}>
-              <LottieView
-                ref={animation}
-                source={require('../assets/cat-popping-animation.json')}
-                style={{
-                  width: '80%',
-                  aspectRatio: 1,
-                  alignSelf: 'center',
-                  backgroundColor: 'transparent',
-                }}
-                autoPlay={true}
-                loop={true}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Montserrat-Regular',
-                  fontSize: 18,
-                  alignSelf: 'center',
-                }}
-              >
-                No posts around you
-              </Text>
-            </View>
-          )}
+          {listsAroundYou()}
 
           <Text style={styles.titles} h4>
             Discover by type of pets
@@ -141,6 +178,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     marginTop: 20,
     marginLeft: 20,
+    marginBottom: 20,
+  },
+  loadingTitle: {
+    fontFamily: 'Montserrat-SemiBold',
+    marginTop: 20,
     marginBottom: 20,
   },
 });
