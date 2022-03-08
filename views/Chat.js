@@ -2,7 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -13,6 +14,7 @@ import propTypes from 'prop-types';
 import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import CommentForm from '../components/CommentForm';
+import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 
 const Chat = ({route, navigation}) => {
   const {user} = useContext(MainContext);
@@ -71,9 +73,7 @@ const Chat = ({route, navigation}) => {
 
   return (
     <SafeAreaView>
-      <View
-        styles={styles.container}
-      >
+      <KeyboardAvoidingView styles={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <FlatList
           style={styles.flatList}
           data={commentsArray}
@@ -91,7 +91,8 @@ const Chat = ({route, navigation}) => {
             style={{}}
           />
         </View>
-      </View>
+
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     height: 100,
-    bottom: 0,
+
   },
   commentContainerLeft: {
     width: Dimensions.get('window').width * 0.4,

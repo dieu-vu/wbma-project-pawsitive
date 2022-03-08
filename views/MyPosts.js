@@ -2,14 +2,10 @@ import React, {useContext, useEffect, useState} from 'react';
 import {PropTypes} from 'prop-types';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import List from '../components/List';
-import {MainContext} from '../contexts/MainContext';
-
 
 const MyPosts = ({navigation}) => {
-
   return (
     <SafeAreaView style={styles.container}>
-
       <View style={styles.listContainer}>
         <List
           navigation={navigation}

@@ -53,7 +53,7 @@ const useMedia = (myFilesOnly) => {
           json = json.filter((file) => file.user_id === user.user_id);
         }
 
-        if (selectedPetType === 'all') {
+        if (selectedPetType === 'all' || myFilesOnly) {
           jsonFilter = json;
         } else {
           jsonFilter = await getFilesByTag(`${appId}_pet_${selectedPetType}`);
@@ -82,6 +82,7 @@ const useMedia = (myFilesOnly) => {
           })
         );
         setMediaArray(media);
+
         return true;
       }
     } catch (e) {
