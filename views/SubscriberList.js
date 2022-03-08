@@ -13,54 +13,49 @@ import PlaceholderImage from '../components/PlaceholderImage';
 const SubscriberList = ({navigation, route}) => {
   const insets = useSafeAreaInsets();
   const fileId = route.params.file.file_id;
-  console.log('FILE ID', fileId);
   const {userInfoModalVisible, viewedSubscriber} = useContext(MainContext);
-  const {getAllUserId, getUserInfo} = useUser();
-  const {getPostsByUserId} = useMedia();
+  const {getUserInfo} = useUser();
+  const {getPostsByUserId, mediaArray} = useMedia();
   const {getRatingsForFile} = useRating();
   const [subscriberArray, setSubscriberArray] = useState();
   const [allUserLoaded, setAllUserLoaded] = useState(false);
-
+  const [subscriberArrayLoading, setSubscriberArrayLoading] = useState();
   const getSubscriberList = async (fileId) => {
     /*
-- Get all user id List
+- Get all user id from media array?
 - Save user id list and get array of user details
 - if user has full_name.subscribed_media == file_id, then save that user_id object to an array
 - use array above to build list
 */
 
-    /* TODO: Error : "Please report: Excessive number of pending callbacks: 501. Some pending callbacks that might have leaked by never being called from native code".
-How to reload after a while?
-*/
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await getAllUserId(token);
-      console.log('ALL USER ID', response.length);
+    const token = await AsyncStorage.getItem('userToken');
 
-      if (response) {
-        try {
-          const allUserInfo = await Promise.all(
-            response.map(async (userId) => {
-              return await getUserInfo(userId, token);
-            })
-          );
-          if (allUserInfo) {
-            console.log('ALL USER info', allUserInfo.length);
-            await getSubscriberHelper(allUserInfo);
-          }
-          setAllUserLoaded(true);
-        } catch (e) {
-          console.error('GET SUBSCRIBER DETAILS ERROR ', e);
-        }
+    const appUserIds = await Promise.all(
+      mediaArray.map((media) => {
+        return media.user_id;
+      })
+    );
+    const appUserUniqueIds = [...new Set(appUserIds)];
+
+    try {
+      const allUserInfo = await Promise.all(
+        appUserUniqueIds.map(async (userId) => {
+          return await getUserInfo(userId, token);
+        })
+      );
+      if (allUserInfo) {
+        // console.log('ALL USER info', allUserInfo.length);
+        await getSubscriberHelper(allUserInfo);
       }
+      setAllUserLoaded(true);
     } catch (e) {
-      console.error('GET SUBSCRIBER LIST ERROR ', e);
+      console.error('GET SUBSCRIBER DETAILS ERROR ', e);
     }
   };
 
   // function to get array of subscriber details
   const getSubscriberHelper = async (userArray) => {
-    console.log('USER ARRAY', userArray.length);
+    // console.log('USER ARRAY', userArray.length);
     const updatedSubscriberArray = [];
     if (userArray.length > 0) {
       await Promise.all(
@@ -70,9 +65,7 @@ How to reload after a while?
           const isSubscriber = checkSubscription(user);
           // console.log('IS SUBCRIBER', isSubscriber);
           if (isSubscriber) {
-            console.log('user subcribed', user);
             updatedSubscriberArray.push(user);
-            console.log('list user subcribed', updatedSubscriberArray);
           }
         })
       );
@@ -86,7 +79,7 @@ How to reload after a while?
       })
     );
     setSubscriberArray(subscriberArrayWithRatings);
-    console.log('SUBSCRIBER ARRAY', subscriberArray);
+    // console.log('SUBSCRIBER ARRAY', subscriberArray);
   };
 
   // function to check subscription of each user
@@ -97,7 +90,7 @@ How to reload after a while?
       userObject.full_name.includes('subscribed_media')
     ) {
       userInfo = JSON.parse(userObject.full_name);
-      console.log('CHECK SUBSCRIPTION USER INFO', userInfo);
+      // console.log('CHECK SUBSCRIPTION USER INFO', userInfo);
       if (
         userInfo &&
         userInfo.subscribed_media &&
@@ -115,8 +108,18 @@ How to reload after a while?
   useEffect(() => {
     // TODO: Add timeout here to try again?
     getSubscriberList(fileId);
-    console.log('LIST SUBSCRIBER', subscriberArray);
-  }, [allUserLoaded]);
+
+    // console.log('LIST SUBSCRIBER', subscriberArray);
+  }, [subscriberArray]);
+
+  // Wait up to 3 seconds after all Subscribers Loaded, if there is no change, show no subscribers message
+  useEffect(() => {
+    setSubscriberArrayLoading(true);
+    const timer = setTimeout(() => {
+      setSubscriberArrayLoading(false);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [subscriberArray]);
 
   const calculateRatingForUser = async (userId) => {
     try {
@@ -163,6 +166,8 @@ How to reload after a while?
               Be patient, we are getting the subscriber list
             </Text>
           </View>
+        ) : !subscriberArrayLoading && subscriberArray.length === 0 ? (
+          <Text style={styles.text}>No subscribers</Text>
         ) : (
           <UserList
             navigation={navigation}

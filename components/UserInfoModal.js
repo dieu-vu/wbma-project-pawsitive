@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import {fetchAvatar} from '../utils/Utils';
 import CustomButton from './CustomButton';
-import {uploadsUrl, colors} from '../utils/Variables';
+import {uploadsUrl} from '../utils/Variables';
 import {useMedia, useRating} from '../hooks/ApiHooks';
 import UserHistoryListItem from './UserHistoryListItem';
 import PlaceholderImage from './PlaceholderImage';
@@ -28,9 +28,6 @@ const UserInfoModal = (props) => {
 
   const [userFilesLoaded, setUserFilesLoaded] = useState(false);
 
-  console.log('USER INFO MODAL', props.subscriber);
-  console.log('USER ID MODAL', props.subscriber.user_id);
-
   useEffect(async () => {
     const avatarFile = await fetchAvatar(props.subscriber);
     setAvatar(uploadsUrl + avatarFile);
@@ -44,6 +41,7 @@ const UserInfoModal = (props) => {
       return file.file_id;
     });
     // console.log('FILE ID LIST', fileIdList);
+
     // Use the file Id list to get needed file from mediaArray
     const subscriberFilesOnly = await Promise.all(
       mediaArray.filter((file) => {
@@ -84,11 +82,9 @@ const UserInfoModal = (props) => {
         let count = 0;
         ratings.forEach((item) => {
           const rating = item.rating;
-          // console.log(rating);
           sum += rating;
           count++;
           average = sum / count;
-          console.log('average rating', Math.round(average));
         });
         return Math.round((average + Number.EPSILON) * 100) / 100;
       } else {
@@ -99,7 +95,6 @@ const UserInfoModal = (props) => {
     }
   };
 
-  /* TODO:  Error: No native splash screen registered for given view controller. Call 'SplashScreen.show' for given view controller first. */
   return (
     <Overlay
       isVisible={userInfoModalVisible}
@@ -171,7 +166,9 @@ const UserInfoModal = (props) => {
           ) : userFilesLoaded && userFiles.length === 0 ? (
             <Text style={[styles.text, {alignSelf: 'center'}]}>No media</Text>
           ) : (
-            <PlaceholderImage />
+            <>
+              <PlaceholderImage />
+            </>
           )}
         </View>
       </ScrollView>

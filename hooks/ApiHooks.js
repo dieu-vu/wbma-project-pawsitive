@@ -3,7 +3,7 @@ import {useContext, useEffect, useState} from 'react';
 import {MainContext} from '../contexts/MainContext';
 import {getDistance, isPointWithinRadius} from 'geolib';
 import {getUserLocation} from '../utils/Utils';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const doFetch = async (url, options = {}) => {
   try {
@@ -197,13 +197,11 @@ const useMedia = (myFilesOnly) => {
         const postOnMap = JSON.parse(mediaPost.description);
         const getRatings = await getRatingsForFile(mediaPost.file_id, token);
 
-        const ratings = getRatings.map((rating) => (
-          rating.rating
-        ))
+        const ratings = getRatings.map((rating) => rating.rating);
         const sumOfRatings = ratings
           ? ratings.reduce((prev, current) => prev + current, 0)
           : 0;
-        const ratingCounter = ratings ? ratings.length : 0
+        const ratingCounter = ratings ? ratings.length : 0;
         const ratingsAverage = ratings
           ? ((sumOfRatings / ratingCounter) * 10) / 10
           : 0;
@@ -434,19 +432,6 @@ const useUser = () => {
     return result.available;
   };
 
-  const getAllUserId = async (token) => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'x-access-token': token,
-      },
-    };
-    const result = await doFetch(baseUrl + 'users', options);
-    return result.map((user) => {
-      return user.user_id;
-    });
-  };
-
   const getUserInfo = async (userId, token) => {
     const options = {
       method: 'GET',
@@ -464,7 +449,6 @@ const useUser = () => {
     postUser,
     checkUsername,
     putUser,
-    getAllUserId,
     getUserInfo,
   };
 };
