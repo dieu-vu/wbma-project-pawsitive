@@ -279,7 +279,6 @@ const DrawerNavigator = () => {
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',
-            color: 'black',
           },
           headerTitleStyle: {
             fontFamily: 'Montserrat-SemiBold',
