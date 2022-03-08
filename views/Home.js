@@ -20,7 +20,6 @@ import PlaceholderImage from '../components/PlaceholderImage';
 const Home = ({navigation}) => {
   const {setSelectedPetType, postsInRange, update} = useContext(MainContext);
   const [inRangeLoading, setInRangeLoading] = useState(true);
-  const {mediaArray} = useMedia();
   const insets = useSafeAreaInsets();
   const animation = React.createRef();
 
@@ -38,7 +37,7 @@ const Home = ({navigation}) => {
   }, [update, postsInRange]);
 
   const listsAroundYou = () => {
-    console.log('POSTS IN RANGE', mediaArray);
+    // console.log('POSTS IN RANGE', mediaArray);
     if (inRangeLoading) {
       return (
         <View style={{marginLeft: 20}}>

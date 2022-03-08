@@ -65,7 +65,7 @@ const UpdateUserForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
-            <Icon type={'evilicon'} name="envelope" style={styles.logo} />
+            <Icon type={'feather'} name="mail" style={styles.logo} />
             <Input
               style={styles.input}
               inputContainerStyle={{borderBottomWidth: 0}}
@@ -90,7 +90,7 @@ const UpdateUserForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
-            <Icon type={'evilicon'} name="user" style={styles.logo} />
+            <Icon type={'feather'} name="user" style={styles.logo} />
             <Input
               style={styles.input}
               inputContainerStyle={{borderBottomWidth: 0}}
@@ -121,7 +121,7 @@ const UpdateUserForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
-            <Icon type={'evilicon'} name="lock" style={styles.logo} />
+            <Icon type={'feather'} name="lock" style={styles.logo} />
             <Input
               style={styles.input}
               inputContainerStyle={{borderBottomWidth: 0}}
@@ -152,7 +152,7 @@ const UpdateUserForm = ({navigation}) => {
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>
-            <Icon type={'evilicon'} name="lock" style={styles.logo} />
+            <Icon type={'feather'} name="lock" style={styles.logo} />
             <Input
               style={styles.input}
               inputContainerStyle={{borderBottomWidth: 0}}
@@ -204,7 +204,6 @@ const styles = StyleSheet.create({
   },
   logo: {
     paddingTop: 8,
-    transform: [{scaleX: 1.5}, {scaleY: 1.5}],
   },
   button: {
     marginBottom: 20,

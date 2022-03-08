@@ -203,9 +203,8 @@ const useMedia = (myFilesOnly) => {
           ? ratings.reduce((prev, current) => prev + current, 0)
           : 0;
         const ratingCounter = ratings ? ratings.length : 0;
-        const ratingsAverage = ratings
-          ? ((sumOfRatings / ratingCounter) * 10) / 10
-          : 0;
+        const ratingsAverage =
+          ratings.length === 0 ? 0 : ((sumOfRatings / ratingCounter) * 10) / 10;
 
         if (postOnMap.coords !== undefined) {
           setOfMarkers.add({
