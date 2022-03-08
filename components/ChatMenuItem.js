@@ -37,7 +37,7 @@ const ChatMenuItem = ({navigation, item}) => {
     >
       <View style={styles.postContainer}>
         <Avatar
-          size="large"
+          size={55}
           rounded={true}
           source={{
             uri: uploadsUrl + item.media_thumbnails.w160,
@@ -76,12 +76,14 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Montserrat-SemiBold',
     color: 'black',
-    fontSize: 18,
+    fontSize: 15,
     paddingHorizontal: 5,
+    top: 3,
   },
   postContainer: {
     flexDirection: 'row',
     width: Dimensions.get('window').width * 0.55,
+    alignItems: 'center',
   },
   icon: {
     paddingLeft: 10,
