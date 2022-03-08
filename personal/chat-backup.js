@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   View,
-  Empty,
 } from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
@@ -36,12 +35,13 @@ const Chat = ({route, navigation}) => {
   console.log('route', route);
 
   const [commentsArray, setCommentsArray] = useState([]);
+  const [isFetching, setIsFetching] = useState(false);
   const {getCommentsForFile} = useComments();
   const {getUserById} = useUser();
   const {update, setUpdate} = useContext(MainContext);
-  const [isFetching, setIsFetching] = useState(false);
 
   const fetchComments = async () => {
+    setIsFetching(false);
     try {
       const commentList = await getCommentsForFile(fileId);
       const mappedCommentsList = commentList.filter((item) => {
@@ -67,6 +67,11 @@ const Chat = ({route, navigation}) => {
     } catch (error) {
       console.error('get comments error', error);
     }
+  };
+
+  const onRefresh = () => {
+    setIsFetching(true);
+    fetchComments();
   };
 
   const fetchUserName = async (userId, userToken) => {
@@ -100,33 +105,36 @@ const Chat = ({route, navigation}) => {
 
   useEffect(() => {
     fetchComments();
-    setIsFetching(false);
   }, [update]);
 
-  const onRefresh = () => {
-    setIsFetching(true);
-    fetchComments();
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchComments();
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <SafeAreaView styles={styles.container}>
       <FlatList
+        onRefresh={onRefresh}
+        refreshing={isFetching}
         style={styles.flatList}
         data={commentsArray}
+        progressViewOffset={1000}
         keyExtractor={(item) => item.comment_id}
         renderItem={({item}) => <CommentItem item={item} />}
         ListFooterComponent={() => {
           return null;
         }}
-        onRefresh={onRefresh}
-        refreshing={isFetching}
       />
       <KeyboardAvoidingView
+        keyboardShouldPersistTaps="handled"
         behavior="position"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-        style={{flex: 2}}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
       >
-        <View style={styles.formContainer}>
+        <View
+          style={styles.formContainer}>
           <CommentForm
             fileId={fileId}
             chatStarterId={chatStarterId}
@@ -157,13 +165,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatList: {
-    height: Dimensions.get('window').height - 165,
+    height: Dimensions.get('window').height*0.72,
     paddingTop: 20,
-    elevation: -1,
   },
   formContainer: {
-    elevation: 1,
-    height: undefined,
+    height: 100,
     alignSelf: 'flex-end',
   },
   commentContainerLeft: {

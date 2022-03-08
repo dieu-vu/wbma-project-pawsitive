@@ -5,6 +5,7 @@ import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatMenuItem from '../components/ChatMenuItem';
+import {getFonts} from '../utils/Utils';
 
 const ChatMenu = ({navigation}) => {
   const {user} = useContext(MainContext);
@@ -15,10 +16,13 @@ const ChatMenu = ({navigation}) => {
   const {getPostsByUserId, getSingleMedia} = useMedia();
   const {getUserById} = useUser();
 
+  getFonts();
+
   const fetchMedia = async () => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       // user´s all comments
+
       const commentArrayForUser = await getCommentsForUser(userToken);
 
       const arrayOfPosts = [];
@@ -32,7 +36,6 @@ const ChatMenu = ({navigation}) => {
           }
         }
       });
-      console.log('to others', chatsToOtherUsersFiles);
 
       // user´s posts to link media
       const usersPosts = await getPostsByUserId(userId);
@@ -53,15 +56,12 @@ const ChatMenu = ({navigation}) => {
       const chatsToUserWithoutDuplicates = chatsToUser.map((item) => {
         const userIdArray = [];
         return item.filter((item) => {
-          console.log(typeof item.user_id);
-          if (!userIdArray.includes(item.user_id)) {
+          if (!userIdArray.includes(item.user_id)){
             userIdArray.push(item.user_id);
             return item;
           }
         });
       });
-
-      console.log(chatsToUserWithoutDuplicates);
 
       const flatChatsToUser = chatsToUserWithoutDuplicates.flat();
 
