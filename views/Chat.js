@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
   flatList: {
     height: Dimensions.get('window').height - 165,
     paddingTop: 20,
-    elevation: -1,
   },
   formContainer: {
     elevation: 1,

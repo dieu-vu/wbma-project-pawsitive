@@ -58,10 +58,12 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
   };
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+
       keyboardShouldPersistTaps="handled"
     >
       <View
+        behavior='padding'
+        enabled
         style={[
           styles.formContainer,
           {
