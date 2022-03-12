@@ -38,7 +38,7 @@ const Single = ({navigation, route}) => {
   const {getUserById} = useUser();
   const {addRating, getRatingsForFile} = useRating();
   const [status, setStatus] = useState({});
-  const {postFavourite} = useFavourite();
+  const {postFavourite, getFavouritesByFileId} = useFavourite();
   const {deleteMedia, getPostsByUserId} = useMedia();
   const {putUser} = useUser();
   const {
@@ -54,6 +54,7 @@ const Single = ({navigation, route}) => {
   const [rating, setRating] = useState(3);
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
   const [subscribed, setSubcribed] = useState(false);
+  const [currentUserLiked, setCurrentUserLiked] = useState(false);
 
   let userInfo = {};
   if (user.full_name && user.full_name.includes('subscribed_media')) {
@@ -62,21 +63,45 @@ const Single = ({navigation, route}) => {
 
   const animation = React.createRef();
   useEffect(() => {
-    animation.current?.play();
-  }, [animation]);
+    checkUserLiked();
+    console.log('current user like', currentUserLiked);
+    if (currentUserLiked) {
+      animation.current?.play();
+    }
+  }, [currentUserLiked]);
 
   getFonts();
-  // Function to save post
-  const savePost = async () => {
+
+  // Function to check if user liked the post:
+  const checkUserLiked = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await postFavourite(file.file_id, token);
-      if (response) {
-        Alert.alert('Saved to favourites');
-        setUpdate(update + 1);
+      const checkIfFavouriteCreated = await getFavouritesByFileId(file.file_id);
+      const listtUserLiked = checkIfFavouriteCreated.map((item) => {
+        return item.user_id;
+      });
+      if (listtUserLiked.includes(user.user_id)) {
+        setCurrentUserLiked(true);
       }
     } catch (error) {
-      console.error('create like error', error);
+      console.error('check favorites history error', error);
+    }
+  };
+
+  // Function to save post
+  const savePost = async () => {
+    if (currentUserLiked) {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+
+        const response = await postFavourite(file.file_id, token);
+        if (response) {
+          Alert.alert('Saved to favourites');
+          setUpdate(update + 1);
+          setCurrentUserLiked(true);
+        }
+      } catch (error) {
+        console.error('create like error', error);
+      }
     }
   };
 
@@ -393,7 +418,6 @@ const Single = ({navigation, route}) => {
                       alignSelf: 'center',
                       backgroundColor: 'transparent',
                     }}
-                    autoPlay={true}
                     loop={false}
                   ></LottieView>
                 </Pressable>

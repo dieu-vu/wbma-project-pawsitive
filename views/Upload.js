@@ -321,6 +321,7 @@ const Upload = ({navigation}) => {
                   autoCapitalize="none"
                   placeholder="Price in EUR"
                   style={[styles.input]}
+                  errorMessage={errors.price && 'Please provide a number'}
                 ></Input>
               )}
               name="price"

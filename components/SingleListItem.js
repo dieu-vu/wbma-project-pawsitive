@@ -9,7 +9,11 @@ import {useFavourite, useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
 const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
-  const fileInfo = JSON.parse(singleMedia.description);
+  let fileInfo = {};
+  if (singleMedia.description.includes('coords')) {
+    fileInfo = JSON.parse(singleMedia.description);
+  }
+
   const {deleteMedia} = useMedia();
   const {deleteFavourite} = useFavourite();
   const {update, setUpdate} = useContext(MainContext);
@@ -56,107 +60,109 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
     ]);
   };
 
-  return (
-    <ListItem
-      bottomDivider
-      style={styles.listItem}
-      Component={TouchableOpacity}
-      linearGradientProps={{
-        colors: ['#8DD35E', '#425E20'],
-        start: {x: 0.1, y: 0.3},
-        end: {x: 0, y: 0.2},
-      }}
-      ViewComponent={LinearGradient}
-      onPress={() => {
-        navigation.navigate('Single', {file: singleMedia});
-      }}
-    >
-      <Avatar
-        size="large"
-        rounded={true}
-        source={{
-          uri: uploadsUrl + singleMedia.thumbnails.w160,
+  if (fileInfo) {
+    return (
+      <ListItem
+        bottomDivider
+        style={styles.listItem}
+        Component={TouchableOpacity}
+        linearGradientProps={{
+          colors: ['#8DD35E', '#425E20'],
+          start: {x: 0.1, y: 0.3},
+          end: {x: 0, y: 0.2},
         }}
-      />
-      <ListItem.Content style={styles.itemContent}>
-        <View style={{flex: 1, flexDirection: 'column'}}>
-          <ListItem.Title numberOfLines={2} h4 style={styles.title}>
-            {singleMedia.title}
-          </ListItem.Title>
-          <ListItem.Subtitle style={styles.subTitle}>
-            {fileInfo.description.length > 70
-              ? `${fileInfo.description.substring(0, 70)} ...`
-              : fileInfo.description}
-          </ListItem.Subtitle>
-        </View>
-        {!myFilesOnly && !savedPosts ? (
-          <View style={{marginLeft: 5, marginRight: 5}}>
-            <Text style={{fontSize: 20, fontFamily: 'Montserrat-SemiBold'}}>
-              {!fileInfo.price || fileInfo.price === '0'
-                ? 'FREE'
-                : `${fileInfo.price}€`}
-            </Text>
+        ViewComponent={LinearGradient}
+        onPress={() => {
+          navigation.navigate('Single', {file: singleMedia});
+        }}
+      >
+        <Avatar
+          size="large"
+          rounded={true}
+          source={{
+            uri: uploadsUrl + singleMedia.thumbnails.w160,
+          }}
+        />
+        <ListItem.Content style={styles.itemContent}>
+          <View style={{flex: 1, flexDirection: 'column'}}>
+            <ListItem.Title numberOfLines={2} h4 style={styles.title}>
+              {singleMedia.title}
+            </ListItem.Title>
+            <ListItem.Subtitle style={styles.subTitle}>
+              {fileInfo.description && fileInfo.description.length > 70
+                ? `${fileInfo.description.substring(0, 70)} ...`
+                : fileInfo.description}
+            </ListItem.Subtitle>
           </View>
-        ) : (
-          <></>
-        )}
-        {myFilesOnly && (
-          <Button
-            title="Delete"
-            onPress={deletePost}
-            style={styles.button}
-            buttonStyle={{backgroundColor: '#A9FC73'}}
-            containerStyle={{
-              borderWidth: 0.5,
-              borderColor: '#425E20',
-              marginTop: 10,
-              shadowColor: '#425E20',
-              shadowOffset: {
-                width: 0,
-                height: 9,
-              },
-              shadowOpacity: 0.48,
-              shadowRadius: 11.95,
-              elevation: 18,
-              alignSelf: 'flex-end',
-            }}
-            titleStyle={{
-              color: 'black',
-              fontSize: 16,
-              fontFamily: 'Montserrat-SemiBold',
-            }}
-          />
-        )}
-        {savedPosts && (
-          <Button
-            title="Remove"
-            onPress={removeSavedPost}
-            buttonStyle={{backgroundColor: '#A9FC73'}}
-            style={styles.button}
-            containerStyle={{
-              borderWidth: 0.5,
-              borderColor: '#425E20',
-              marginTop: 10,
-              shadowColor: '#425E20',
-              shadowOffset: {
-                width: 0,
-                height: 9,
-              },
-              shadowOpacity: 0.48,
-              shadowRadius: 11.95,
-              elevation: 18,
-              alignSelf: 'flex-end',
-            }}
-            titleStyle={{
-              color: 'black',
-              fontSize: 16,
-              fontFamily: 'Montserrat-SemiBold',
-            }}
-          />
-        )}
-      </ListItem.Content>
-    </ListItem>
-  );
+          {!myFilesOnly && !savedPosts ? (
+            <View style={{marginLeft: 5, marginRight: 5}}>
+              <Text style={{fontSize: 20, fontFamily: 'Montserrat-SemiBold'}}>
+                {!fileInfo.price || fileInfo.price === '0'
+                  ? 'FREE'
+                  : `${fileInfo.price}€`}
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
+          {myFilesOnly && (
+            <Button
+              title="Delete"
+              onPress={deletePost}
+              style={styles.button}
+              buttonStyle={{backgroundColor: '#A9FC73'}}
+              containerStyle={{
+                borderWidth: 0.5,
+                borderColor: '#425E20',
+                marginTop: 10,
+                shadowColor: '#425E20',
+                shadowOffset: {
+                  width: 0,
+                  height: 9,
+                },
+                shadowOpacity: 0.48,
+                shadowRadius: 11.95,
+                elevation: 18,
+                alignSelf: 'flex-end',
+              }}
+              titleStyle={{
+                color: 'black',
+                fontSize: 16,
+                fontFamily: 'Montserrat-SemiBold',
+              }}
+            />
+          )}
+          {savedPosts && (
+            <Button
+              title="Remove"
+              onPress={removeSavedPost}
+              buttonStyle={{backgroundColor: '#A9FC73'}}
+              style={styles.button}
+              containerStyle={{
+                borderWidth: 0.5,
+                borderColor: '#425E20',
+                marginTop: 10,
+                shadowColor: '#425E20',
+                shadowOffset: {
+                  width: 0,
+                  height: 9,
+                },
+                shadowOpacity: 0.48,
+                shadowRadius: 11.95,
+                elevation: 18,
+                alignSelf: 'flex-end',
+              }}
+              titleStyle={{
+                color: 'black',
+                fontSize: 16,
+                fontFamily: 'Montserrat-SemiBold',
+              }}
+            />
+          )}
+        </ListItem.Content>
+      </ListItem>
+    );
+  }
 };
 
 const styles = StyleSheet.create({

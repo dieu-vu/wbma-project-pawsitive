@@ -54,7 +54,7 @@ const ChatMenu = ({navigation}) => {
         const userIdArray = [];
         return item.filter((item) => {
           console.log(typeof item.user_id);
-          if (!userIdArray.includes(item.user_id)){
+          if (!userIdArray.includes(item.user_id)) {
             userIdArray.push(item.user_id);
             return item;
           }

@@ -1,18 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {PropTypes} from 'prop-types';
-import {
-  Dimensions,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useMedia, useTag} from '../hooks/ApiHooks';
 import {appId} from '../utils/Variables';
 import SingleListItem from '../components/SingleListItem';
 import {MainContext} from '../contexts/MainContext';
-import {LinearGradient} from 'expo-linear-gradient';
 
 const SavedPosts = ({navigation}) => {
   const [itemsList, setItemsList] = useState([]);
@@ -24,25 +17,30 @@ const SavedPosts = ({navigation}) => {
   const fetchFavourites = async () => {
     const token = await AsyncStorage.getItem('userToken');
     const favouritesList = await getFavourites(token);
-    const favouritesWithTag = await favouritesList.filter(
-      filterFavouritesByTag
-    );
-    console.log('tags', favouritesWithTag);
+    if (favouritesList) {
+      const favouritesWithTag = favouritesList.filter(filterFavouritesByTag);
 
-    try {
-      const mediaItems = await Promise.all(
-        favouritesWithTag.map(async (tag) => {
-          try {
-            return await getSingleMedia(tag.file_id, token);
-          } catch (error) {
-            console.error('get single media file error');
-          }
-        })
-      );
-      console.log('mediaItems', mediaItems);
-      setItemsList(mediaItems);
-    } catch (error) {
-      console.error('get favourites error', error);
+      console.log('favouritesWithTag', favouritesWithTag);
+      if (favouritesWithTag) {
+        try {
+          const mediaItems = await Promise.all(
+            favouritesWithTag.map(async (tag) => {
+              if (tag != undefined) {
+                try {
+                  const response = await getSingleMedia(tag.file_id, token);
+                  return response;
+                } catch (error) {
+                  console.error('get single media file error');
+                }
+              }
+            })
+          );
+          console.log('mediaItems', mediaItems);
+          setItemsList(mediaItems);
+        } catch (error) {
+          console.error('get favourites error', error);
+        }
+      }
     }
   };
 
@@ -51,12 +49,14 @@ const SavedPosts = ({navigation}) => {
     const token = await AsyncStorage.getItem('userToken');
     const tags = await getTagsForFile(fileId, token);
 
-    return tags.filter((tag) => {
+    let myAppFile = false;
+
+    tags.filter((tag) => {
       const tagRoot = tag.tag.split('_')[0];
-      if (tagRoot === appId) {
-        return tag;
-      }
+      myAppFile = tagRoot === appId;
     });
+    console.log('MY APP FILE', item.file_id, myAppFile);
+    return myAppFile;
   };
 
   useEffect(() => {
@@ -65,10 +65,7 @@ const SavedPosts = ({navigation}) => {
 
   return (
     <SafeAreaView>
-
-      <View
-        style={styles.listContainer}
-      >
+      <View style={styles.listContainer}>
         <FlatList
           style={styles.flatList}
           data={itemsList}

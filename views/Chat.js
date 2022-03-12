@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  Empty,
 } from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
@@ -38,6 +39,7 @@ const Chat = ({route, navigation}) => {
   const {getCommentsForFile} = useComments();
   const {getUserById} = useUser();
   const {update, setUpdate} = useContext(MainContext);
+  const [isFetching, setIsFetching] = useState(false);
 
   const fetchComments = async () => {
     try {
@@ -98,7 +100,13 @@ const Chat = ({route, navigation}) => {
 
   useEffect(() => {
     fetchComments();
+    setIsFetching(false);
   }, [update]);
+
+  const onRefresh = () => {
+    setIsFetching(true);
+    fetchComments();
+  };
 
   return (
     <SafeAreaView styles={styles.container}>
@@ -110,6 +118,8 @@ const Chat = ({route, navigation}) => {
         ListFooterComponent={() => {
           return null;
         }}
+        onRefresh={onRefresh}
+        refreshing={isFetching}
       />
       <KeyboardAvoidingView
         behavior="position"
