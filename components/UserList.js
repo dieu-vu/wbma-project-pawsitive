@@ -19,6 +19,7 @@ const UserList = ({navigation, userArray}) => {
 };
 
 UserList.propTypes = {
+  navigation: propTypes.object,
   userArray: propTypes.array,
 };
 

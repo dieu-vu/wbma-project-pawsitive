@@ -516,46 +516,50 @@ const Single = ({navigation, route}) => {
             </View>
 
             {/* Post rating */}
-            <View style={[styles.postSection, {marginBottom: 20}]}>
-              <Card.Title
-                style={[styles.text, {fontSize: 20, fontWeight: 'bold'}]}
-              >
-                Rate your experience with the user
-              </Card.Title>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                }}
-              >
-                <AirbnbRating
-                  onFinishRating={ratingCompleted}
-                  style={[styles.rating]}
-                  count={5}
-                  reviews={[
-                    'Terrible',
-                    'Not very good',
-                    'OK',
-                    'Good',
-                    'Excellent!',
-                  ]}
-                  defaultRating={3}
-                  size={20}
-                  reviewColor={colors.darkestGreen}
-                  selectedColor={colors.darkestGreen}
-                />
-                <CustomButton
-                  title="Send"
-                  fontSize={15}
-                  onPress={() => {
-                    saveRating();
+            {owner.user_id !== user.user_id ? (
+              <View style={[styles.postSection, {marginBottom: 20}]}>
+                <Card.Title
+                  style={[styles.text, {fontSize: 20, fontWeight: 'bold'}]}
+                >
+                  Rate your experience with the user
+                </Card.Title>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                    alignItems: 'center',
                   }}
-                  style={{flex: 1, alignSelf: 'center'}}
-                />
+                >
+                  <AirbnbRating
+                    onFinishRating={ratingCompleted}
+                    style={[styles.rating]}
+                    count={5}
+                    reviews={[
+                      'Terrible',
+                      'Not very good',
+                      'OK',
+                      'Good',
+                      'Excellent!',
+                    ]}
+                    defaultRating={3}
+                    size={20}
+                    reviewColor={colors.darkestGreen}
+                    selectedColor={colors.darkestGreen}
+                  />
+                  <CustomButton
+                    title="Send"
+                    fontSize={15}
+                    onPress={() => {
+                      saveRating();
+                    }}
+                    style={{flex: 1, alignSelf: 'center'}}
+                  />
+                </View>
               </View>
-            </View>
+            ) : (
+              <></>
+            )}
 
             {/* Option buttons */}
             {/* If user is post owner, allow to edit and delete and open chat/comment */}

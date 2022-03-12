@@ -140,6 +140,9 @@ const SubscriberList = ({navigation, route}) => {
         })
       );
       if (response) {
+        if (count === 0) {
+          return 0;
+        }
         const average = sum / count;
         // console.log('average', Math.round(average));
         return Math.round((average + Number.EPSILON) * 100) / 100;
