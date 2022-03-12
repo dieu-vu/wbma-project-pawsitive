@@ -56,6 +56,8 @@ Run Project Locally: `expo start` or `npm start`
 2.  Upload: Show error message when price input is in the wrong format
 3.  Favorites list: Fix the issue of the media from other apps that have issues in JSON parse
 4.  Single Media view: Bookmark/Favourite animation button change play to black color after saving favorites. Allow user to click again to remove favorite and reset animation bookmark button’s color.
+5.  When user has not favourited any post, show animation and have a button that takes to all listings where they can find posts that they might like.
+6.  When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
 
 ## Current issues
 
