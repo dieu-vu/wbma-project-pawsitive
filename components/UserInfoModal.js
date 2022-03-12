@@ -84,6 +84,9 @@ const UserInfoModal = (props) => {
           const rating = item.rating;
           sum += rating;
           count++;
+          if (count === 0) {
+            return 0;
+          }
           average = sum / count;
         });
         return Math.round((average + Number.EPSILON) * 100) / 100;

@@ -51,7 +51,7 @@ const SavedPosts = ({navigation}) => {
               }
             })
           );
-          console.log('mediaItems', mediaItems);
+          // console.log('mediaItems', mediaItems);
           setItemsList(mediaItems);
         } catch (error) {
           console.error('get favourites error', error);
@@ -71,7 +71,7 @@ const SavedPosts = ({navigation}) => {
       const tagRoot = tag.tag.split('_')[0];
       myAppFile = tagRoot === appId;
     });
-    console.log('MY APP FILE', item.file_id, myAppFile);
+    // console.log('MY APP FILE', item.file_id, myAppFile);
     return myAppFile;
   };
 
