@@ -50,7 +50,9 @@ Run Project Locally: `expo start` or `npm start`
 
 [Metropolia's Media API docs](https://media.mw.metropolia.fi/wbma/docs/)
 
-## Bugs reported and fixed from demo session on 9th March 2022 at Metropolia, Karamalmi campus:
+## Bugs reported and fixed from demo session
+
+_on 9th March 2022 at Metropolia, Karamalmi campus:_
 
 1.  Chat: Refresh Chat FlatList on pull action
 2.  Upload: Show error message when price input is in the wrong format
