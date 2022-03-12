@@ -23,7 +23,7 @@ const UserListItem = ({navigation, subscriber}) => {
   useEffect(async () => {
     const avatarFile = await fetchAvatar(subscriber);
     setAvatar(uploadsUrl + avatarFile);
-    console.log('CURRENT VIEWED FILE IN LIST', currentViewedFile);
+    // console.log('CURRENT VIEWED FILE IN LIST', currentViewedFile);
   }, []);
 
   return (
