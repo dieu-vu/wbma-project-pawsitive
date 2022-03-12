@@ -81,43 +81,43 @@ const SavedPosts = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      {itemsList.length === 0 ? (
-        <View style={{flexDirection: 'column'}}>
-          <LottieView
-            ref={animation}
-            source={require('../assets/cat-popping-animation.json')}
-            style={{
-              marginTop: 40,
-              width: '80%',
-              aspectRatio: 1,
-              alignSelf: 'center',
-              backgroundColor: 'transparent',
-            }}
-            autoPlay={true}
-            loop={true}
-          />
-          <Text
-            style={{
-              marginTop: 60,
-              height: 30,
-              fontFamily: 'Montserrat-Regular',
-              fontSize: 18,
-              alignSelf: 'center',
-            }}
-          >
-            No favourites yet
-          </Text>
-          <MainButton
-            buttonStyle={styles.buttonStyle}
-            title="Go to listings"
-            titleStyle={styles.titleStyle}
-            onPress={() => {
-              navigation.navigate('Listing');
-            }}
-          />
-        </View>
-      ) : (
-        <View style={styles.listContainer}>
+      <View style={styles.listContainer}>
+        {itemsList.length === 0 ? (
+          <View style={{flexDirection: 'column'}}>
+            <LottieView
+              ref={animation}
+              source={require('../assets/cat-popping-animation.json')}
+              style={{
+                marginTop: 40,
+                width: '80%',
+                aspectRatio: 1,
+                alignSelf: 'center',
+                backgroundColor: 'transparent',
+              }}
+              autoPlay={true}
+              loop={true}
+            />
+            <Text
+              style={{
+                marginTop: 60,
+                height: 30,
+                fontFamily: 'Montserrat-Regular',
+                fontSize: 18,
+                alignSelf: 'center',
+              }}
+            >
+              No favourites yet
+            </Text>
+            <MainButton
+              buttonStyle={styles.buttonStyle}
+              title="Go to listings"
+              titleStyle={styles.titleStyle}
+              onPress={() => {
+                navigation.navigate('Listing');
+              }}
+            />
+          </View>
+        ) : (
           <FlatList
             style={styles.flatList}
             data={itemsList}
@@ -133,8 +133,8 @@ const SavedPosts = ({navigation}) => {
               return null;
             }}
           />
-        </View>
-      )}
+        )}
+      </View>
     </SafeAreaView>
   );
 };
