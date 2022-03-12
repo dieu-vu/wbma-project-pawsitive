@@ -11,7 +11,7 @@ const MainButton = (props) => {
     <Button
       title={props.title}
       onPress={props.onPress}
-      titleStyle={styles.titleStyle}
+      titleStyle={props.titleStyle || styles.titleStyle}
       buttonStyle={props.buttonStyle || styles.buttonStyle}
     />
   );

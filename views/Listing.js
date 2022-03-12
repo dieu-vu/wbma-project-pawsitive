@@ -76,7 +76,7 @@ const Listing = ({navigation}) => {
       >
         <View style={styles.SbAndDropContainer}>
           <SearchBar
-            placeholder="Search..."
+            placeholder="Search for post..."
             onChangeText={updateSearch}
             value={searchValue}
             onCancel={() => {
@@ -85,14 +85,14 @@ const Listing = ({navigation}) => {
             platform={'ios'}
             containerStyle={{
               height: 60,
-              width: Dimensions.get('window').width * 0.68,
+              width: Dimensions.get('window').width * 0.65,
             }}
           />
 
           <CustomDropDownPicker
             value={selectedPetType}
             dropdownTextStyle={{display: 'none'}}
-            componentContainerStyle={{width: '45%', paddingRight: 25}}
+            componentContainerStyle={{width: '45%'}}
             containerStyle={{alignSelf: 'flex-start'}}
             dropdownPlaceholder="Filter By"
             items={items}
@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width,
-    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    justifyContent: 'space-around',
   },
 });
 

@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {PropTypes} from 'prop-types';
+import React from 'react';
+import PropTypes from 'prop-types';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
 import List from '../components/List';
 
@@ -20,8 +20,6 @@ const MyPosts = ({navigation}) => {
 MyPosts.propTypes = {
   navigation: PropTypes.object,
 };
-
-
 
 const styles = StyleSheet.create({
   container: {

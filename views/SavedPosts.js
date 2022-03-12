@@ -1,11 +1,21 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {PropTypes} from 'prop-types';
-import {FlatList, SafeAreaView, StyleSheet, View} from 'react-native';
+import PropTypes from 'prop-types';
+import {
+  Dimensions,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFavourite, useMedia, useTag} from '../hooks/ApiHooks';
 import {appId} from '../utils/Variables';
 import SingleListItem from '../components/SingleListItem';
 import {MainContext} from '../contexts/MainContext';
+import LottieView from 'lottie-react-native';
+import {Text} from 'react-native-elements';
+import {getFonts} from '../utils/Utils';
+import MainButton from '../components/MainButton';
 
 const SavedPosts = ({navigation}) => {
   const [itemsList, setItemsList] = useState([]);
@@ -13,6 +23,12 @@ const SavedPosts = ({navigation}) => {
   const {getSingleMedia} = useMedia();
   const {getTagsForFile} = useTag();
   const {update} = useContext(MainContext);
+  const animation = React.createRef();
+
+  useEffect(() => {
+    animation.current?.play();
+  }, [animation]);
+  getFonts();
 
   const fetchFavourites = async () => {
     const token = await AsyncStorage.getItem('userToken');
@@ -65,23 +81,60 @@ const SavedPosts = ({navigation}) => {
 
   return (
     <SafeAreaView>
-      <View style={styles.listContainer}>
-        <FlatList
-          style={styles.flatList}
-          data={itemsList}
-          keyExtractor={(item) => item.file_id.toString()}
-          renderItem={({item}) => (
-            <SingleListItem
-              navigation={navigation}
-              singleMedia={item}
-              savedPosts={true}
-            />
-          )}
-          ListFooterComponent={() => {
-            return null;
-          }}
-        />
-      </View>
+      {itemsList.length === 0 ? (
+        <View style={{flexDirection: 'column'}}>
+          <LottieView
+            ref={animation}
+            source={require('../assets/cat-popping-animation.json')}
+            style={{
+              marginTop: 40,
+              width: '80%',
+              aspectRatio: 1,
+              alignSelf: 'center',
+              backgroundColor: 'transparent',
+            }}
+            autoPlay={true}
+            loop={true}
+          />
+          <Text
+            style={{
+              marginTop: 60,
+              height: 30,
+              fontFamily: 'Montserrat-Regular',
+              fontSize: 18,
+              alignSelf: 'center',
+            }}
+          >
+            No favourites yet
+          </Text>
+          <MainButton
+            buttonStyle={styles.buttonStyle}
+            title="Go to listings"
+            titleStyle={styles.titleStyle}
+            onPress={() => {
+              navigation.navigate('Listing');
+            }}
+          />
+        </View>
+      ) : (
+        <View style={styles.listContainer}>
+          <FlatList
+            style={styles.flatList}
+            data={itemsList}
+            keyExtractor={(item) => item.file_id.toString()}
+            renderItem={({item}) => (
+              <SingleListItem
+                navigation={navigation}
+                singleMedia={item}
+                savedPosts={true}
+              />
+            )}
+            ListFooterComponent={() => {
+              return null;
+            }}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -105,6 +158,28 @@ const styles = StyleSheet.create({
     borderColor: '#8DD35E',
     borderRadius: 12,
     bottom: -15,
+  },
+  titleStyle: {
+    fontFamily: 'Montserrat-Regular',
+    color: 'black',
+    fontSize: 18,
+  },
+  buttonStyle: {
+    width: Dimensions.get('window').width * 0.5,
+    alignSelf: 'center',
+    marginTop: 20,
+    height: 40,
+    backgroundColor: '#A9FC73',
+    borderRadius: 35,
+    marginBottom: '30%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
   },
 });
 
