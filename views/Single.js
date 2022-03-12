@@ -39,7 +39,8 @@ const Single = ({navigation, route}) => {
   const {addRating, getRatingsForFile} = useRating();
   const [status, setStatus] = useState({});
   const {postFavourite, getFavouritesByFileId} = useFavourite();
-  const {deleteMedia, getPostsByUserId} = useMedia();
+  const {getPostsByUserId} = useMedia();
+  const {deleteFavourite} = useFavourite();
   const {putUser} = useUser();
   const {
     update,
@@ -55,6 +56,7 @@ const Single = ({navigation, route}) => {
   const {previousUserType, setPreviousUserType} = useContext(MainContext);
   const [subscribed, setSubcribed] = useState(false);
   const [currentUserLiked, setCurrentUserLiked] = useState(false);
+  const {deleteMedia} = useMedia();
 
   let userInfo = {};
   if (user.full_name && user.full_name.includes('subscribed_media')) {
@@ -62,11 +64,17 @@ const Single = ({navigation, route}) => {
   }
 
   const animation = React.createRef();
+
   useEffect(() => {
     checkUserLiked();
+  }, []);
+
+  useEffect(() => {
     console.log('current user like', currentUserLiked);
     if (currentUserLiked) {
       animation.current?.play();
+    } else {
+      animation.current?.reset();
     }
   }, [currentUserLiked]);
 
@@ -89,7 +97,7 @@ const Single = ({navigation, route}) => {
 
   // Function to save post
   const savePost = async () => {
-    if (currentUserLiked) {
+    if (!currentUserLiked) {
       try {
         const token = await AsyncStorage.getItem('userToken');
 
@@ -105,19 +113,20 @@ const Single = ({navigation, route}) => {
     }
   };
 
-  // Function to delete post
-  const deletePost = () => {
-    Alert.alert('Delete', 'your post permanently', [
+  // Function to remove favorites
+  const removeSavedPost = async () => {
+    Alert.alert('Favourite', 'will be removed from list', [
       {text: 'Cancel'},
       {
         text: 'OK',
         onPress: async () => {
           try {
             const token = await AsyncStorage.getItem('userToken');
-            const response = await deleteMedia(file.file_id, token);
+            const response = await deleteFavourite(file.file_id, token);
             if (response) {
-              Alert.alert('Post deleted');
+              console.log('favourite removed');
               setUpdate(update + 1);
+              setCurrentUserLiked(false);
             }
           } catch (error) {
             console.error(error);
@@ -345,6 +354,28 @@ const Single = ({navigation, route}) => {
     }
   };
 
+  // Function to delete post
+  const deletePost = () => {
+    Alert.alert('Delete', 'your post permanently', [
+      {text: 'Cancel'},
+      {
+        text: 'OK',
+        onPress: async () => {
+          try {
+            const token = await AsyncStorage.getItem('userToken');
+            const response = await deleteMedia(file.file_id, token);
+            if (response) {
+              Alert.alert('Post deleted');
+              setUpdate(update + 1);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        },
+      },
+    ]);
+  };
+
   // Fetch owner and user type:
   useEffect(() => {
     fetchOwner();
@@ -408,7 +439,9 @@ const Single = ({navigation, route}) => {
 
               {/* Add post to favourites */}
               <View style={styles.bookMarkLogo}>
-                <Pressable onPress={savePost}>
+                <Pressable
+                  onPress={currentUserLiked ? removeSavedPost : savePost}
+                >
                   <LottieView
                     ref={animation}
                     source={require('../assets/bookmark-animation.json')}
@@ -591,7 +624,7 @@ const Single = ({navigation, route}) => {
                     }}
                     iconStyle={{padding: 3}}
                     onPress={() => {
-                      const deleteConfirm = deletePost();
+                      const deleteConfirm = deletePost(file);
                       deleteConfirm && navigation.navigate('Listing');
                     }}
                   ></Icon>
