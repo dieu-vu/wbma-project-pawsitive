@@ -156,11 +156,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatList: {
-    height: Dimensions.get('window').height*0.72,
+    height: Dimensions.get('window').height* 0.70,
     paddingTop: 20,
   },
   formContainer: {
-    height: 101,
+    height: 100,
     alignSelf: 'flex-end',
   },
   commentContainerLeft: {
