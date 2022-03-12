@@ -61,9 +61,6 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     >
       <Controller
         control={control}
-        rules={{
-          required: {value: true, message: 'Comment needed'},
-        }}
         render={({field: {onChange, onBlur, value}}) => (
           <Input
             leftIcon={{type: 'evilicon', name: 'comment', size: 35}}
