@@ -19,11 +19,12 @@ Users can:
 
 ### App screens
 
-<img  src="/assets/screens/login.jpeg"  width="100" height="210">
-<img  src="/assets/screens/home.jpeg"  width="100" height="210">
-<img  src="/assets/screens/upload.jpeg"  width="100" height="210">
-<img  src="/assets/screens/single.jpeg"  width="100" height="210">
-<img  src="/assets/screens/map-listing.jpeg"  width="100" height="210">
+<p float='left'>
+<img  src="/assets/screens/login.jpeg"  width="200" height="420">
+<img  src="/assets/screens/home.jpeg"  width="200" height="420">
+<img  src="/assets/screens/upload.jpeg"  width="200" height="420">
+<img  src="/assets/screens/single.jpeg"  width="200" height="420">
+<img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
 
 ## Installation
 
