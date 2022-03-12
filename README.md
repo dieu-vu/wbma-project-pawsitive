@@ -25,6 +25,11 @@ Users can:
 <img  src="/assets/screens/upload.jpeg"  width="200" height="420">
 <img  src="/assets/screens/single.jpeg"  width="200" height="420">
 <img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
+</p>
+
+### [Screen recording on iOS]()
+
+### [Screen recording on Android]()
 
 ## Installation
 
