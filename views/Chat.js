@@ -123,8 +123,7 @@ const Chat = ({route, navigation}) => {
       />
       <KeyboardAvoidingView
         behavior="position"
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
-        style={{flex: 2}}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
       >
         <View style={styles.formContainer}>
           <CommentForm
@@ -157,11 +156,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatList: {
-    height: Dimensions.get('window').height - 165,
+    height: Dimensions.get('window').height*0.72,
     paddingTop: 20,
   },
   formContainer: {
-    height: undefined,
+    height: 101,
     alignSelf: 'flex-end',
   },
   commentContainerLeft: {

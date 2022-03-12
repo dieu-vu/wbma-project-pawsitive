@@ -57,52 +57,42 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardShouldPersistTaps="handled"
+      style={styles.formContainer}
     >
-      <View
-        style={[
-          styles.formContainer,
-          {
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          },
-        ]}
-      >
-        <Controller
-          control={control}
-          rules={{
-            required: {value: true, message: 'Comment needed'},
-          }}
-          render={({field: {onChange, onBlur, value}}) => (
-            <Input
-              leftIcon={{type: 'evilicon', name: 'comment', size: 35}}
-              inputContainerStyle={styles.inputField}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              autoCapitalize="none"
-              placeholder="..."
-              errorMessage={errors.comment && errors.comment.message}
-            />
-          )}
-          name="comment"
-        />
-        <Button
-          onPress={handleSubmit(onSubmit)}
-          title="Chat"
-          containerStyle={{
-            height: 60,
-            width: '22%',
-            right: 9.5,
-          }}
-          titleStyle={{
-            fontFamily: 'Montserrat-SemiBold',
-            color: 'black',
-            fontSize: 15,
-          }}
-          buttonStyle={styles.buttonStyle}
-        />
-      </View>
+      <Controller
+        control={control}
+        rules={{
+          required: {value: true, message: 'Comment needed'},
+        }}
+        render={({field: {onChange, onBlur, value}}) => (
+          <Input
+            leftIcon={{type: 'evilicon', name: 'comment', size: 35}}
+            inputContainerStyle={styles.inputField}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            value={value}
+            autoCapitalize="none"
+            placeholder="..."
+            errorMessage={errors.comment && errors.comment.message}
+          />
+        )}
+        name="comment"
+      />
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        title="Chat"
+        containerStyle={{
+          height: 74,
+          width: '23%',
+          right: 9.5,
+        }}
+        titleStyle={{
+          fontFamily: 'Montserrat-SemiBold',
+          color: 'black',
+          fontSize: 15,
+        }}
+        buttonStyle={styles.buttonStyle}
+      />
     </KeyboardAvoidingView>
   );
 };
@@ -126,7 +116,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 3,
   },
   formContainer: {
-    flex: 1,
     flexDirection: 'row',
     width: '78%',
     alignItems: 'flex-end',
