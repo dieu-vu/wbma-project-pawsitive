@@ -226,7 +226,7 @@ const Single = ({navigation, route}) => {
           sum += rating;
           count++;
           average = sum / count;
-          console.log('average rating', Math.round(average));
+          // console.log('average rating', Math.round(average));
         });
         return average;
       } else {
@@ -380,7 +380,7 @@ const Single = ({navigation, route}) => {
   useEffect(() => {
     fetchOwner();
     setCurrentViewedFile(file.file_id);
-    console.log('CURRENT VIEWED FILE', currentViewedFile);
+    // console.log('CURRENT VIEWED FILE', currentViewedFile);
   }, []);
 
   useEffect(async () => {
