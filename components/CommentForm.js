@@ -13,7 +13,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import propTypes from 'prop-types';
-import {getFonts} from '../utils/Utils';
 
 const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
   const {user} = useContext(MainContext);
@@ -32,8 +31,6 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     },
     mode: 'onBlur',
   });
-
-  getFonts();
 
   const onSubmit = async (data) => {
     const comment = {};
@@ -58,12 +55,10 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
   };
   return (
     <KeyboardAvoidingView
-
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardShouldPersistTaps="handled"
     >
       <View
-        behavior='padding'
-        enabled
         style={[
           styles.formContainer,
           {

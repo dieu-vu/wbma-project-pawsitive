@@ -785,3 +785,5 @@ fabric.properties
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,webstorm,macos,reactnative,xcode,android
+
+personal/

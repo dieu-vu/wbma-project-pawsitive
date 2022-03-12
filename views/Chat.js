@@ -161,7 +161,6 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   formContainer: {
-    elevation: 1,
     height: undefined,
     alignSelf: 'flex-end',
   },

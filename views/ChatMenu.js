@@ -24,6 +24,7 @@ const ChatMenu = ({navigation}) => {
       // user´s all comments
 
       const commentArrayForUser = await getCommentsForUser(userToken);
+      console.log(commentArrayForUser);
 
       const arrayOfPosts = [];
       // get chats to other user´s posts
