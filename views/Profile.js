@@ -27,12 +27,11 @@ import {getFonts, fetchAvatar} from '../utils/Utils';
 
 const Profile = ({navigation}) => {
   const [avatar, setAvatar] = useState();
-
   const [type, setType] = useState('image');
-  const {getFilesByTag} = useTag();
   const {user} = useContext(MainContext);
   const {postMedia} = useMedia();
   const {postTag} = useTag();
+
 
   const uploadImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -59,7 +58,6 @@ const Profile = ({navigation}) => {
       });
       try {
         const response = await postMedia(formData, userToken);
-        console.log('Upload response', response);
         if (response) {
           const tagResponse = await postTag(
             {
@@ -68,7 +66,6 @@ const Profile = ({navigation}) => {
             },
             userToken
           );
-          console.log('tag response', tagResponse);
           tagResponse && Alert.alert('Profile image', 'updated');
         }
       } catch (error) {

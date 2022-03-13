@@ -8,13 +8,15 @@ import ChatMenuItem from '../components/ChatMenuItem';
 import {getFonts} from '../utils/Utils';
 
 const ChatMenu = ({navigation}) => {
-  const {user} = useContext(MainContext);
-  const userId = user.user_id;
-  const {update, setUpdate} = useContext(MainContext);
   const [mediaArray, setMediaArray] = useState([]);
+
+  const {user} = useContext(MainContext);
+  const {update} = useContext(MainContext);
   const {getCommentsForUser, getCommentsForFile} = useComments();
   const {getPostsByUserId, getSingleMedia} = useMedia();
   const {getUserById} = useUser();
+
+  const userId = user.user_id;
 
   getFonts();
 
@@ -24,7 +26,6 @@ const ChatMenu = ({navigation}) => {
       // user´s all comments
 
       const commentArrayForUser = await getCommentsForUser(userToken);
-      console.log(commentArrayForUser);
 
       const arrayOfPosts = [];
       // get chats to other user´s posts
@@ -93,7 +94,6 @@ const ChatMenu = ({navigation}) => {
 
             const userFile = await getUserById(item.user_id, userToken);
             item['username'] = userFile.username;
-            //item['avatar'] = uploadsUrl + (await fetchAvatar(item));
             return item;
           } catch (error) {
             console.error('get single media file error');

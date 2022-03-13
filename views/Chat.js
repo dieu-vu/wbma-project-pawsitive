@@ -17,27 +17,23 @@ import {getFonts} from '../utils/Utils';
 import {colors} from '../utils/Variables';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Chat = ({route, navigation}) => {
-  const {user} = useContext(MainContext);
-  const userId = user.user_id;
-  const fileId = route.params.fileId;
-  const chatStarterId = route.params.chatStarterId;
+const Chat = ({route}) => {
   const [chatStarterName, setChatStarterName] = useState();
   const [chatResponserName, setChatResponserName] = useState();
-  console.log('starter', chatStarterId);
-  const chatResponserId = route.params.chatResponserId;
-  console.log('response', chatResponserId);
-
-  getFonts();
-  console.log('fileId', fileId);
-  console.log('route', route);
-
   const [commentsArray, setCommentsArray] = useState([]);
-  const {getCommentsForFile} = useComments();
-  const {getUserById} = useUser();
-  const {update, setUpdate} = useContext(MainContext);
   const [isFetching, setIsFetching] = useState(false);
 
+  const {getCommentsForFile} = useComments();
+  const {getUserById} = useUser();
+  const {update} = useContext(MainContext);
+
+  const fileId = route.params.fileId;
+  const chatStarterId = route.params.chatStarterId;
+  const chatResponserId = route.params.chatResponserId;
+
+  getFonts();
+
+  // fetch all comments for the file, filter the ones, where the user id's match
   const fetchComments = async () => {
     try {
       const commentList = await getCommentsForFile(fileId);
@@ -45,27 +41,25 @@ const Chat = ({route, navigation}) => {
         const comment = JSON.parse(item.comment);
         const starter = comment.chat_starter_id;
         const responser = comment.chat_responser_id;
-
         if (responser === chatResponserId && starter === chatStarterId) {
           return item;
         }
       });
-      console.log(mappedCommentsList);
       setCommentsArray(mappedCommentsList);
 
       const userToken = await AsyncStorage.getItem('userToken');
 
+      // get the names of the users to show in the chat
       const starter = await fetchUserName(chatStarterId, userToken);
-
       setChatStarterName(starter);
       const responser = await fetchUserName(chatResponserId, userToken);
-
       setChatResponserName(responser);
     } catch (error) {
       console.error('get comments error', error);
     }
   };
 
+  // function to get username by user id
   const fetchUserName = async (userId, userToken) => {
     try {
       const user = await getUserById(userId, userToken);
@@ -75,6 +69,7 @@ const Chat = ({route, navigation}) => {
     }
   };
 
+  // chat comment element
   const CommentItem = ({item}) => (
     <ListItem
       style={styles.item}
