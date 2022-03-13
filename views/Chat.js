@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatList: {
-    height: Dimensions.get('window').height * 0.75,
+    height: Dimensions.get('window').height * 0.7,
     paddingTop: 20,
   },
   formContainer: {

@@ -74,13 +74,13 @@ Bookmark/Favourite animation button change play to black color after saving favo
 
 When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
 
-6. Issue with Android in chat input was fixed
+6. Issue with Android in the Chat view's input box was fixed
 
 ## Current issues
 
 - The app requires the user to enable Location service to avoid issues with Map related features.
 - `PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down. Depending on the network situation, the user will need to wait for some time for the media to load.
-- Different Android devices can have some unexpected issues with some views, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
+- **Different Android devices can have some unexpected issues with some views**, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
 
 ## Contributors
 

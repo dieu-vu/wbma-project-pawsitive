@@ -5,6 +5,7 @@ import {getFonts} from '../utils/Utils';
 import {MainContext} from '../contexts/MainContext';
 import PropTypes from 'prop-types';
 
+// Custom dropdown picker to select pet type: Used for both upload/edit post form and filter in listing
 const CustomDropDownPicker = (props) => {
   const [open, setOpen] = useState(false);
   const {petType, setPetType} = useContext(MainContext);

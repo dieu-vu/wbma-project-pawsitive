@@ -10,20 +10,24 @@ const CheckboxComponent = ({customText, file = null}) => {
   const {previousUserType} = useContext(MainContext);
   const [isOwner, setOwner] = useState(false);
   const [isSitter, setSitter] = useState(false);
+
+  // // Check result selected in checkbox form
   useEffect(() => {
     console.log('POST AS USER TYPE \n', userType);
   }, [userType]);
 
+  // Check the latest user type tag to prefill in the edit post form
   useEffect(() => {
     console.log('PREVIOUS USER TYPE \n', previousUserType);
     setOwner(previousUserType == 'owner');
     setSitter(previousUserType == 'sitter');
   }, [previousUserType]);
 
-  useEffect(() => {
-    console.log('IS OWNER', isOwner);
-    console.log('IS SITTER', isSitter);
-  }, [isOwner, isSitter]);
+  // // Check current user type selected
+  // useEffect(() => {
+  //   console.log('IS OWNER', isOwner);
+  //   console.log('IS SITTER', isSitter);
+  // }, [isOwner, isSitter]);
 
   getFonts();
   return (
