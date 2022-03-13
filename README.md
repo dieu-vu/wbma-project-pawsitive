@@ -22,9 +22,11 @@ Users can:
 <p float='left'>
 <img  src="/assets/screens/login.jpeg"  width="200" height="420">
 <img  src="/assets/screens/home.jpeg"  width="200" height="420">
+<img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
 <img  src="/assets/screens/upload.jpeg"  width="200" height="420">
 <img  src="/assets/screens/single.jpeg"  width="200" height="420">
-<img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
+<img  src="/assets/screens/chat.jpeg"  width="200" height="420">
+
 </p>
 
 ### [Screen recording on iOS]()
