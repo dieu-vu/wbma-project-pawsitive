@@ -29,7 +29,7 @@ Users can:
 <img  src="/assets/screens/chat.jpeg"  width="200" height="420">
 </p>
 
-### [Screen recording on iOS]()
+### [Screen recording on iOS](https://youtu.be/JEM81nTiyGg)
 
 ### [Screen recording on Android](https://www.youtube.com/watch?v=AKs_GY1pYp0)
 
