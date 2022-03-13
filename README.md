@@ -82,11 +82,12 @@ _on 9th March 2022 at Metropolia, Karamalmi campus_
 
 6. Issue with Android in the Chat view's input box was fixed
 
-## Current issues
+## Current issues/known bugs
 
 - The app requires the user to enable Location service to avoid issues with Map related features.
 - `PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down. Depending on the network situation, the user will need to wait for some time for the media to load.
 - **Different Android devices can have some unexpected issues with some views**, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
+- **Map search**: Currently, we only implemented Google Places API in the map search box, Geocoding API is not used. Therefore, the app cannot automatically retrieve the address text from the user location's coordinates. The user need to select a result from the search box in MapSearch in order to add the address text to the post. Otherwise, the app will save the current location as post's location, and address text will be an empty string.
 
 ## Contributors
 
