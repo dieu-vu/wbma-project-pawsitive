@@ -48,7 +48,7 @@ const EditPost = ({navigation, route}) => {
   const [startTime, setStartTime] = useState();
   const [endTime, setEndTime] = useState();
   const {userType} = useContext(MainContext);
-  const {petType, setPetType} = useContext(MainContext);
+  const {petType} = useContext(MainContext);
   const {mapOverlayVisible, setMapOverlayVisible} = useContext(MainContext);
   const {postLocation} = useContext(MainContext);
   const {
@@ -110,6 +110,7 @@ const EditPost = ({navigation, route}) => {
     return JSON.stringify(json);
   };
 
+  // Update postLocation in case user change location of the post
   useEffect(() => {
     postLocation
       ? setAddressText(`Selected address: ${postLocation.address}`)
@@ -122,7 +123,6 @@ const EditPost = ({navigation, route}) => {
       Alert.alert('Please select a pet type');
       return;
     }
-    // console.log(data);
     const fileInfoJson = createJsonString(data);
     if (!fileInfoJson) {
       return;
@@ -134,8 +134,8 @@ const EditPost = ({navigation, route}) => {
     putData['title'] = data.title;
     putData['description'] = fileInfoJson;
     const putDataJson = JSON.stringify(putData);
-    console.log('PUT DATA', JSON.stringify(putData));
-    console.log('current pet type', currentPetType);
+    // console.log('PUT DATA', JSON.stringify(putData));
+    // console.log('current pet type', currentPetType);
 
     try {
       const token = await AsyncStorage.getItem('userToken');
@@ -156,15 +156,15 @@ const EditPost = ({navigation, route}) => {
 
       // Post tag if pet type changed from the latest petType Tag:
       let petTypeTag;
-      console.log('PET TYPE', petType);
 
       if (currentPetType !== petType) {
-        // we should remove old petType tag, but delete tag is restricted to admin
+        /* we should remove old petType tag, but delete tag is restricted to admin,
+        so we get the latest pet tag added and compare to info from the input form */
         petTypeTag = await postTag(
           {file_id: file.file_id, tag: `${appId}_pet_${petType}`},
           token
         );
-        console.log('EDIT PET TYPE RESPONSE', petTypeTag);
+        // console.log('EDIT PET TYPE RESPONSE', petTypeTag);
       } else {
         petTypeTag = true;
       }

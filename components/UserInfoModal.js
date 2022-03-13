@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Button, Overlay, Card, Avatar, Text} from 'react-native-elements';
+import {Overlay, Text} from 'react-native-elements';
 import {
   StyleSheet,
   Dimensions,
@@ -33,6 +33,7 @@ const UserInfoModal = (props) => {
     setAvatar(uploadsUrl + avatarFile);
   }, []);
 
+  // Function to get an array of subscriber's media
   const getUserFileDetails = async () => {
     const fileList = await getPostsByUserIdExceptAvatar(
       props.subscriber.user_id
@@ -40,7 +41,6 @@ const UserInfoModal = (props) => {
     const fileIdList = await fileList.map((file) => {
       return file.file_id;
     });
-    // console.log('FILE ID LIST', fileIdList);
 
     // Use the file Id list to get needed file from mediaArray
     const subscriberFilesOnly = await Promise.all(
@@ -56,22 +56,21 @@ const UserInfoModal = (props) => {
       subscriberFilesOnly.map(async (file) => {
         const averageRating = await calculateRatingForPost(file.file_id);
         file['average_rating'] = averageRating;
-        // console.log('updated file', file);
         return file;
       })
     );
-    console.log('FILE LIST', updatedsubscriberFilesOnly);
+    // console.log('FILE LIST', updatedsubscriberFilesOnly);
     setUserFiles(updatedsubscriberFilesOnly);
     setUserFilesLoaded(true);
   };
 
   useEffect(async () => {
     await getUserFileDetails();
-    console.log('SUBSCRIBER POSTS', userFiles);
-    console.log('SUBSCRIBER POSTS READY', userFilesLoaded);
+    // console.log('SUBSCRIBER POSTS', userFiles);
+    // console.log('SUBSCRIBER POSTS READY', userFilesLoaded);
   }, [userFilesLoaded]);
 
-  // CALCULATE RATINGS FOR POST
+  // CALCULATE RATINGS FOR POST, if there is no rating return 0 and display unavailable
   const calculateRatingForPost = async (fileId) => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');

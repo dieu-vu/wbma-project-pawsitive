@@ -57,6 +57,8 @@ _on 9th March 2022 at Metropolia, Karamalmi campus_
 1.  Chat:
 
 - Refresh Chat FlatList on pull action.
+- Fix positioning so that use's own messages will always be on the right.
+- Prevent chat menu being crashed due to user's comment on another app.
 - There can be some delay in retrieving chat threads from backend, but the receiver and sender should both see the threads in the chat menu.
 
 2. Upload and Edit Post: Show error message when price input is in the wrong format 3. Favorites list:
@@ -76,6 +78,7 @@ When user has no uploaded posts of their own, show animation and have a button t
 
 ## Current issues
 
+- The app requires the user to enable Location service to avoid issues with Map related features.
 - `PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down. Depending on the network situation, the user will need to wait for some time for the media to load.
 - Different Android devices can have some unexpected issues with some views, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
 

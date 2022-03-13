@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Dimensions, View, SafeAreaView, Text} from 'react-native';
+import {StyleSheet, View, SafeAreaView, Text} from 'react-native';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -20,9 +20,11 @@ const SubscriberList = ({navigation, route}) => {
   const [subscriberArray, setSubscriberArray] = useState();
   const [allUserLoaded, setAllUserLoaded] = useState(false);
   const [subscriberArrayLoading, setSubscriberArrayLoading] = useState();
+
+  // Function to retrieve all subscribers of the file id
   const getSubscriberList = async (fileId) => {
     /*
-- Get all user id from media array?
+- Get all user id from media array
 - Save user id list and get array of user details
 - if user has full_name.subscribed_media == file_id, then save that user_id object to an array
 - use array above to build list
@@ -44,7 +46,6 @@ const SubscriberList = ({navigation, route}) => {
         })
       );
       if (allUserInfo) {
-        // console.log('ALL USER info', allUserInfo.length);
         await getSubscriberHelper(allUserInfo);
       }
       setAllUserLoaded(true);
@@ -53,17 +54,13 @@ const SubscriberList = ({navigation, route}) => {
     }
   };
 
-  // function to get array of subscriber details
+  // function to get an array of subscriber details
   const getSubscriberHelper = async (userArray) => {
-    // console.log('USER ARRAY', userArray.length);
     const updatedSubscriberArray = [];
     if (userArray.length > 0) {
       await Promise.all(
         userArray.map((user) => {
-          // console.log('CHECKING USER', user.user_id);
-
           const isSubscriber = checkSubscription(user);
-          // console.log('IS SUBCRIBER', isSubscriber);
           if (isSubscriber) {
             updatedSubscriberArray.push(user);
           }
@@ -74,12 +71,10 @@ const SubscriberList = ({navigation, route}) => {
       updatedSubscriberArray.map(async (user) => {
         const averageRating = await calculateRatingForUser(user.user_id);
         user['average_rating'] = averageRating;
-        // console.log('updated file', file);
         return user;
       })
     );
     setSubscriberArray(subscriberArrayWithRatings);
-    // console.log('SUBSCRIBER ARRAY', subscriberArray);
   };
 
   // function to check subscription of each user
@@ -90,7 +85,6 @@ const SubscriberList = ({navigation, route}) => {
       userObject.full_name.includes('subscribed_media')
     ) {
       userInfo = JSON.parse(userObject.full_name);
-      // console.log('CHECK SUBSCRIPTION USER INFO', userInfo);
       if (
         userInfo &&
         userInfo.subscribed_media &&
@@ -106,10 +100,7 @@ const SubscriberList = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    // TODO: Add timeout here to try again?
     getSubscriberList(fileId);
-
-    // console.log('LIST SUBSCRIBER', subscriberArray);
   }, [subscriberArray]);
 
   // Wait up to 3 seconds after all Subscribers Loaded, if there is no change, show no subscribers message
@@ -125,7 +116,6 @@ const SubscriberList = ({navigation, route}) => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const mediaFiles = await getPostsByUserId(userId);
-      // console.log('media files', mediaFiles);
       let sum = 0;
       let count = 0;
       const response = await Promise.all(
@@ -133,7 +123,6 @@ const SubscriberList = ({navigation, route}) => {
           const ratings = await getRatingsForFile(item.file_id, userToken);
           ratings.forEach((item) => {
             const rating = item.rating;
-            // console.log('USER RATING', rating);
             sum += rating;
             count++;
           });
@@ -144,7 +133,6 @@ const SubscriberList = ({navigation, route}) => {
           return 0;
         }
         const average = sum / count;
-        // console.log('average', Math.round(average));
         return Math.round((average + Number.EPSILON) * 100) / 100;
       } else {
         return 0;

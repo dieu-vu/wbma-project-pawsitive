@@ -42,14 +42,8 @@ const Single = ({navigation, route}) => {
   const {getPostsByUserId} = useMedia();
   const {deleteFavourite} = useFavourite();
   const {putUser} = useUser();
-  const {
-    update,
-    setUpdate,
-    user,
-    setUser,
-    setCurrentViewedFile,
-    currentViewedFile,
-  } = useContext(MainContext);
+  const {update, setUpdate, user, setUser, setCurrentViewedFile} =
+    useContext(MainContext);
   const [owner, setOwner] = useState({username: ''});
   const [avatar, setAvatar] = useState('../assets/user.svg');
   const [rating, setRating] = useState(3);
@@ -58,6 +52,7 @@ const Single = ({navigation, route}) => {
   const [currentUserLiked, setCurrentUserLiked] = useState(false);
   const {deleteMedia} = useMedia();
 
+  // Check if it is possible to parse the extra info for user due to shared backend
   let userInfo = {};
   if (user.full_name && user.full_name.includes('subscribed_media')) {
     userInfo = JSON.parse(user.full_name);
@@ -69,8 +64,9 @@ const Single = ({navigation, route}) => {
     checkUserLiked();
   }, []);
 
+  // Check if the user likes the posts or not to trigger the animation
   useEffect(() => {
-    console.log('current user like', currentUserLiked);
+    // console.log('current user like', currentUserLiked);
     if (currentUserLiked) {
       animation.current?.play();
     } else {
@@ -80,7 +76,7 @@ const Single = ({navigation, route}) => {
 
   getFonts();
 
-  // Function to check if user liked the post:
+  // Function to check if user liked the post in order to trigger display on bookmark button properly and allow different onPress action
   const checkUserLiked = async () => {
     try {
       const checkIfFavouriteCreated = await getFavouritesByFileId(file.file_id);
@@ -222,11 +218,9 @@ const Single = ({navigation, route}) => {
         let count = 0;
         ratings.forEach((item) => {
           const rating = item.rating;
-          // console.log(rating);
           sum += rating;
           count++;
           average = sum / count;
-          // console.log('average rating', Math.round(average));
         });
         return average;
       } else {
@@ -285,17 +279,13 @@ const Single = ({navigation, route}) => {
     const subscribedFileId = file.file_id;
 
     if (userInfo.subscribed_media) {
-      const currentSubscribingList = userInfo.subscribed_media;
-      console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
       if (subscribed) {
         return;
       } else {
         userInfo.subscribed_media.push(subscribedFileId);
-        console.log('UPDATED LIST', userInfo.subscribed_media);
       }
     } else {
       userInfo['subscribed_media'] = [subscribedFileId];
-      console.log('ADDED NEW SUBSCRIBING LIST', userInfo.subscribed_media);
     }
 
     const subscriptionData = {};
@@ -322,8 +312,6 @@ const Single = ({navigation, route}) => {
     const subscribedFileId = file.file_id;
 
     if (userInfo.subscribed_media) {
-      // const currentSubscribingList = userInfo.subscribed_media;
-      // console.log('CURRENT SUBSCRIBING LIST', currentSubscribingList);
       if (!subscribed) {
         return;
       } else {
@@ -333,13 +321,12 @@ const Single = ({navigation, route}) => {
           }
         );
         userInfo.subscribed_media = updatedSubscribeArray;
-        // console.log('UPDATED LIST', userInfo.subscribed_media);
       }
     }
     const subscriptionData = {};
     subscriptionData['full_name'] = JSON.stringify(userInfo);
     updatedUserData.full_name = subscriptionData['full_name'];
-    // console.log('subscribing data json', subscriptionData);
+
     setUser(updatedUserData);
     setSubcribed(false);
     try {
@@ -380,9 +367,9 @@ const Single = ({navigation, route}) => {
   useEffect(() => {
     fetchOwner();
     setCurrentViewedFile(file.file_id);
-    // console.log('CURRENT VIEWED FILE', currentViewedFile);
   }, []);
 
+  // Check current User type to conditionally display text in the subscription button
   useEffect(async () => {
     const previousUserTypeApi = await getMediaPreviousCategoryTag(file, 'user');
     setPreviousUserType(previousUserTypeApi);
@@ -515,7 +502,8 @@ const Single = ({navigation, route}) => {
               </Card.Title>
             </View>
 
-            {/* Post rating */}
+            {/* Post rating
+            Hide post rating if the current user is the owner of the post*/}
             {owner.user_id !== user.user_id ? (
               <View style={[styles.postSection, {marginBottom: 20}]}>
                 <Card.Title

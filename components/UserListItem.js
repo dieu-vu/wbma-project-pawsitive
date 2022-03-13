@@ -12,9 +12,7 @@ import CustomButton from './CustomButton';
 const UserListItem = ({navigation, subscriber}) => {
   const {
     setUserInfoModalVisible,
-    userInfoModalVisible,
     setViewedSubscriber,
-    viewedSubscriber,
     user,
     currentViewedFile,
   } = useContext(MainContext);

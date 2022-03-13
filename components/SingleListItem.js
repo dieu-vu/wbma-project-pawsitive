@@ -9,6 +9,9 @@ import {useFavourite, useMedia} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 
 const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
+  /* Because there can be media from user's post in other app in the shared backend:
+  we check if the file has the json field for this app.
+  */
   let fileInfo = {};
   if (singleMedia.description.includes('coords')) {
     fileInfo = JSON.parse(singleMedia.description);
@@ -18,6 +21,7 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
   const {deleteFavourite} = useFavourite();
   const {update, setUpdate} = useContext(MainContext);
 
+  // Function to delete post: Used for lists in My Post view in the drawer menu
   const deletePost = () => {
     Alert.alert('Delete', 'your post permanently', [
       {text: 'Cancel'},
@@ -39,6 +43,7 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
     ]);
   };
 
+  // Function to remove favorite: Used for lists in Favourites view in the drawer menu
   const removeSavedPost = () => {
     Alert.alert('Favourite', 'will be removed from list', [
       {text: 'Cancel'},
@@ -60,6 +65,9 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
     ]);
   };
 
+  /* Because there can be media from user's post in other app in the shared backend:
+  we render the list item only when the file has the json field for this app.
+  */
   if (fileInfo) {
     return (
       <ListItem
@@ -89,11 +97,14 @@ const SingleListItem = ({navigation, singleMedia, myFilesOnly, savedPosts}) => {
               {singleMedia.title}
             </ListItem.Title>
             <ListItem.Subtitle style={styles.subTitle}>
+              {/* Limit the length of text on list item to 70 characters */}
               {fileInfo.description && fileInfo.description.length > 70
                 ? `${fileInfo.description.substring(0, 70)} ...`
                 : fileInfo.description}
             </ListItem.Subtitle>
           </View>
+
+          {/* Conditionally display buttons on My Post and Favourite views (on the drawer menu) */}
           {!myFilesOnly && !savedPosts ? (
             <View style={{marginLeft: 5, marginRight: 5}}>
               <Text style={{fontSize: 20, fontFamily: 'Montserrat-SemiBold'}}>

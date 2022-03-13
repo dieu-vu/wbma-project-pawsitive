@@ -6,7 +6,7 @@ import List from '../components/List';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {MainContext} from '../contexts/MainContext';
 import CustomDropDownPicker from '../components/DropDownPicker';
-import FullScreenMap from "../components/FullScreenMap";
+import FullScreenMap from '../components/FullScreenMap';
 
 const Listing = ({navigation}) => {
   const insets = useSafeAreaInsets();
@@ -34,6 +34,7 @@ const Listing = ({navigation}) => {
     setIsSearching(true);
   };
 
+  // FAB button to toggle to open full map view
   const mapState = isFullMap
     ? Dimensions.get('window').height
     : Dimensions.get('window').height * 0.33;

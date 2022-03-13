@@ -16,15 +16,9 @@ const MapSearch = () => {
   const iosApiKey = 'AIzaSyBiAfVQPbsDoRsc9PV3mUuLmcrFv-XDl4Q';
   const androidApiKey = 'AIzaSyCGBZwLYfYtbzlny0r3qSRCFZCnxhP6-Qg';
   const apiKey = Platform.OS === 'ios' ? iosApiKey : androidApiKey;
-  // const searchUrl =
-  //   'https://maps.googleapis.com/maps/api/geocode/json?address=';
-  // const keyQuery = `&key=${apiKey}`; // For geocode request if needed
-  const {
-    currentUserLocation,
-    setCurrentUserLocation,
-    postLocation,
-    setPostLocation,
-  } = useContext(MainContext);
+
+  const {currentUserLocation, setCurrentUserLocation, setPostLocation} =
+    useContext(MainContext);
 
   const defaultDelta = 0.05;
   const [listViewDisplayed, setListViewDisplay] = useState(true);
@@ -49,6 +43,7 @@ const MapSearch = () => {
 
   getFonts();
 
+  // Request for user location access permission
   useEffect(async () => {
     if (checkLocationPermission()) {
       setCurrentUserLocation(await getUserLocation());
@@ -57,16 +52,15 @@ const MapSearch = () => {
     }
   }, [currentUserLocation]);
 
+  // Set post location and animate to the post location after the user selects the location on map search modal
   useEffect(() => {
-    console.log('SEARCH REF GET ADDRESS', searchRef.current?.getAddressText());
+    // console.log('SEARCH REF GET ADDRESS', searchRef.current?.getAddressText());
     searchRef.current?.setAddressText(address);
-    console.log('CURRENT ADDRESS setState ', address);
-    console.log('CURRENT REGION', region);
-    console.log('POST LOCATION', postLocation);
     goToInitialLocation(region);
     setPostLocation({address: address, ...region});
   }, [address, region]);
 
+  // Function to animate to the location on the map with coords given
   const goToInitialLocation = (region) => {
     // console.log('ASSIGNED REGION', region);
     const initialRegion = Object.assign(region);
@@ -74,12 +68,14 @@ const MapSearch = () => {
     mapRef.current.animateToRegion(initialRegion, 500);
   };
 
+  // Function to handle map View actions on location change
   const onRegionChange = (region) => {
     setRegion(region);
     setForceRefresh(Math.floor(Math.random() * 100));
     setCurrentUserLocation(region);
   };
 
+  // Function to parse the location info and update state for post location after the user selects the location on map search
   const updateLocationOnSelect = (data, details) => {
     const selectedAdress = data.description;
     const selectedLocation = {

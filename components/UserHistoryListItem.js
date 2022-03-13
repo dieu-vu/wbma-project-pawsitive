@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {uploadsUrl, colors} from '../utils/Variables';
 import {LinearGradient} from 'expo-linear-gradient';
 
-// TODO: change description for all file in listing
+// This is used for the subscriber's list of posts in the UserInfoModal
 const UserHistoryListItem = ({file}) => {
   return (
     <ListItem

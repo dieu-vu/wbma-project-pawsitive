@@ -72,13 +72,14 @@ const Upload = ({navigation}) => {
     mode: 'onBlur',
   });
 
+  // Pick image from device
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 0.5,
     });
-    console.log('selected image info: ', result);
+    // console.log('selected image info: ', result);
     if (!result.cancelled) {
       setImage(result.uri);
       setImageSelected(true);
@@ -120,8 +121,7 @@ const Upload = ({navigation}) => {
     const json = {};
     json['description'] = data.description;
     json['start_time'] = data.startTime;
-    // console.log('start time from form', data.startTime);
-    // console.log('end time from form', data.endTime);
+
     json['price'] = data.price;
     json['end_time'] = data.endTime;
     if (data.startTime > data.endTime) {
@@ -138,6 +138,7 @@ const Upload = ({navigation}) => {
   };
 
   const onSubmit = async (data) => {
+    // force the upload to have info of pet type and location
     if (!petType) {
       Alert.alert('Please select a pet type');
       return;
@@ -160,7 +161,6 @@ const Upload = ({navigation}) => {
       return;
     }
 
-    console.log('file Info json ', fileInfoJson);
     formData.append('description', fileInfoJson);
 
     const filename = image.split('/').pop();
@@ -171,23 +171,26 @@ const Upload = ({navigation}) => {
       name: filename,
       type: type + '/' + fileExtension,
     });
-    console.log('POSTED media', formData);
+
     try {
       const token = await AsyncStorage.getItem('userToken');
       const response = await postMedia(formData, token);
-      console.log('Upload response', response);
+
+      // reset postLocation in global context so the descriptive text can be reset properly
       setPostLocation('');
 
       const tagResponse = await postTag(
         {file_id: response.file_id, tag: appId},
         token
       );
+
+      // Add the user type to tag pawsitive_user_[user type as owner or sitter]
       const userTypeTag = await postTag(
         {file_id: response.file_id, tag: `${appId}_user_${userType}`},
         token
       );
 
-      console.log('PET TYPE', petType);
+      // Add pet type to a tag for filtering
       const petTypeTag = await postTag(
         {file_id: response.file_id, tag: `${appId}_pet_${petType}`},
         token

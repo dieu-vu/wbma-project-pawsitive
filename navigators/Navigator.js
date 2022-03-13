@@ -16,7 +16,6 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import SavedPosts from '../views/SavedPosts';
 import CustomDrawer from '../components/CustomDrawer';
 import {TouchableOpacity} from 'react-native';
-import FullScreenMap from '../components/FullScreenMap';
 import EditPost from '../views/EditPost';
 import SubscriberList from '../views/SubscriberList';
 import Chat from '../views/Chat';
@@ -275,12 +274,7 @@ const DrawerNavigator = () => {
         component={Map}
         options={{
           drawerIcon: () => (
-            <Icon
-              name="map"
-              type="feather"
-              size={20}
-              color={'#425E20'}
-            />
+            <Icon name="map" type="feather" size={20} color={'#425E20'} />
           ),
           headerStyle: {
             backgroundColor: '#8DD35E',
