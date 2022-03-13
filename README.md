@@ -15,18 +15,17 @@ Users can:
 - search by multiple criteria [🐕](https://emojipedia.org/dog/)
 - contact each other [💬](https://emojipedia.org/speech-balloon/)
 - give ratings 📱
-- subscribe to other's posts and view own posts' subscribers information 🔔
+- subscribe to other's posts and view your posts' subscribers information 🔔
 
 ### App screens
 
 <p float='left'>
 <img  src="/assets/screens/login.jpeg"  width="200" height="420">
 <img  src="/assets/screens/home.jpeg"  width="200" height="420">
-<img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
 <img  src="/assets/screens/upload.jpeg"  width="200" height="420">
+<img  src="/assets/screens/map-listing.jpeg"  width="200" height="420">
 <img  src="/assets/screens/single.jpeg"  width="200" height="420">
 <img  src="/assets/screens/chat.jpeg"  width="200" height="420">
-
 </p>
 
 ### [Screen recording on iOS]()
@@ -63,18 +62,22 @@ _on 9th March 2022 at Metropolia, Karamalmi campus_
 - Prevent chat menu being crashed due to user's comment on another app.
 - There can be some delay in retrieving chat threads from backend, but the receiver and sender should both see the threads in the chat menu.
 
-2. Upload and Edit Post: Show error message when price input is in the wrong format 3. Favorites list:
+2. Upload and Edit Post:
+
+- Show error message when price input is in the wrong format
+
+3. Favorites list:
 
 - Fix the issue of the media from other apps that have issues in JSON parse.
 - When user has not favourited any post, show animation and have a button that takes to all listings where they can find posts that they might like.
 
 4. Single Media view:
 
-Bookmark/Favourite animation button change play to black color after saving favorites. Allow user to click again to remove favorite and reset animation bookmark button’s color.
+- Bookmark/Favourite animation button change play to black color after saving favorites. Allow user to click again to remove favorite and reset animation bookmark button’s color.
 
 5. My Posts list:
 
-When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
+- When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
 
 6. Issue with Android in the Chat view's input box was fixed
 
