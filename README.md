@@ -34,18 +34,18 @@ Users can:
 
 ## Installation
 
-Clone the project
+- Clone the project
 
 ```
 git clone https://github.com/dieu-vu/wbma-project-pawsitive.git pawsitive-app
 cd pawsitive-app
 ```
 
-Install [Expo CLI](https://docs.expo.dev/workflow/expo-cli/?redirected): `npm install -g expo-cli`
+- Install [Expo CLI](https://docs.expo.dev/workflow/expo-cli/?redirected): `npm install -g expo-cli`
 
-Install: `npm install`
+- Install npm packages: `npm install`
 
-Run Project Locally: `expo start` or `npm start`
+- Run Project Locally: `expo start` or `npm start`
 
 ## Backend:
 
