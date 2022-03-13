@@ -89,7 +89,6 @@ const Listing = ({navigation}) => {
               width: Dimensions.get('window').width * 0.65,
             }}
           />
-
           <CustomDropDownPicker
             value={selectedPetType}
             dropdownTextStyle={{display: 'none'}}
@@ -100,7 +99,6 @@ const Listing = ({navigation}) => {
             setValue={setSelectedPetType}
           />
         </View>
-
         <List navigation={navigation} style={{flex: 1}} />
       </View>
     </SafeAreaView>
@@ -122,6 +120,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     paddingLeft: 20,
     justifyContent: 'space-around',
+    zIndex: 1,
   },
 });
 

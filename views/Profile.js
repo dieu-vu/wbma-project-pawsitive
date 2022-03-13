@@ -32,7 +32,7 @@ const Profile = ({navigation}) => {
   const {postMedia} = useMedia();
   const {postTag} = useTag();
 
-
+  // changes the avatar of the user
   const uploadImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,

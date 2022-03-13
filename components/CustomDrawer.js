@@ -8,7 +8,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {MainContext} from '../contexts/MainContext';
 import Logo from '../assets/pawsitiveLogo2.svg';
-import Profile from '../views/Profile';
 
 const CustomDrawer = (props) => {
   const {setIsLoggedIn} = useContext(MainContext);

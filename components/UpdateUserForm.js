@@ -1,15 +1,13 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, Alert, Dimensions} from 'react-native';
 import {useForm, Controller} from 'react-hook-form';
 import {Icon, Input} from 'react-native-elements';
 import MainButton from './MainButton';
-import {useMedia, useTag, useUser} from '../hooks/ApiHooks';
-import {useFonts} from '@expo-google-fonts/inter';
-import AppLoading from 'expo-app-loading';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getFonts} from '../utils/Utils';
+import {useUser} from '../hooks/ApiHooks';
 
 const UpdateUserForm = ({navigation}) => {
   const {putUser} = useUser();
@@ -34,7 +32,6 @@ const UpdateUserForm = ({navigation}) => {
   getFonts();
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       delete data.confirmPassword;
       if (data.password === '') {
@@ -112,12 +109,6 @@ const UpdateUserForm = ({navigation}) => {
             value: 5,
             message: 'Password has to be at least 5 characters.',
           },
-          /*
-          pattern: {
-            value: /(?=.*[\p{Lu}])(?=.*[0-9]).{8,}/u,
-            message: 'Min 8, Uppercase, Number',
-          },
-          */
         }}
         render={({field: {onChange, onBlur, value}}) => (
           <View style={styles.inputContainer}>

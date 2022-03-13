@@ -30,6 +30,7 @@ const Chat = ({route}) => {
   const fileId = route.params.fileId;
   const chatStarterId = route.params.chatStarterId;
   const chatResponserId = route.params.chatResponserId;
+  const {user} = useContext(MainContext);
 
   getFonts();
 

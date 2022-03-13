@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import {Input} from 'react-native-elements';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
 import MainButton from './MainButton';
 import {useLogin} from '../hooks/ApiHooks';

@@ -1,14 +1,11 @@
 import React, {useContext} from 'react';
 import {Input, Button} from 'react-native-elements';
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  View,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import MainButton from './MainButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useComments} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
@@ -32,6 +29,7 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
     mode: 'onBlur',
   });
 
+  // post comment, add json string with the user ids to the comment
   const onSubmit = async (data) => {
     const comment = {};
     comment['comment'] = data.comment;
@@ -82,6 +80,7 @@ const CommentForm = ({fileId, chatStarterId, chatResponserId}) => {
           height: 74,
           width: '23%',
           right: 9.5,
+          bottom: 2,
         }}
         titleStyle={{
           fontFamily: 'Montserrat-SemiBold',

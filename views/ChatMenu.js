@@ -23,8 +23,8 @@ const ChatMenu = ({navigation}) => {
   const fetchMedia = async () => {
     try {
       const userToken = await AsyncStorage.getItem('userToken');
-      // user´s all comments
 
+      // get all comments for user
       const commentArrayForUser = await getCommentsForUser(userToken);
 
       const arrayOfPosts = [];
@@ -58,8 +58,7 @@ const ChatMenu = ({navigation}) => {
         })
       );
 
-      // need a function to clear duplicate users from a list of comments
-
+      // leave only one comment/chat to represent the chat in the menu
       const chatsToUserWithoutDuplicates = chatsToUser.map((item) => {
         const userIdArray = [];
         return item.filter((item) => {
@@ -70,20 +69,25 @@ const ChatMenu = ({navigation}) => {
         });
       });
 
+      // flatten the nested arrays into one array
       const flatChatsToUser = chatsToUserWithoutDuplicates.flat();
 
+      // remove user´s own comments
       const chatsToUserWithoutOwn = flatChatsToUser.filter(
         (comment) => comment.user_id !== userId
       );
 
+      // concatenate the two arrays
       const concatenatedArray = chatsToUserWithoutOwn.concat(
         chatsToOtherUsersFiles
       );
 
+      // reverse the order of the array
       const sortedArray = concatenatedArray.sort(
         (a, b) => b.comment_id - a.comment_id
       );
 
+      // add media needed to the comment items
       const commentArrayWithMedia = await Promise.all(
         sortedArray.map(async (item) => {
           try {
@@ -100,7 +104,6 @@ const ChatMenu = ({navigation}) => {
           }
         })
       );
-      console.log(commentArrayWithMedia);
       setMediaArray(commentArrayWithMedia);
     } catch (error) {
       console.error(' get comments error', error);

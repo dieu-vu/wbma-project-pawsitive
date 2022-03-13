@@ -30,13 +30,12 @@ const SavedPosts = ({navigation}) => {
   }, [animation]);
   getFonts();
 
+  // get favourites for the user, get media with the file_id
   const fetchFavourites = async () => {
     const token = await AsyncStorage.getItem('userToken');
     const favouritesList = await getFavourites(token);
     if (favouritesList) {
       const favouritesWithTag = favouritesList.filter(filterFavouritesByTag);
-
-      console.log('favouritesWithTag', favouritesWithTag);
       if (favouritesWithTag) {
         try {
           const mediaItems = await Promise.all(
@@ -60,6 +59,7 @@ const SavedPosts = ({navigation}) => {
     }
   };
 
+  // filter out favourites saved in other apps
   const filterFavouritesByTag = async (item) => {
     const fileId = item.file_id;
     const token = await AsyncStorage.getItem('userToken');

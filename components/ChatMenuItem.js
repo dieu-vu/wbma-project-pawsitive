@@ -2,11 +2,8 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
 import {Avatar, Icon, ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
-import {useComments, useMedia, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {colors, uploadsUrl} from '../utils/Variables';
-import {fetchAvatar} from '../utils/Utils';
 import {LinearGradient} from 'expo-linear-gradient';
 
 const ChatMenuItem = ({navigation, item}) => {
