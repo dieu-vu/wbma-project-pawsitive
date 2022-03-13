@@ -52,18 +52,32 @@ Run Project Locally: `expo start` or `npm start`
 
 ## Bugs reported and fixed from demo session
 
-_on 9th March 2022 at Metropolia, Karamalmi campus:_
+_on 9th March 2022 at Metropolia, Karamalmi campus_
 
-1.  Chat: Refresh Chat FlatList on pull action
-2.  Upload: Show error message when price input is in the wrong format
-3.  Favorites list: Fix the issue of the media from other apps that have issues in JSON parse
-4.  Single Media view: Bookmark/Favourite animation button change play to black color after saving favorites. Allow user to click again to remove favorite and reset animation bookmark button’s color.
-5.  When user has not favourited any post, show animation and have a button that takes to all listings where they can find posts that they might like.
-6.  When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
+1.  Chat:
+
+- Refresh Chat FlatList on pull action.
+- There can be some delay in retrieving chat threads from backend, but the receiver and sender should both see the threads in the chat menu.
+
+2. Upload and Edit Post: Show error message when price input is in the wrong format 3. Favorites list:
+
+- Fix the issue of the media from other apps that have issues in JSON parse.
+- When user has not favourited any post, show animation and have a button that takes to all listings where they can find posts that they might like.
+
+4. Single Media view:
+
+Bookmark/Favourite animation button change play to black color after saving favorites. Allow user to click again to remove favorite and reset animation bookmark button’s color.
+
+5. My Posts list:
+
+When user has no uploaded posts of their own, show animation and have a button that takes to upload new post.
+
+6. Issue with Android in chat input was fixed
 
 ## Current issues
 
-`PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down.
+- `PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down. Depending on the network situation, the user will need to wait for some time for the media to load.
+- Different Android devices can have some unexpected issues with some views, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
 
 ## Contributors
 

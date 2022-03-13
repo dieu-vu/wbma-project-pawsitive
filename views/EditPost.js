@@ -93,6 +93,7 @@ const EditPost = ({navigation, route}) => {
     console.log('previous user type', previousUserType);
   }, []);
 
+  // Parse json string from input form
   const createJsonString = (data) => {
     const json = {};
     json['description'] = data.description;
@@ -115,13 +116,13 @@ const EditPost = ({navigation, route}) => {
       : setAddressText(`Selected address: ${fileInfo.coords.address}`);
   }, [postLocation]);
 
+  // Handle Save button on submit
   const onSubmit = async (data) => {
     if (!petType) {
       Alert.alert('Please select a pet type');
       return;
     }
-
-    console.log(data);
+    // console.log(data);
     const fileInfoJson = createJsonString(data);
     if (!fileInfoJson) {
       return;
@@ -253,6 +254,7 @@ const EditPost = ({navigation, route}) => {
                   autoCapitalize="none"
                   placeholder="Price in EUR"
                   style={[styles.input]}
+                  errorMessage={errors.price && 'Please provide a number'}
                 ></Input>
               )}
               name="price"

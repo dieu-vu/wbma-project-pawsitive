@@ -29,11 +29,16 @@ const ChatMenu = ({navigation}) => {
       const arrayOfPosts = [];
       // get chats to other user´s posts
       const chatsToOtherUsersFiles = commentArrayForUser.filter((item) => {
-        const messageJson = JSON.parse(item.comment);
-        if (messageJson.chat_starter_id === userId) {
-          if (!arrayOfPosts.includes(item.file_id)) {
-            arrayOfPosts.push(item.file_id);
-            return item;
+        /* Check if the comment has the chat starter id in the string, if true then parse Json
+           (not the best way but at least work in this case, will be still crashed if someone comment with this string) */
+        let messageJson = {};
+        if (item.comment.includes('chat_starter_id')) {
+          messageJson = JSON.parse(item.comment);
+          if (messageJson && messageJson.chat_starter_id === userId) {
+            if (!arrayOfPosts.includes(item.file_id)) {
+              arrayOfPosts.push(item.file_id);
+              return item;
+            }
           }
         }
       });
@@ -57,7 +62,7 @@ const ChatMenu = ({navigation}) => {
       const chatsToUserWithoutDuplicates = chatsToUser.map((item) => {
         const userIdArray = [];
         return item.filter((item) => {
-          if (!userIdArray.includes(item.user_id)){
+          if (!userIdArray.includes(item.user_id)) {
             userIdArray.push(item.user_id);
             return item;
           }

@@ -5,10 +5,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   View,
-  Empty,
 } from 'react-native';
 import {ListItem, Text} from 'react-native-elements';
 import propTypes from 'prop-types';
@@ -16,7 +14,6 @@ import {useComments, useUser} from '../hooks/ApiHooks';
 import {MainContext} from '../contexts/MainContext';
 import CommentForm from '../components/CommentForm';
 import {getFonts} from '../utils/Utils';
-import {KeyboardAwareFlatList} from 'react-native-keyboard-aware-scroll-view';
 import {colors} from '../utils/Variables';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -81,8 +78,9 @@ const Chat = ({route, navigation}) => {
   const CommentItem = ({item}) => (
     <ListItem
       style={styles.item}
+      // User's own chats will always be displayed on the right side
       containerStyle={
-        item.user_id === JSON.parse(item.comment).chat_starter_id
+        item.user_id !== user.user_id
           ? styles.commentContainerLeft
           : styles.commentContainerRight
       }
@@ -156,7 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   flatList: {
-    height: Dimensions.get('window').height* 0.75,
+    height: Dimensions.get('window').height * 0.75,
     paddingTop: 20,
   },
   formContainer: {
