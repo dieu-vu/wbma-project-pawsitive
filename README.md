@@ -31,7 +31,7 @@ Users can:
 
 ### [Screen recording on iOS]()
 
-### [Screen recording on Android]()
+### [Screen recording on Android](https://www.youtube.com/watch?v=AKs_GY1pYp0)
 
 ## Installation
 
@@ -87,7 +87,12 @@ _on 9th March 2022 at Metropolia, Karamalmi campus_
 - The app requires the user to enable Location service to avoid issues with Map related features.
 - `PayloadTooLargeError: request entity too large` when loading the app. Several filtering operations with payload from the shared backend make the app slow down. Depending on the network situation, the user will need to wait for some time for the media to load.
 - **Different Android devices can have some unexpected issues with some views**, which the team has not been able to control of. However, the app should work normally in iOS for all the features in a good network condition.
-- **Map search**: Currently, we only implemented Google Places API in the map search box, Geocoding API is not used. Therefore, the app cannot automatically retrieve the address text from the user location's coordinates. The user need to select a result from the search box in MapSearch in order to add the address text to the post. Otherwise, the app will save the current location as post's location, and address text will be an empty string.
+- **Map search**:
+
+  Currently, we only implemented Google Places API in the map search box, Geocoding API is not used. Therefore, the app cannot automatically retrieve the address text from the user location's coordinates. The user need to select a result from the search box in MapSearch in order to add the address text to the post. Otherwise, the app will save the current location as post's location, and address text will be an empty string.
+
+- Issue with selecting dropdown picker item on Android ([open issue with react-native-dropdown-picker](https://github.com/hossein-zare/react-native-dropdown-picker/issues/40)). Dropdown picker works normally on iOS.
+- Issue with selecting results from list on Android in Map Search view. Map search works well on iOS.
 
 ## Contributors
 
